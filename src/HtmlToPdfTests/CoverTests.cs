@@ -1,0 +1,70 @@
+﻿// <copyright file="CoverTests.cs" company="HtmlToPdf">
+// Copyright (c) HtmlToPdf. All rights reserved.
+// </copyright>
+
+namespace HtmlToPdfTests
+{
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using UglyToad.PdfPig.Content;
+
+    /// <summary>
+    /// Cover Tests
+    /// </summary>
+    [TestClass]
+    public class CoverTests
+    {
+        /// <summary>
+        /// Gets or sets the test context.
+        /// </summary>
+        public TestContext TestContext { get; set; }
+
+        /// <summary>
+        /// Asserts that passing a cover with an HTML file inserts a cover as the first page.
+        /// </summary>
+        [TestMethod]
+        public void Cover_WithHtmlFile_InsertsCoverAsFirstPage()
+        {
+            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+
+            string cover = @"
+<html>
+  <head>
+  </head>
+  <body>
+   Cover Page
+  </body>
+</html>";
+
+            string html = @"
+<html>
+  <head>
+  </head>
+  <body>
+   Page 2
+  </body>
+</html>";
+
+            using (TempHtmlFile coverFile = new TempHtmlFile(cover))
+            {
+                using (TempHtmlFile htmlFile = new TempHtmlFile(html))
+                {
+                    using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
+                    {
+                        string commandLine = $"cover \"{coverFile.FilePath}\" \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                        HtmlToPdfRunResult result = runner.Run(commandLine);
+                        Assert.AreEqual(0, result.ExitCode, result.Output);
+
+                        using (var pdfDocument = UglyToad.PdfPig.PdfDocument.Open(pdfFile.FilePath))
+                        {
+                            Assert.AreEqual(2, pdfDocument.NumberOfPages);
+                            Page coverPage = pdfDocument.GetPage(1);
+                            Assert.AreEqual("Cover Page", coverPage.Text);
+                            Page page2 = pdfDocument.GetPage(2);
+                            Assert.AreEqual("Page 2", page2.Text);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
