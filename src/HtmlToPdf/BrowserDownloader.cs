@@ -20,8 +20,7 @@ namespace HtmlToPdf
         /// <summary>
         /// Downloads the browser
         /// </summary>
-        /// <returns>A Task.</returns>
-        internal static async Task DownloadBrowserAsync()
+        internal static void DownloadBrowser()
         {
             string mutexId = $@"Global\{Directory.GetCurrentDirectory().Replace('\\', '_')}";
 
@@ -35,30 +34,21 @@ namespace HtmlToPdf
 
             using (var mutex = new Mutex(false, mutexId, out bool createdNew, securitySettings))
             {
-                var hasHandle = false;
+                var hasHandle = mutex.WaitOne(Timeout.Infinite, false);
+                if (hasHandle == false)
+                {
+                    throw new TimeoutException("Timeout waiting for exclusive access");
+                }
+
                 try
                 {
-                    try
-                    {
-                        hasHandle = mutex.WaitOne(Timeout.Infinite, false);
-                        if (hasHandle == false)
-                        {
-                            throw new TimeoutException("Timeout waiting for exclusive access");
-                        }
-                    }
-                    catch (AbandonedMutexException)
-                    {
-                        hasHandle = true;
-                    }
-
-                    await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
+                    BrowserFetcher browserFetcher = new BrowserFetcher();
+                    Task task = browserFetcher.DownloadAsync(BrowserFetcher.DefaultRevision);
+                    task.Wait();
                 }
                 finally
                 {
-                    if (hasHandle)
-                    {
-                        mutex.ReleaseMutex();
-                    }
+                    mutex.ReleaseMutex();
                 }
             }
         }

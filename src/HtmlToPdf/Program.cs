@@ -159,7 +159,7 @@ namespace HtmlToPdf
 
             options.UserStyleSheet = options.UserStyleSheet?.Trim('"');
 
-            await BrowserDownloader.DownloadBrowserAsync();
+            BrowserDownloader.DownloadBrowser();
 
             using (Browser browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
