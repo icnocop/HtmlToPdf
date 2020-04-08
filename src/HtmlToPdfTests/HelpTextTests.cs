@@ -26,7 +26,7 @@ namespace HtmlToPdfTests
             string usage = File.ReadAllText("USAGE.md");
 
             string expectedOutput = $@"HtmlToPdf {version}
-Copyright c 2020
+Copyright © 2020
 
 ERROR(S):
   A required value not bound to option name is missing.

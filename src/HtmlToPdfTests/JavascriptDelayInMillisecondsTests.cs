@@ -19,25 +19,25 @@ namespace HtmlToPdfTests
         public TestContext TestContext { get; set; }
 
         /// <summary>
-        /// Asserts the default value causes JavaScript to count more than 150 milliseconds since the page has loaded.
+        /// Asserts the default value causes JavaScript to count more than 100 milliseconds since the page has loaded.
         /// </summary>
         [TestMethod]
-        public void DefaultValue_JavascriptCountedMillisecondsOnPageLoad_IsGreaterThan150()
+        public void DefaultValue_JavascriptCountedMillisecondsOnPageLoad_IsGreaterThan100()
         {
             RunResult runResult = this.Run();
             int milliseconds = runResult.Milliseconds;
-            Assert.IsTrue(milliseconds > 150, runResult.PageText);
+            Assert.IsTrue(milliseconds > 100, runResult.PageText);
         }
 
         /// <summary>
-        /// Asserts that passing a JavaScript delay of 3000 milliseconds causes JavaScript to count more than 700 milliseconds since the page has loaded.
+        /// Asserts that passing a JavaScript delay of 3000 milliseconds causes JavaScript to count more than 500 milliseconds since the page has loaded.
         /// </summary>
         [TestMethod]
-        public void ThreeThousand_JavascriptCountedMillisecondsOnPageLoad_IsGreaterThan700()
+        public void ThreeThousand_JavascriptCountedMillisecondsOnPageLoad_IsGreaterThan500()
         {
             RunResult runResult = this.Run(3000);
             int milliseconds = runResult.Milliseconds;
-            Assert.IsTrue(milliseconds > 700, runResult.PageText);
+            Assert.IsTrue(milliseconds > 500, runResult.PageText);
         }
 
         private RunResult Run(int? javascriptDelay = null)

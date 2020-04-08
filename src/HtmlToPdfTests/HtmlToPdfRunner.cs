@@ -33,6 +33,7 @@ namespace HtmlToPdfTests
                     RedirectStandardOutput = true,
                     StandardOutputEncoding = Encoding.Default,
                     RedirectStandardError = true,
+                    StandardErrorEncoding = Encoding.Default,
                     WindowStyle = ProcessWindowStyle.Hidden,
                     FileName = "HtmlToPdf.exe",
                     Arguments = commandLine
@@ -65,7 +66,7 @@ namespace HtmlToPdfTests
                         using (var standardInput = process.StandardInput)
                         {
                             standardInput.AutoFlush = true;
-                            standardInput.Write(stdIn /*string.Join(" ", inputs)*/);
+                            standardInput.Write(stdIn);
                         }
                     }
 

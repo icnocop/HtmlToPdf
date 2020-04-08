@@ -34,6 +34,8 @@ namespace HtmlToPdf
             try
             {
                 // System.Diagnostics.Debugger.Launch();
+                Console.OutputEncoding = Encoding.Default;
+
                 var parser = new Parser(config =>
                 {
                     config.HelpWriter = null;
@@ -253,7 +255,6 @@ namespace HtmlToPdf
 
             if (stdout)
             {
-                Console.OutputEncoding = Encoding.Default;
                 Console.Write(Encoding.Default.GetString(mergedBytes));
             }
             else
