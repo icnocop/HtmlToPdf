@@ -52,9 +52,9 @@ steps:
     codeCoverageEnabled: True
 
 - task: GitHubRelease@0
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceVersionMessage'], '[Release]'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), contains(variables['Build.SourceVersionMessage'], '[Release]'))
   inputs:
-    gitHubConnection: icnocop
+    gitHubConnection: github
     repositoryName: '$(Build.Repository.Name)' 
     action: 'create'
     target: '$(Build.SourceVersion)'
