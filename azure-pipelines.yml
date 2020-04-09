@@ -8,8 +8,18 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  Build.Counter: $[counter(format('{0:yyyyMMdd}', pipeline.startTime), 0)]
 
 steps:
+
+- task: PowerShell@2
+  inputs:
+    filePath: 'src/SetBuildNumber.ps1'
+
+- task: PowerShell@2
+  inputs:
+    filePath: 'src/ApplyVersionToAssemblies.ps1'
+
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
@@ -27,12 +37,12 @@ steps:
     rootFolderOrFile: 'src/HtmlToPdf/bin/$(buildConfiguration)'
     includeRootFolder: false
     archiveType: zip
-    archiveFile: '$(Build.ArtifactStagingDirectory)/HtmlToPdf-$(Build.BuildId).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/HtmlToPdf-$(Build.BuildNumber).zip'
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/HtmlToPdf-$(Build.BuildId).zip'
-    artifactName: 'HtmlToPdf-$(Build.BuildId)'
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/HtmlToPdf-$(Build.BuildNumber).zip'
+    artifactName: 'HtmlToPdf-$(Build.BuildNumber)'
     publishLocation: 'Container'
 
 - task: VSTest@2
