@@ -58,7 +58,7 @@ steps:
     command: publish
     publishDirectory: '$(Build.ArtifactStagingDirectory)'
     vstsFeedPublish: 'HtmlToPdf/master'
-    vstsFeedPackagePublish: 'HtmlToPdf'
+    vstsFeedPackagePublish: 'html-to-pdf'
     versionOption: custom
     versionPublish: $(SemVer)
     packagePublishDescription: 'HtmlToPdf v$(Build.BuildNumber)'
