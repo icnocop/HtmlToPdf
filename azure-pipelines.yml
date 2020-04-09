@@ -53,11 +53,12 @@ steps:
 
 - task: UniversalPackages@0
   displayName: Universal Publish
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   inputs:
     command: publish
     publishDirectory: '$(Build.ArtifactStagingDirectory)'
     vstsFeedPublish: 'HtmlToPdf/master'
     vstsFeedPackagePublish: 'HtmlToPdf'
     versionOption: custom
-    versionPublish: $(Build.BuildNumber)
+    versionPublish: $(SemVer)
     packagePublishDescription: 'HtmlToPdf v$(Build.BuildNumber)'
