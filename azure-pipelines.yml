@@ -50,3 +50,14 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     codeCoverageEnabled: True
+
+- task: UniversalPackages@0
+  displayName: Universal Publish
+  inputs:
+    command: publish
+    publishDirectory: '$(Build.ArtifactStagingDirectory)'
+    vstsFeedPublish: 'HtmlToPdf/master'
+    vstsFeedPackagePublish: 'HtmlToPdf'
+    versionOption: custom
+    versionPublish: $(Build.BuildNumber)
+    packagePublishDescription: 'HtmlToPdf v$(Build.BuildNumber)'
