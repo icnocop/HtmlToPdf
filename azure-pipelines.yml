@@ -59,4 +59,5 @@ steps:
     action: 'create'
     target: '$(Build.SourceVersion)'
     tagSource: 'auto'
+    title: '$(Build.BuildNumber)'
     assets: '$(Build.ArtifactStagingDirectory)/*'
