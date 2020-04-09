@@ -53,7 +53,7 @@ steps:
 
 - task: UniversalPackages@0
   displayName: Universal Publish
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceVersionMessage'], '[Release]'))
   inputs:
     command: publish
     publishDirectory: '$(Build.ArtifactStagingDirectory)'
