@@ -51,14 +51,13 @@ steps:
     configuration: '$(buildConfiguration)'
     codeCoverageEnabled: True
 
-- task: UniversalPackages@0
-  displayName: Universal Publish
+- task: GitHubRelease@0
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceVersionMessage'], '[Release]'))
   inputs:
-    command: publish
-    publishDirectory: '$(Build.ArtifactStagingDirectory)'
-    vstsFeedPublish: 'HtmlToPdf/master'
-    vstsFeedPackagePublish: 'html-to-pdf'
-    versionOption: custom
-    versionPublish: $(SemVer)
-    packagePublishDescription: 'HtmlToPdf v$(Build.BuildNumber)'
+    gitHubConnection: icnocop
+    repositoryName: '$(Build.Repository.Name)' 
+    action: 'create'
+    target: '$(Build.SourceVersion)'
+    tagSource: 'auto'
+    tag: $(Build.BuildNumber)
+    assets: '$(Build.ArtifactStagingDirectory)/*'
