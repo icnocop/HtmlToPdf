@@ -37,12 +37,12 @@ steps:
     rootFolderOrFile: 'src/HtmlToPdf/bin/$(buildConfiguration)'
     includeRootFolder: false
     archiveType: zip
-    archiveFile: '$(Build.ArtifactStagingDirectory)/HtmlToPdf-$(Build.BuildNumber).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/HtmlToPdf-v$(Build.BuildNumber).zip'
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/HtmlToPdf-$(Build.BuildNumber).zip'
-    artifactName: 'HtmlToPdf-$(Build.BuildNumber)'
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/HtmlToPdf-v$(Build.BuildNumber).zip'
+    artifactName: 'HtmlToPdf-v$(Build.BuildNumber)'
     publishLocation: 'Container'
 
 - task: VSTest@2
@@ -59,6 +59,8 @@ steps:
     action: 'create'
     target: '$(Build.SourceVersion)'
     tagSource: 'manual'
-    tag: '$(Build.BuildNumber)'
-    title: 'HtmlToPdf v$(Build.BuildNumber)'
+    tag: 'v$(Build.BuildNumber)'
+    title: 'v$(Build.BuildNumber)'
     assets: '$(Build.ArtifactStagingDirectory)/*'
+    isDraft: true
+    addChangeLog: true
