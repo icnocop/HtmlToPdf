@@ -138,7 +138,7 @@ namespace HtmlToPdf
                 throw new ApplicationException($"At least one input and one output must be specified.");
             }
 
-            List<string> pdfFiles = new List<string>();
+            ConcurrentDictionary<string, HtmlToPdfFile> htmlToPdfFiles = new ConcurrentDictionary<string, HtmlToPdfFile>();
 
             foreach (string input in inputs)
             {
@@ -176,8 +176,6 @@ namespace HtmlToPdf
                     Top = options.TopMargin
                 };
 
-                ConcurrentDictionary<string, string> htmlPdfFiles = new ConcurrentDictionary<string, string>();
-
                 try
                 {
                     PdfPrinter pdfPrinter = new PdfPrinter(browser);
@@ -204,7 +202,18 @@ namespace HtmlToPdf
                         string pdfFile = await pdfPrinter.PrintAsPdfAsync(
                             cover,
                             htmlToPdfOptions);
-                        pdfFiles.Add(pdfFile);
+
+                        HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
+                        {
+                            HtmlFilePath = cover,
+                            PdfFilePath = pdfFile
+                        };
+
+                        if (!htmlToPdfFiles.TryAdd(cover, htmlToPdfFile))
+                        {
+                            throw new Exception($"Failed to add '{cover}'.");
+                        }
+
                         coverAdded = true;
                     }
 
@@ -229,20 +238,19 @@ namespace HtmlToPdf
                             input,
                             htmlToPdfOptions);
 
-                        if (!htmlPdfFiles.TryAdd(input, pdfFile))
+                        HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
                         {
-                            throw new Exception($"Failed to add ('{input}', '{pdfFile}') to concurrent dictionary.");
+                            HtmlFilePath = input,
+                            PdfFilePath = pdfFile
+                        };
+
+                        if (!htmlToPdfFiles.TryAdd(input, htmlToPdfFile))
+                        {
+                            throw new Exception($"Failed to add '{input}'.");
                         }
                     });
 
                     await Task.WhenAll(tasks);
-
-                    foreach (string input in inputs)
-                    {
-                        string pdfFile = htmlPdfFiles[input];
-
-                        pdfFiles.Add(pdfFile);
-                    }
                 }
                 finally
                 {
@@ -250,16 +258,38 @@ namespace HtmlToPdf
                 }
             }
 
+            // set page numbers for each HTML file
+            int currentPageNumber = 1;
+            foreach (string input in inputs)
+            {
+                HtmlToPdfFile htmlToPdfFile = htmlToPdfFiles[input];
+                htmlToPdfFile.OutputPdfFilePageNumber = currentPageNumber;
+
+                int numberOfPages = PdfDocument.CountNumberOfPages(htmlToPdfFile.PdfFilePath);
+                currentPageNumber += numberOfPages;
+            }
+
             // merge pdf files
-            byte[] mergedBytes = PdfMerger.Merge(pdfFiles);
+            byte[] mergedBytes = PdfMerger.Merge(htmlToPdfFiles.Values
+                .OrderBy(x => x.OutputPdfFilePageNumber)
+                .Select(x => x.PdfFilePath));
+
+            string tempOutputFilePath = outputFilePath;
+            if (stdout)
+            {
+                tempOutputFilePath = Path.GetTempFileName();
+            }
+
+            File.WriteAllBytes(tempOutputFilePath, mergedBytes);
+
+            // update external file links to internal document links
+            PdfDocument.UpdateLinks(tempOutputFilePath, htmlToPdfFiles);
 
             if (stdout)
             {
-                Console.Write(Encoding.Default.GetString(mergedBytes));
-            }
-            else
-            {
-                File.WriteAllBytes(outputFilePath, mergedBytes);
+                byte[] outputPdfFileBytes = File.ReadAllBytes(tempOutputFilePath);
+                Console.Write(Encoding.Default.GetString(outputPdfFileBytes));
+                File.Delete(tempOutputFilePath);
             }
 
             return 0;

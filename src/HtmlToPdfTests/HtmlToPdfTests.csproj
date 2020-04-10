@@ -78,6 +78,7 @@
     <Compile Include="FooterRightTests.cs" />
     <Compile Include="TempCssFile.cs" />
     <Compile Include="CoverTests.cs" />
+    <Compile Include="UpdateLinksTests.cs" />
     <Compile Include="UserStyleSheetTests.cs" />
     <Compile Include="QuietTests.cs" />
     <Compile Include="HelpTextTests.cs" />

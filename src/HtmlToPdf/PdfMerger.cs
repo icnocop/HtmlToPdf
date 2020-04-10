@@ -7,6 +7,7 @@ namespace HtmlToPdf
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     /// <summary>
     /// PDF Merge
@@ -18,11 +19,11 @@ namespace HtmlToPdf
         /// </summary>
         /// <param name="pdfFiles">The PDF files.</param>
         /// <returns>A byte array.</returns>
-        internal static byte[] Merge(List<string> pdfFiles)
+        internal static byte[] Merge(IEnumerable<string> pdfFiles)
         {
-            if (pdfFiles.Count == 1)
+            if (pdfFiles.Count() == 1)
             {
-                return File.ReadAllBytes(pdfFiles[0]);
+                return File.ReadAllBytes(pdfFiles.Single());
             }
             else
             {
