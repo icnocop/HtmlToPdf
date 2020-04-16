@@ -47,6 +47,7 @@ steps:
 
 - task: VSTest@2
   inputs:
+    runSettingsFile: 'src/RunSettings.runsettings'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     codeCoverageEnabled: True

@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\CHANGELOG.md = ..\CHANGELOG.md
 		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
+		RunSettings.runsettings = RunSettings.runsettings
 		SetBuildNumber.ps1 = SetBuildNumber.ps1
 		stylecop.json = stylecop.json
 		..\USAGE.md = ..\USAGE.md
