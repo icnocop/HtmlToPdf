@@ -200,7 +200,7 @@
     </AdditionalFiles>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="USAGE.md">
+    <None Include="rename.cmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

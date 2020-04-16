@@ -196,7 +196,7 @@ namespace HtmlToPdf
                             PaperFormat = options.PaperFormat,
                             Height = options.PageHeight,
                             Width = options.PageWidth,
-                            PrintBackground = options.Background
+                            PrintBackground = options.PrintBackground
                         };
 
                         string pdfFile = await pdfPrinter.PrintAsPdfAsync(
@@ -228,7 +228,7 @@ namespace HtmlToPdf
                             PaperFormat = options.PaperFormat,
                             Height = options.PageHeight,
                             Width = options.PageWidth,
-                            PrintBackground = options.Background,
+                            PrintBackground = options.PrintBackground,
                             MarginOptions = marginOptions,
                             FooterTemplate = options.FooterTemplate
                         };

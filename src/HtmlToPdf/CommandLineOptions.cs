@@ -120,18 +120,7 @@ namespace HtmlToPdf
         /// Gets or sets a value indicating whether to not print the background.
         /// </summary>
         [Option("no-background", HelpText = "Do not print background")]
-        public bool NoBackground
-        {
-            get
-            {
-                return !this.Background;
-            }
-
-            set
-            {
-                this.Background = false;
-            }
-        }
+        public bool NoBackground { get; set; }
 
         /// <summary>
         /// Gets the footer template.
@@ -147,6 +136,17 @@ namespace HtmlToPdf
 
                 return $"<div id=\"footer-template\" style=\"font-size:10px !important; color:#808080; padding-left:10px; padding-right:10px; width: 100%;\"><div style=\"text-align:right;\">{this.FooterRight}</div></div>"
                     .Replace("[page]", "<span class=\"pageNumber\"></span>");
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether or not to print the background.
+        /// </summary>
+        internal bool PrintBackground
+        {
+            get
+            {
+                return !this.NoBackground;
             }
         }
 

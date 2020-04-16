@@ -23,7 +23,7 @@ namespace HtmlToPdfTests
         {
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
             string version = FileVersionInfo.GetVersionInfo(currentAssembly.Location).FileVersion;
-            string usage = File.ReadAllText("USAGE.md");
+            string usage = File.ReadAllText(@"..\..\..\..\USAGE.md");
 
             string expectedOutput = $@"HtmlToPdf {version}
 Copyright © 2020

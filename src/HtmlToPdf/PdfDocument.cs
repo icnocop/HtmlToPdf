@@ -88,6 +88,7 @@ namespace HtmlToPdf
 
                                 if (!htmlToPdfFiles.ContainsKey(htmlFilePath))
                                 {
+                                    Logger.LogError($"WARN: Could not find '{htmlFilePath}'.");
                                     continue;
                                 }
 
