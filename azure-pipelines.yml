@@ -13,26 +13,32 @@ variables:
 steps:
 
 - task: PowerShell@2
+  displayName: Set Build Number
   inputs:
-    filePath: 'src/SetBuildNumber.ps1'
+    filePath: 'build/SetBuildNumber.ps1'
 
 - task: PowerShell@2
+  displayName: Apply Version To Assemblies
   inputs:
-    filePath: 'src/ApplyVersionToAssemblies.ps1'
+    filePath: 'build/ApplyVersionToAssemblies.ps1'
 
 - task: NuGetToolInstaller@1
+  displayName: Instal NuGet Tools
 
 - task: NuGetCommand@2
+  displayName: NuGet Restore
   inputs:
     restoreSolution: '$(solution)'
 
 - task: VSBuild@1
+  displayName: Build Solution
   inputs:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
 - task: ArchiveFiles@2
+  displayName: Create Archive
   inputs:
     rootFolderOrFile: 'src/HtmlToPdf/bin/$(buildConfiguration)'
     includeRootFolder: false
@@ -40,12 +46,14 @@ steps:
     archiveFile: '$(Build.ArtifactStagingDirectory)/HtmlToPdf-v$(Build.BuildNumber).zip'
 
 - task: PublishBuildArtifacts@1
+  displayName: Publish Build Artifacts
   inputs:
     pathtoPublish: '$(Build.ArtifactStagingDirectory)/HtmlToPdf-v$(Build.BuildNumber).zip'
     artifactName: 'HtmlToPdf-v$(Build.BuildNumber)'
     publishLocation: 'Container'
 
 - task: VSTest@2
+  displayName: Run Tests
   inputs:
     runSettingsFile: 'src/RunSettings.runsettings'
     platform: '$(buildPlatform)'
@@ -53,6 +61,7 @@ steps:
     codeCoverageEnabled: True
 
 - task: GitHubRelease@0
+  displayName: Publish GitHub Release
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), contains(variables['Build.SourceVersionMessage'], '[Release]'))
   inputs:
     gitHubConnection: release
