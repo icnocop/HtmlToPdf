@@ -55,6 +55,8 @@ steps:
 - task: VSTest@2
   displayName: Run Tests
   inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: 'src\HtmlToPdfTests\bin\$(buildConfiguration)\HtmlToPdfTests.dll'
     runSettingsFile: 'src/RunSettings.runsettings'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
