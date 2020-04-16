@@ -12,9 +12,11 @@ $majorVersion = 0
 $minorVersion = 0
 $firstBuildYear = 2020
 
-$currentYear = Get-Date -Format yyyy
+$currentDate = Get-Date
+$currentDate.ToUniversalTime()
+$currentYear = $currentDate.ToString("yyyy")
 $buildYear = [Convert]::ToInt32($currentYear)
-$currentMonthDay = Get-Date -Format MMdd
+$currentMonthDay = $currentDate.ToString("MMdd")
 $buildVersion = (($buildYear - $firstBuildYear) * 1200) + ([Convert]::ToInt32($currentMonthDay))
 
 Write-Host "##vso[build.updatebuildnumber]$majorVersion.$minorVersion.$buildVersion.$env:BUILD_COUNTER"
