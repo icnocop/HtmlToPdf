@@ -19,28 +19,55 @@ namespace HtmlToPdfTests
         public TestContext TestContext { get; set; }
 
         /// <summary>
-        /// Asserts the default value causes JavaScript to count more than 100 milliseconds since the page has loaded.
+        /// Asserts that not passing a javascript delay returns an error.
         /// </summary>
         [TestMethod]
-        public void DefaultValue_JavascriptCountedMillisecondsOnPageLoad_IsGreaterThan100()
+        public void NoJavascriptDelay_ReturnsError()
         {
-            RunResult runResult = this.Run();
-            int milliseconds = runResult.Milliseconds;
-            Assert.IsTrue(milliseconds > 100, runResult.PageText);
+            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+
+            string html = @"
+<html>
+  <head>
+  </head>
+  <body>
+   Test Page
+  </body>
+</html>";
+
+            using (TempHtmlFile htmlFile = new TempHtmlFile(html))
+            {
+                using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
+                {
+                    string[] commandLine = new[]
+                    {
+                        $"--javascript-delay",
+                        $"\"{htmlFile.FilePath}\"",
+                        $"\"{pdfFile.FilePath}\""
+                    };
+
+                    HtmlToPdfRunResult result = runner.Run(string.Join(" ", commandLine));
+                    Assert.AreEqual(1, result.ExitCode);
+
+                    string expectedOutput = HelpTextGenerator.Generate(
+                        "Option 'javascript-delay' is defined with a bad format.");
+                    Assert.IsTrue(string.IsNullOrEmpty(result.StandardOutput), result.StandardOutput);
+                    Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput.Trim()), result.StandardError);
+                }
+            }
         }
 
         /// <summary>
-        /// Asserts that passing a JavaScript delay of 3000 milliseconds causes JavaScript to count more than 500 milliseconds since the page has loaded.
+        /// Asserts that passing a Javascript delay delays the specified number of milliseconds.
         /// </summary>
+        /// <param name="javascriptDelayInMilliseconds">The javascript delay in milliseconds.</param>
+        /// <param name="expectedMinJavascriptDelayInMilliseconds">The expected minimum javascript delay in milliseconds.</param>
         [TestMethod]
-        public void ThreeThousand_JavascriptCountedMillisecondsOnPageLoad_IsGreaterThan500()
-        {
-            RunResult runResult = this.Run(3000);
-            int milliseconds = runResult.Milliseconds;
-            Assert.IsTrue(milliseconds > 500, runResult.PageText);
-        }
-
-        private RunResult Run(int? javascriptDelay = null)
+        [DataRow(null, 100, DisplayName = "Default")]
+        [DataRow("3000", 500, DisplayName = "3000")]
+        public void JavascriptDelayTest(
+            string javascriptDelayInMilliseconds,
+            double expectedMinJavascriptDelayInMilliseconds)
         {
             string htmlFilePath = "JavascriptCounter.html";
             HtmlToPdfRunner runner = new HtmlToPdfRunner();
@@ -49,9 +76,9 @@ namespace HtmlToPdfTests
             {
                 string commandLine = string.Empty;
 
-                if (javascriptDelay.HasValue)
+                if (!string.IsNullOrEmpty(javascriptDelayInMilliseconds))
                 {
-                    commandLine = $"--javascript-delay {javascriptDelay} ";
+                    commandLine = $"--javascript-delay {javascriptDelayInMilliseconds} ";
                 }
 
                 commandLine += $"\"{htmlFilePath}\" \"{pdfFile.FilePath}\"";
@@ -63,20 +90,10 @@ namespace HtmlToPdfTests
                     Assert.AreEqual(1, pdfDocument.NumberOfPages);
                     Page page = pdfDocument.GetPage(1);
 
-                    return new RunResult
-                    {
-                        PageText = page.Text,
-                        Milliseconds = int.Parse(page.Text)
-                    };
+                    int milliseconds = int.Parse(page.Text);
+                    Assert.IsTrue(milliseconds > expectedMinJavascriptDelayInMilliseconds, page.Text);
                 }
             }
-        }
-
-        private class RunResult
-        {
-            public string PageText { get; set; }
-
-            public int Milliseconds { get; set; }
         }
     }
 }

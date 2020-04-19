@@ -56,7 +56,9 @@ namespace HtmlToPdfTests
                         "Parameter name: invalid"
                     };
 
-                    string expectedOutput = HelpTextGenerator.Generate(string.Join(Environment.NewLine, expectedErrorMessage));
+                    string expectedOutput = HelpTextGenerator.Generate(
+                        "A required value not bound to option name is missing.",
+                        string.Join(Environment.NewLine, expectedErrorMessage));
                     Assert.IsTrue(string.IsNullOrEmpty(result.StandardOutput), result.StandardOutput);
                     Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput), result.StandardError);
                 }
