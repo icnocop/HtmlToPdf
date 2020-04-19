@@ -1,6 +1,6 @@
 ﻿// <copyright file="TopMarginTests.cs" company="HtmlToPdf">
 // Copyright (c) HtmlToPdf. All rights reserved.
-// </copyrigh
+// </copyright>
 
 namespace HtmlToPdfTests
 {
