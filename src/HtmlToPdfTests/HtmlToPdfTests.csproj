@@ -113,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackgroundTests.cs" />
+    <Compile Include="HelpTextGenerator.cs" />
     <Compile Include="TopMarginTests.cs" />
     <Compile Include="RightMarginTests.cs" />
     <Compile Include="LeftMarginTests.cs" />

@@ -7,6 +7,7 @@ namespace HtmlToPdf
     using System.IO;
     using System.Threading.Tasks;
     using PuppeteerSharp;
+    using PuppeteerSharp.Media;
 
     /// <summary>
     /// PDF Printer
@@ -70,11 +71,20 @@ namespace HtmlToPdf
 
                 await page.WaitForTimeoutAsync(options.JavascriptDelayInMilliseconds);
 
+                // the paper format takes priority over width and height
+                // if a page width or height is set, unset the paper format
+                PaperFormat paperFormat = options.PaperFormat;
+                if ((!string.IsNullOrEmpty(options.Width))
+                    || (!string.IsNullOrEmpty(options.Height)))
+                {
+                    paperFormat = null;
+                }
+
                 PdfOptions pdfOptions = new PdfOptions
                 {
                     DisplayHeaderFooter = options.DisplayHeaderFooter,
                     FooterTemplate = options.FooterTemplate,
-                    Format = options.PaperFormat, // takes priority over width and height
+                    Format = paperFormat,
                     HeaderTemplate = string.Empty,
                     Height = options.Height,
                     Landscape = options.Landscape,

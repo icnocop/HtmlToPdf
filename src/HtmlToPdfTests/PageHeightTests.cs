@@ -22,10 +22,12 @@ namespace HtmlToPdfTests
         /// Asserts that passing a page height value sets the page height.
         /// </summary>
         /// <param name="height">The height.</param>
+        /// <param name="expectedWidth">The expected width.</param>
         /// <param name="expectedHeight">The expected height.</param>
         [TestMethod]
-        [DataRow(null, 841, DisplayName = "Default")]
-        public void PageHeightTest(int? height, int expectedHeight)
+        [DataRow(null, 594, 841, DisplayName = "Default")]
+        [DataRow("12in", 612, 864, DisplayName = "12in")]
+        public void PageHeightTest(string height, int expectedWidth, int expectedHeight)
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner();
 
@@ -44,9 +46,9 @@ namespace HtmlToPdfTests
                 {
                     string commandLine = string.Empty;
 
-                    if (height.HasValue)
+                    if (!string.IsNullOrEmpty(height))
                     {
-                        commandLine += $"--page-height {height.Value} ";
+                        commandLine += $"--page-height {height} ";
                     }
 
                     commandLine += $"\"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
@@ -57,6 +59,7 @@ namespace HtmlToPdfTests
                     {
                         Assert.AreEqual(1, pdfDocument.NumberOfPages);
                         Page page = pdfDocument.GetPage(1);
+                        Assert.AreEqual(expectedWidth, page.Width);
                         Assert.AreEqual(expectedHeight, page.Height);
                     }
                 }

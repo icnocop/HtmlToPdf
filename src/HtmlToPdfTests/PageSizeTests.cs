@@ -4,6 +4,7 @@
 
 namespace HtmlToPdfTests
 {
+    using System;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using UglyToad.PdfPig.Content;
 
@@ -17,6 +18,50 @@ namespace HtmlToPdfTests
         /// Gets or sets the test context.
         /// </summary>
         public TestContext TestContext { get; set; }
+
+        /// <summary>
+        /// Asserts that passing an invalid page size returns an error.
+        /// </summary>
+        [TestMethod]
+        public void InvalidPageSize_ReturnsError()
+        {
+            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+
+            string html = @"
+<html>
+  <head>
+  </head>
+  <body>
+   Test Page
+  </body>
+</html>";
+
+            using (TempHtmlFile htmlFile = new TempHtmlFile(html))
+            {
+                using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
+                {
+                    string[] commandLine = new[]
+                    {
+                        $"--page-size invalid",
+                        $"\"{htmlFile.FilePath}\"",
+                        $"\"{pdfFile.FilePath}\""
+                    };
+
+                    HtmlToPdfRunResult result = runner.Run(string.Join(" ", commandLine));
+                    Assert.AreEqual(1, result.ExitCode);
+
+                    string[] expectedErrorMessage = new[]
+                    {
+                        "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values.",
+                        "Parameter name: invalid"
+                    };
+
+                    string expectedOutput = HelpTextGenerator.Generate(string.Join(Environment.NewLine, expectedErrorMessage));
+                    Assert.IsTrue(string.IsNullOrEmpty(result.StandardOutput), result.StandardOutput);
+                    Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput), result.StandardError);
+                }
+            }
+        }
 
         /// <summary>
         /// Asserts that passing a page size value sets the page size.

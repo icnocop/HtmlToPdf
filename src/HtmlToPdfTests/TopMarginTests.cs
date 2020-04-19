@@ -1,6 +1,6 @@
-﻿// <copytop file="TopMarginTests.cs" company="HtmlToPdf">
-// Copytop (c) HtmlToPdf. All tops reserved.
-// </copytop>
+﻿// <copyright file="TopMarginTests.cs" company="HtmlToPdf">
+// Copyright (c) HtmlToPdf. All rights reserved.
+// </copyrigh
 
 namespace HtmlToPdfTests
 {
