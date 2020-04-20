@@ -126,7 +126,9 @@ namespace HtmlToPdf
                 encoding = Encoding.GetEncoding(options.Encoding);
             }
 
-            List<string> inputs = options.Inputs.ToList();
+            List<string> inputs = options.Inputs
+                .Select(x => x.ToLower().Trim('"').Replace('/', Path.DirectorySeparatorChar))
+                .ToList();
 
             if ((args.Length > 0) && (args.Last() == "-"))
             {
@@ -154,7 +156,7 @@ namespace HtmlToPdf
             }
             else
             {
-                outputFilePath = inputs.Last().Trim('"');
+                outputFilePath = inputs.Last();
             }
 
             inputs.RemoveAt(inputs.Count - 1);
@@ -242,6 +244,7 @@ namespace HtmlToPdf
                             PdfFilePath = pdfFile
                         };
 
+                        // Logger.LogError($"Adding '{input}'");
                         if (!htmlToPdfFiles.TryAdd(input, htmlToPdfFile))
                         {
                             throw new Exception($"Failed to add '{input}'.");

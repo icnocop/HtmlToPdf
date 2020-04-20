@@ -84,11 +84,11 @@ namespace HtmlToPdf
                                     continue;
                                 }
 
-                                string htmlFilePath = uri.LocalPath;
+                                string htmlFilePath = uri.LocalPath.ToLower();
 
                                 if (!htmlToPdfFiles.ContainsKey(htmlFilePath))
                                 {
-                                    Logger.LogError($"WARN: Could not find '{htmlFilePath}'.");
+                                    // Logger.LogError($"WARN: Could not find '{htmlFilePath}'. Referenced in '{pdfFilePath}' on page {i}.");
                                     continue;
                                 }
 

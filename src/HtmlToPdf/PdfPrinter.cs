@@ -35,8 +35,6 @@ namespace HtmlToPdf
             string input,
             HtmlToPdfOptions options)
         {
-            input = input.Trim('"');
-
             if (!File.Exists(input))
             {
                 throw new FileNotFoundException($"File not found: {input}", input);
