@@ -205,7 +205,6 @@ namespace HtmlToPdf
 
                         HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
                         {
-                            HtmlFilePath = cover,
                             PdfFilePath = pdfFile
                         };
 
@@ -240,7 +239,6 @@ namespace HtmlToPdf
 
                         HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
                         {
-                            HtmlFilePath = input,
                             PdfFilePath = pdfFile
                         };
 

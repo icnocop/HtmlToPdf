@@ -10,11 +10,6 @@ namespace HtmlToPdf
     internal class HtmlToPdfFile
     {
         /// <summary>
-        /// Gets or sets the HTML file path.
-        /// </summary>
-        public string HtmlFilePath { get; set; }
-
-        /// <summary>
         /// Gets or sets the PDF file path.
         /// </summary>
         public string PdfFilePath { get; set; }
