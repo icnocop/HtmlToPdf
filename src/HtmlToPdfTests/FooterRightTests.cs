@@ -57,5 +57,61 @@ namespace HtmlToPdfTests
                 }
             }
         }
+
+        /// <summary>
+        /// Asserts that passing footer-right with a page placeholder inserts a page number in the footer in multiple pages.
+        /// </summary>
+        [TestMethod]
+        public void FooterRight_WithPage_InsertsPageNumberInFooterInMultiplePages()
+        {
+            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+
+            string html1 = @"
+<html>
+  <head>
+  </head>
+  <body>
+   Page 1
+  </body>
+</html>";
+
+            string html2 = @"
+<html>
+  <head>
+  </head>
+  <body>
+   Page 2
+  </body>
+</html>";
+
+            using (TempHtmlFile htmlFile1 = new TempHtmlFile(html1))
+            {
+                using (TempHtmlFile htmlFile2 = new TempHtmlFile(html2))
+                {
+                    using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
+                    {
+                        string commandLine = $"--footer-right [page] \"{htmlFile1.FilePath}\" \"{htmlFile2.FilePath}\" \"{pdfFile.FilePath}\"";
+                        HtmlToPdfRunResult result = runner.Run(commandLine);
+                        Assert.AreEqual(0, result.ExitCode, result.Output);
+
+                        using (var pdfDocument = UglyToad.PdfPig.PdfDocument.Open(pdfFile.FilePath))
+                        {
+                            Assert.AreEqual(2, pdfDocument.NumberOfPages);
+                            Page page1 = pdfDocument.GetPage(1);
+                            IEnumerable<Word> words = page1.GetWords();
+                            Assert.AreEqual(3, words.Count());
+                            Assert.AreEqual("Page 1", $"{words.ElementAt(0)} {words.ElementAt(1)}");
+                            Assert.AreEqual("1", words.Last().Text);
+
+                            Page page2 = pdfDocument.GetPage(2);
+                            words = page2.GetWords();
+                            Assert.AreEqual(3, words.Count());
+                            Assert.AreEqual("Page 2", $"{words.ElementAt(0)} {words.ElementAt(1)}");
+                            Assert.AreEqual("2", words.Last().Text);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

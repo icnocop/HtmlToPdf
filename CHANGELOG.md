@@ -1,5 +1,17 @@
 # Change Log
 
+__v0.0.427.1__ (2020-04-27)
+
+ - Fixed page numbers with multiple HTML file inputs
+
+__v0.0.420.5__ (2020-04-20)
+
+ - Fixed issues with directory separator and case sensitivity
+
+__v0.0.419.0__ (2020-04-19)
+
+ - Fixed issue with setting the page width and height
+
 __v0.0.416.0__ (2020-04-16)
 
  - Fixed issues with the background command line options

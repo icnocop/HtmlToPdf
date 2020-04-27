@@ -81,6 +81,7 @@ namespace HtmlToPdfTests
                 }
             }
 
+            Console.WriteLine(runResult.Output);
             return runResult;
         }
     }

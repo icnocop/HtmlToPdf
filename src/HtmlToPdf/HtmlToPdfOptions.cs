@@ -74,5 +74,15 @@ namespace HtmlToPdf
                 return !string.IsNullOrEmpty(this.FooterTemplate);
             }
         }
+
+        /// <summary>
+        /// Gets or sets the page offset.
+        /// </summary>
+        public int PageOffset { get; set; }
+
+        /// <summary>
+        /// Gets or sets the number of pages.
+        /// </summary>
+        public int NumberOfPages { get; set; }
     }
 }

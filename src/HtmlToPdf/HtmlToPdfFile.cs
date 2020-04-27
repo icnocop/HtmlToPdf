@@ -15,6 +15,11 @@ namespace HtmlToPdf
         public string PdfFilePath { get; set; }
 
         /// <summary>
+        /// Gets or sets the number of pages.
+        /// </summary>
+        public int NumberOfPages { get; set; }
+
+        /// <summary>
         /// Gets or sets the output PDF file page number.
         /// </summary>
         public int OutputPdfFilePageNumber { get; set; }

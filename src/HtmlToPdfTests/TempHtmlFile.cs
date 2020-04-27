@@ -5,6 +5,7 @@
 namespace HtmlToPdfTests
 {
     using System.IO;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
     /// Temporary HTML file
@@ -13,11 +14,12 @@ namespace HtmlToPdfTests
     public class TempHtmlFile : TempFile
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TempHtmlFile"/> class.
+        /// Initializes a new instance of the <see cref="TempHtmlFile" /> class.
         /// </summary>
         /// <param name="html">The HTML.</param>
-        public TempHtmlFile(string html = null)
-            : base(".html")
+        /// <param name="testContext">The test context.</param>
+        public TempHtmlFile(string html = null, TestContext testContext = null)
+            : base(".html", testContext)
         {
             if (html != null)
             {

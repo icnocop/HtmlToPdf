@@ -6,6 +6,7 @@ namespace HtmlToPdfTests
 {
     using System;
     using System.IO;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
     /// Temporary file
@@ -13,12 +14,17 @@ namespace HtmlToPdfTests
     /// <seealso cref="System.IDisposable" />
     public class TempFile : IDisposable
     {
+        private readonly TestContext testContext;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="TempFile"/> class.
+        /// Initializes a new instance of the <see cref="TempFile" /> class.
         /// </summary>
         /// <param name="fileExtension">The file extension.</param>
-        public TempFile(string fileExtension)
+        /// <param name="testContext">The test context.</param>
+        public TempFile(string fileExtension, TestContext testContext)
         {
+            this.testContext = testContext;
+
             string tempFilePath = Path.GetTempFileName();
             string newFilePath = tempFilePath.Replace(".tmp", fileExtension);
             File.Move(tempFilePath, newFilePath);
@@ -38,6 +44,13 @@ namespace HtmlToPdfTests
         /// </summary>
         public virtual void Dispose()
         {
+            if (this.testContext != null)
+            {
+                string pdfFilePath = Path.Combine(Directory.GetCurrentDirectory(), Path.GetFileName(this.FilePath));
+                File.Copy(this.FilePath, pdfFilePath, true);
+                this.testContext.AddResultFile(pdfFilePath);
+            }
+
             if (File.Exists(this.FilePath))
             {
                 File.Delete(this.FilePath);

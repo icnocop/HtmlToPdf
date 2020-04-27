@@ -6,11 +6,9 @@ namespace HtmlToPdfTests
 {
     using System.Collections.Generic;
     using System.Linq;
+    using iText.Kernel.Pdf;
+    using iText.Kernel.Pdf.Annot;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using UglyToad.PdfPig.Annotations;
-    using UglyToad.PdfPig.Content;
-    using UglyToad.PdfPig.Core;
-    using UglyToad.PdfPig.Tokens;
 
     /// <summary>
     /// Update Links Tests
@@ -60,24 +58,49 @@ namespace HtmlToPdfTests
                         HtmlToPdfRunResult result = runner.Run(commandLine);
                         Assert.AreEqual(0, result.ExitCode, result.Output);
 
-                        using (var pdfDocument = UglyToad.PdfPig.PdfDocument.Open(pdfFile.FilePath))
+                        using (PdfReader pdfReader = new PdfReader(pdfFile.FilePath))
                         {
-                            Assert.AreEqual(2, pdfDocument.NumberOfPages);
-                            Page page1 = pdfDocument.GetPage(1);
+                            using (PdfDocument pdfDocument = new PdfDocument(pdfReader))
+                            {
+                                Assert.AreEqual(2, pdfDocument.GetNumberOfPages());
 
-                            // get link
-                            IEnumerable<Annotation> annotations = page1.ExperimentalAccess.GetAnnotations();
-                            Assert.AreEqual(1, annotations.Count());
-                            Annotation annotation = annotations.ElementAt(0);
-                            Assert.AreEqual(AnnotationType.Link, annotation.Type);
+                                // get the first page
+                                PdfPage pdfPage = pdfDocument.GetPage(1);
 
-                            // get indirect reference
-                            Assert.IsTrue(annotation.AnnotationDictionary.TryGet(NameToken.A, out IndirectReferenceToken indirectReferenceToken));
-                            IndirectReference indirectReference = indirectReferenceToken.Data;
+                                // get link annotations
+                                List<PdfLinkAnnotation> linkAnnotations = pdfPage.GetAnnotations().OfType<PdfLinkAnnotation>().ToList();
+                                Assert.AreEqual(1, linkAnnotations.Count);
 
-                            // get GoTo
-                            long value = pdfDocument.Structure.CrossReferenceTable.ObjectOffsets[indirectReference];
-                            Assert.AreEqual(1872, value);
+                                // get the first link annotation
+                                PdfLinkAnnotation linkAnnotation = linkAnnotations.ElementAt(0);
+                                Assert.IsNotNull(linkAnnotation);
+
+                                // get action
+                                PdfDictionary action = linkAnnotation.GetAction();
+                                Assert.IsNotNull(action);
+
+                                // get GoTo sub-type
+                                PdfName s = action.GetAsName(PdfName.S);
+                                Assert.AreEqual(PdfName.GoTo, s);
+
+                                // get destination
+                                PdfArray destination = action.GetAsArray(PdfName.D);
+                                PdfIndirectReference destinationPageReference = destination.GetAsDictionary(0).GetIndirectReference();
+                                PdfName zoom = destination.GetAsName(1);
+                                PdfNumber pageOffset = destination.GetAsNumber(2);
+
+                                // get expected values
+                                PdfPage pdfPage2 = pdfDocument.GetPage(2);
+                                PdfDictionary page2Dictionary = pdfPage2.GetPdfObject();
+                                PdfIndirectReference expectedPageReference = page2Dictionary.GetIndirectReference();
+                                PdfName expectedZoom = PdfName.FitH;
+                                float expectedPageOffset = pdfPage2.GetPageSize().GetTop();
+
+                                // assert
+                                Assert.AreEqual(expectedPageReference, destinationPageReference);
+                                Assert.AreEqual(expectedZoom, zoom);
+                                Assert.AreEqual(expectedPageOffset, pageOffset.FloatValue());
+                            }
                         }
                     }
                 }
