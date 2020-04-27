@@ -1,6 +1,6 @@
 # Change Log
 
-__v0.0.427.1__ (2020-04-27)
+__v0.0.427.0__ (2020-04-27)
 
  - Fixed page numbers with multiple HTML file inputs
 
