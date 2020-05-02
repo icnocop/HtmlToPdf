@@ -92,16 +92,18 @@ namespace HtmlToPdf
             AddTagOptions addTagOptions = null;
             if (!string.IsNullOrEmpty(options.StyleSheet))
             {
-                if (!File.Exists(options.StyleSheet))
+                if (File.Exists(options.StyleSheet))
                 {
-                    throw new FileNotFoundException($"File not found: {options.StyleSheet}");
+                    addTagOptions = new AddTagOptions
+                    {
+                        Type = "text/css",
+                        Path = options.StyleSheet
+                    };
                 }
-
-                addTagOptions = new AddTagOptions
+                else
                 {
-                    Type = "text/css",
-                    Path = options.StyleSheet
-                };
+                    Logger.LogWarning($"File not found: {options.StyleSheet}");
+                }
             }
 
             // the paper format takes priority over width and height

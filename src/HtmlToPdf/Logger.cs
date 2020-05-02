@@ -26,7 +26,16 @@ namespace HtmlToPdf
         /// <param name="message">The message.</param>
         internal static void LogError(string message)
         {
-            Console.Error.WriteLine(message);
+            Console.Error.WriteLine($"Error: {message}");
+        }
+
+        /// <summary>
+        /// Logs the warning.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        internal static void LogWarning(string message)
+        {
+            Console.Error.WriteLine($"Warning: {message}");
         }
     }
 }
