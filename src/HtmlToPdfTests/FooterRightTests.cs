@@ -52,7 +52,7 @@ namespace HtmlToPdfTests
                         IEnumerable<Word> words = page.GetWords();
                         Assert.AreEqual(3, words.Count());
                         Assert.AreEqual("Test Page", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-                        Assert.AreEqual("1", words.Last().Text);
+                        Assert.AreEqual("1", words.Last().Text); // the page number
                     }
                 }
             }
@@ -101,13 +101,13 @@ namespace HtmlToPdfTests
                             IEnumerable<Word> words = page1.GetWords();
                             Assert.AreEqual(3, words.Count());
                             Assert.AreEqual("Page 1", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-                            Assert.AreEqual("1", words.Last().Text);
+                            Assert.AreEqual("1", words.Last().Text); // the page number
 
                             Page page2 = pdfDocument.GetPage(2);
                             words = page2.GetWords();
                             Assert.AreEqual(3, words.Count());
                             Assert.AreEqual("Page 2", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-                            Assert.AreEqual("2", words.Last().Text);
+                            Assert.AreEqual("2", words.Last().Text); // the page number
                         }
                     }
                 }

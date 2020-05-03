@@ -1,8 +1,16 @@
-if exist wkhtmltopdf.exe del wkhtmltopdf.exe
-ren HtmlToPdf.exe wkhtmltopdf.exe
-if exist wkhtmltopdf.exe.config del wkhtmltopdf.exe.config
-ren HtmlToPdf.exe.config wkhtmltopdf.exe.config
-if exist wkhtmltopdf.pdb del wkhtmltopdf.pdb
-ren HtmlToPdf.pdb wkhtmltopdf.pdb
-if exist wkhtmltopdf.xml del wkhtmltopdf.xml
-ren HtmlToPdf.xml wkhtmltopdf.xml
+@echo off
+if exist %~dp0wkhtmltopdf.exe del %~dp0wkhtmltopdf.exe
+if %errorlevel% neq 0 exit /b %errorlevel%
+ren %~dp0HtmlToPdf.exe wkhtmltopdf.exe
+if %errorlevel% neq 0 exit /b %errorlevel%
+if exist %~dp0wkhtmltopdf.exe.config del %~dp0wkhtmltopdf.exe.config
+if %errorlevel% neq 0 exit /b %errorlevel%
+ren %~dp0HtmlToPdf.exe.config wkhtmltopdf.exe.config
+if %errorlevel% neq 0 exit /b %errorlevel%
+if exist %~dp0wkhtmltopdf.pdb del %~dp0wkhtmltopdf.pdb
+if %errorlevel% neq 0 exit /b %errorlevel%
+ren %~dp0HtmlToPdf.pdb wkhtmltopdf.pdb
+if %errorlevel% neq 0 exit /b %errorlevel%
+if exist %~dp0wkhtmltopdf.xml del %~dp0wkhtmltopdf.xml
+if %errorlevel% neq 0 exit /b %errorlevel%
+ren %~dp0HtmlToPdf.xml wkhtmltopdf.xml

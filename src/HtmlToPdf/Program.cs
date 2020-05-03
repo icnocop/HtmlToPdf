@@ -140,7 +140,7 @@ namespace HtmlToPdf
                 throw new ApplicationException($"At least one input and one output must be specified.");
             }
 
-            ConcurrentDictionary<string, HtmlToPdfFile> htmlToPdfFiles = new ConcurrentDictionary<string, HtmlToPdfFile>();
+            ConcurrentBag<HtmlToPdfFile> htmlToPdfFiles = new ConcurrentBag<HtmlToPdfFile>();
 
             foreach (string input in inputs)
             {
@@ -199,21 +199,23 @@ namespace HtmlToPdf
                         int index = inputs.IndexOf("cover");
                         string cover = inputs[index + 1];
                         inputs.RemoveAt(index); // remove "cover"
-                        inputs.RemoveAt(index); // remove cover
 
                         string pdfFile = await pdfPrinter.PrintAsPdfAsync(
                             cover,
                             htmlToPdfOptions);
 
+                        int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
+
                         HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
                         {
-                            PdfFilePath = pdfFile
+                            Input = cover,
+                            Index = inputs.IndexOf(cover),
+                            PdfFilePath = pdfFile,
+                            PrintFooter = false,
+                            NumberOfPages = numberOfPages
                         };
 
-                        if (!htmlToPdfFiles.TryAdd(cover, htmlToPdfFile))
-                        {
-                            throw new Exception($"Failed to add '{cover}'.");
-                        }
+                        htmlToPdfFiles.Add(htmlToPdfFile);
 
                         coverAdded = true;
                     }
@@ -222,7 +224,7 @@ namespace HtmlToPdf
                     htmlToPdfOptions.MarginOptions = marginOptions;
                     htmlToPdfOptions.FooterTemplate = options.FooterTemplate;
 
-                    var tasks = inputs.Select(async input =>
+                    var tasks = inputs.Where(x => !htmlToPdfFiles.Any(y => y.Input == x)).Select(async input =>
                     {
                         // print as pdf
                         string pdfFile = await pdfPrinter.PrintAsPdfAsync(
@@ -233,39 +235,39 @@ namespace HtmlToPdf
 
                         HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
                         {
+                            Input = input,
+                            Index = inputs.IndexOf(input),
                             PdfFilePath = pdfFile,
+                            PrintFooter = true,
                             NumberOfPages = numberOfPages
                         };
 
                         // Logger.LogError($"Adding '{input}'");
-                        if (!htmlToPdfFiles.TryAdd(input, htmlToPdfFile))
-                        {
-                            throw new Exception($"Failed to add '{input}'.");
-                        }
+                        htmlToPdfFiles.Add(htmlToPdfFile);
                     });
 
                     await Task.WhenAll(tasks);
 
                     // set page numbers for each HTML file
                     int currentPageNumber = 1;
-                    foreach (string input in inputs)
+                    foreach (HtmlToPdfFile htmlToPdfFile in htmlToPdfFiles.OrderBy(x => x.Index))
                     {
-                        HtmlToPdfFile htmlToPdfFile = htmlToPdfFiles[input];
-
-                        // delete previously created PDF file
-                        File.Delete(htmlToPdfFile.PdfFilePath);
-
                         htmlToPdfFile.OutputPdfFilePageNumber = currentPageNumber;
-
                         htmlToPdfOptions.PageOffset = currentPageNumber;
                         htmlToPdfOptions.NumberOfPages = htmlToPdfFile.NumberOfPages;
 
-                        // print as pdf
-                        string pdfFile = await pdfPrinter.PrintAsPdfAsync(
-                            input,
-                            htmlToPdfOptions);
+                        if (htmlToPdfFile.PrintFooter)
+                        {
+                            // delete previously created PDF file
+                            File.Delete(htmlToPdfFile.PdfFilePath);
 
-                        htmlToPdfFile.PdfFilePath = pdfFile;
+                            // print as pdf
+                            string pdfFile = await pdfPrinter.PrintAsPdfAsync(
+                                htmlToPdfFile.Input,
+                                htmlToPdfOptions);
+
+                            htmlToPdfFile.PdfFilePath = pdfFile;
+                        }
 
                         currentPageNumber += htmlToPdfOptions.NumberOfPages;
                     }
@@ -277,7 +279,7 @@ namespace HtmlToPdf
             }
 
             // merge pdf files
-            byte[] mergedBytes = PdfMerger.Merge(htmlToPdfFiles.Values
+            byte[] mergedBytes = PdfMerger.Merge(htmlToPdfFiles
                 .OrderBy(x => x.OutputPdfFilePageNumber)
                 .Select(x => x.PdfFilePath));
 

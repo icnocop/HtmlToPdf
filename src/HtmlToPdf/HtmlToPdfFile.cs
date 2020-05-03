@@ -10,6 +10,16 @@ namespace HtmlToPdf
     internal class HtmlToPdfFile
     {
         /// <summary>
+        /// Gets or sets the input.
+        /// </summary>
+        public string Input { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index.
+        /// </summary>
+        public int Index { get; set; }
+
+        /// <summary>
         /// Gets or sets the PDF file path.
         /// </summary>
         public string PdfFilePath { get; set; }
@@ -23,5 +33,10 @@ namespace HtmlToPdf
         /// Gets or sets the output PDF file page number.
         /// </summary>
         public int OutputPdfFilePageNumber { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to print the footer.
+        /// </summary>
+        public bool PrintFooter { get; set; }
     }
 }

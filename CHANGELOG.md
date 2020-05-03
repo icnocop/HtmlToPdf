@@ -1,5 +1,10 @@
 # Change Log
 
+__v0.0.503.0__ (2020-05-03)
+
+ - Excluded footer on cover page
+ - Log warning if the user style sheet file doesn't exist instead of throwing an exception
+
 __v0.0.427.0__ (2020-04-27)
 
  - Fixed page numbers with multiple HTML file inputs

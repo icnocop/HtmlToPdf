@@ -40,7 +40,7 @@ namespace HtmlToPdf
         /// </summary>
         /// <param name="pdfFilePath">The PDF file path.</param>
         /// <param name="htmlToPdfFiles">The HTML to PDF files.</param>
-        internal static void UpdateLinks(string pdfFilePath, ConcurrentDictionary<string, HtmlToPdfFile> htmlToPdfFiles)
+        internal static void UpdateLinks(string pdfFilePath, IReadOnlyCollection<HtmlToPdfFile> htmlToPdfFiles)
         {
             string tempFilePath = Path.GetTempFileName();
 
@@ -86,13 +86,13 @@ namespace HtmlToPdf
 
                                 string htmlFilePath = uri.LocalPath.ToLower();
 
-                                if (!htmlToPdfFiles.ContainsKey(htmlFilePath))
+                                if (!htmlToPdfFiles.Any(x => x.Input == htmlFilePath))
                                 {
                                     // Logger.LogError($"WARN: Could not find '{htmlFilePath}'. Referenced in '{pdfFilePath}' on page {i}.");
                                     continue;
                                 }
 
-                                HtmlToPdfFile linkedHtmlToPdfFile = htmlToPdfFiles[htmlFilePath];
+                                HtmlToPdfFile linkedHtmlToPdfFile = htmlToPdfFiles.Single(x => x.Input == htmlFilePath);
                                 int linkedPageNumber = linkedHtmlToPdfFile.OutputPdfFilePageNumber;
 
                                 // please go to http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html to find the detail.
