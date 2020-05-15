@@ -41,7 +41,8 @@ namespace HtmlToPdfTests
                 {
                     string[] commandLine = new[]
                     {
-                        $"--javascript-delay",
+                        "--log-level Error",
+                        "--javascript-delay",
                         $"\"{htmlFile.FilePath}\"",
                         $"\"{pdfFile.FilePath}\""
                     };

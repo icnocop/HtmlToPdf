@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.515.0__ (2020-05-15)
+
+ - Added support for the "log-level" command line option
+
 __v0.0.503.0__ (2020-05-03)
 
  - Excluded footer on cover page

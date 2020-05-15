@@ -7,7 +7,6 @@ namespace HtmlToPdf
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -31,6 +30,8 @@ namespace HtmlToPdf
         /// <returns>The exit code.</returns>
         public static int Main(string[] args)
         {
+            Logger logger = null;
+
             try
             {
                 // System.Diagnostics.Debugger.Launch();
@@ -39,19 +40,35 @@ namespace HtmlToPdf
                 var parser = new Parser(config =>
                 {
                     config.HelpWriter = null;
+                    config.CaseInsensitiveEnumValues = true;
                 });
 
-                var task = ParseAndRunOptions(parser, args);
+                // create logger
+                var parserResult = parser.ParseArguments<CommandLineOptions>(args);
+                LogLevel logLevel = parserResult.MapResult(
+                    (CommandLineOptions options) =>
+                    {
+                        return options.LoggerLevel;
+                    },
+                    error =>
+                    {
+                        return LogLevel.Info;
+                    });
+
+                logger = new Logger(logLevel);
+
+                // do work
+                var task = ParseAndRunOptions(parser, args, logger);
                 return task.Result;
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex);
+                logger?.LogError(ex);
                 return 1;
             }
         }
 
-        private static async Task<int> ParseAndRunOptions(Parser parser, string[] args)
+        private static async Task<int> ParseAndRunOptions(Parser parser, string[] args, Logger logger)
         {
             var parserResult = parser.ParseArguments<CommandLineOptions>(args);
             var task = parserResult.MapResult(
@@ -59,7 +76,7 @@ namespace HtmlToPdf
                 {
                     try
                     {
-                        Task<int> runTask = RunAsync(parser, args, options);
+                        Task<int> runTask = RunAsync(parser, args, options, logger);
                         runTask.Wait();
                         return runTask;
                     }
@@ -72,25 +89,25 @@ namespace HtmlToPdf
                             errorMessages.Add(innerException.ToString());
                         }
 
-                        Logger.LogError(parserResult.GetAutoBuildHelpText());
-                        Logger.LogError(string.Join(Environment.NewLine, errorMessages));
+                        logger.LogError(parserResult.GetAutoBuildHelpText());
+                        logger.LogError(string.Join(Environment.NewLine, errorMessages));
                         return Error();
                     }
                 },
                 errs =>
                 {
-                    DisplayHelpText(parserResult);
+                    DisplayHelpText(parserResult, logger);
                     return Error();
                 });
 
             return await task;
         }
 
-        private static void DisplayHelpText<T>(ParserResult<T> parserResult)
+        private static void DisplayHelpText<T>(ParserResult<T> parserResult, Logger logger)
         {
             HelpText helpText = HelpText.AutoBuild(parserResult);
             helpText.AddOptions(parserResult);
-            Logger.LogError(helpText);
+            logger.LogError(helpText);
         }
 
         private static Task<int> Error()
@@ -100,24 +117,24 @@ namespace HtmlToPdf
             return exitTask;
         }
 
-        private static async Task<int> RunAsync(Parser parser, string[] args, CommandLineOptions options)
+        private static async Task<int> RunAsync(Parser parser, string[] args, CommandLineOptions options, Logger logger)
         {
             if (options.ReadArgsFromStdin)
             {
-                Trace.WriteLine("Reading arguments from stdin...");
+                logger.LogDebug("Reading arguments from stdin...");
 
                 string stdin = Console.In.ReadToEnd();
 
-                Trace.WriteLine($"Arguments from stdin: {stdin}");
+                logger.LogDebug($"Arguments from stdin: {stdin}");
 
                 options.ReadArgsFromStdin = false;
                 string commandLine = parser.FormatCommandLine(options);
 
                 string newCommandLine = $"{commandLine} {stdin}";
-                Trace.WriteLine($"Running with arguments: {newCommandLine}");
+                logger.LogDebug($"Running with arguments: {newCommandLine}");
 
                 string[] newArgs = ParseArguments(newCommandLine);
-                return await ParseAndRunOptions(parser, newArgs);
+                return await ParseAndRunOptions(parser, newArgs, logger);
             }
 
             Encoding encoding = Encoding.Default;
@@ -144,7 +161,7 @@ namespace HtmlToPdf
 
             foreach (string input in inputs)
             {
-                Trace.WriteLine(input);
+                logger.LogDebug(input);
             }
 
             bool stdout = false;
@@ -163,11 +180,12 @@ namespace HtmlToPdf
 
             options.UserStyleSheet = options.UserStyleSheet?.Trim('"');
 
-            BrowserDownloader.DownloadBrowser();
+            BrowserDownloader.DownloadBrowser(logger);
 
             using (Browser browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
-                Headless = true
+                Headless = true,
+                Devtools = false
             }))
             {
                 MarginOptions marginOptions = new MarginOptions
@@ -202,9 +220,12 @@ namespace HtmlToPdf
 
                         string pdfFile = await pdfPrinter.PrintAsPdfAsync(
                             cover,
-                            htmlToPdfOptions);
+                            htmlToPdfOptions,
+                            logger);
 
                         int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
+
+                        logger.LogDebug($"Cover file \"{cover}\" contains number of PDF pages: {numberOfPages}.");
 
                         HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
                         {
@@ -229,9 +250,12 @@ namespace HtmlToPdf
                         // print as pdf
                         string pdfFile = await pdfPrinter.PrintAsPdfAsync(
                             input,
-                            htmlToPdfOptions);
+                            htmlToPdfOptions,
+                            logger);
 
                         int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
+
+                        logger.LogDebug($"\"{input}\" contains number of PDF pages: {numberOfPages}.");
 
                         HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
                         {
@@ -242,7 +266,6 @@ namespace HtmlToPdf
                             NumberOfPages = numberOfPages
                         };
 
-                        // Logger.LogError($"Adding '{input}'");
                         htmlToPdfFiles.Add(htmlToPdfFile);
                     });
 
@@ -264,7 +287,8 @@ namespace HtmlToPdf
                             // print as pdf
                             string pdfFile = await pdfPrinter.PrintAsPdfAsync(
                                 htmlToPdfFile.Input,
-                                htmlToPdfOptions);
+                                htmlToPdfOptions,
+                                logger);
 
                             htmlToPdfFile.PdfFilePath = pdfFile;
                         }
@@ -292,7 +316,7 @@ namespace HtmlToPdf
             File.WriteAllBytes(tempOutputFilePath, mergedBytes);
 
             // update external file links to internal document links
-            PdfDocument.UpdateLinks(tempOutputFilePath, htmlToPdfFiles);
+            PdfDocument.UpdateLinks(tempOutputFilePath, htmlToPdfFiles, logger);
 
             if (stdout)
             {
@@ -300,6 +324,20 @@ namespace HtmlToPdf
                 Console.Write(Encoding.Default.GetString(outputPdfFileBytes));
                 File.Delete(tempOutputFilePath);
             }
+
+            // delete temporary PDF files
+            var deleteTempFileTasks = htmlToPdfFiles.Where(x => !string.IsNullOrEmpty(x.PdfFilePath)).Select(async input =>
+            {
+                await Task.Factory.StartNew(() =>
+                {
+                    if (File.Exists(input.PdfFilePath))
+                    {
+                        File.Delete(input.PdfFilePath);
+                    }
+                });
+            });
+
+            await Task.WhenAll(deleteTempFileTasks);
 
             return 0;
         }

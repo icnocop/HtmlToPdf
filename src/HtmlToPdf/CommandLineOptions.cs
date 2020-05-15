@@ -27,6 +27,12 @@ namespace HtmlToPdf
         public int JavascriptDelayInMilliseconds { get; set; }
 
         /// <summary>
+        /// Gets or sets the log level.
+        /// </summary>
+        [Option("log-level", Required = false, Default = LogLevel.Info, HelpText = "Set log level to: none, error, warn, or info")]
+        public LogLevel LogLevel { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether or not to output verbose information.
         /// </summary>
         [Option('q', "quiet", Required = false, Default = false, Hidden = true, HelpText = "Be less verbose, maintained for backwards compatibility; Same as using --log-level none")]
@@ -136,6 +142,23 @@ namespace HtmlToPdf
 
                 return $"<div id=\"footer-template\" style=\"font-size:10px !important; color:#808080; padding-left:10px; padding-right:10px; width: 100%;\"><div style=\"text-align:right;\">{this.FooterRight}</div></div>"
                     .Replace("[page]", "<span class=\"pageNumber\"></span>");
+            }
+        }
+
+        /// <summary>
+        /// Gets the logger level.
+        /// </summary>
+        internal LogLevel LoggerLevel
+        {
+            get
+            {
+                LogLevel logLevel = this.LogLevel;
+                if (this.Quiet)
+                {
+                    logLevel = LogLevel.Info;
+                }
+
+                return logLevel;
             }
         }
 

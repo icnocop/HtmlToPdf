@@ -27,7 +27,7 @@ namespace HtmlToPdfTests
 
             HtmlToPdfRunner runner = new HtmlToPdfRunner();
 
-            HtmlToPdfRunResult result = runner.Run(string.Empty);
+            HtmlToPdfRunResult result = runner.Run("--log-level Error");
             Assert.AreEqual(1, result.ExitCode, result.Output);
             Assert.IsTrue(string.IsNullOrEmpty(result.StandardOutput), result.StandardOutput);
             Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput), result.StandardError);

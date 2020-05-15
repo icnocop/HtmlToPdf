@@ -42,7 +42,8 @@ namespace HtmlToPdfTests
                 {
                     string[] commandLine = new[]
                     {
-                        $"--page-size invalid",
+                        "--log-level Error",
+                        "--page-size invalid",
                         $"\"{htmlFile.FilePath}\"",
                         $"\"{pdfFile.FilePath}\""
                     };

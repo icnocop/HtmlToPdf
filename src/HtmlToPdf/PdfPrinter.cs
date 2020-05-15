@@ -31,21 +31,27 @@ namespace HtmlToPdf
         /// </summary>
         /// <param name="input">The input.</param>
         /// <param name="options">The options.</param>
-        /// <returns>A task with the PDF file path as a result.</returns>
+        /// <param name="logger">The logger.</param>
+        /// <returns>
+        /// A task with the PDF file path as a result.
+        /// </returns>
+        /// <exception cref="FileNotFoundException">File not found: {fullPath}</exception>
         internal async Task<string> PrintAsPdfAsync(
             string input,
-            HtmlToPdfOptions options)
+            HtmlToPdfOptions options,
+            Logger logger)
         {
-            if (!File.Exists(input))
+            string fullPath = Path.GetFullPath(input);
+            if (!File.Exists(fullPath))
             {
-                throw new FileNotFoundException($"File not found: {input}", input);
+                throw new FileNotFoundException($"File not found: {fullPath}", fullPath);
             }
 
             if (options.PageOffset > 1)
             {
                 // insert empty pages
                 HtmlDocument html = new HtmlDocument();
-                html.Load(input);
+                html.Load(fullPath);
 
                 string style = @"<style type=""text/css"" media=""print"">
   .page-break
@@ -68,7 +74,7 @@ namespace HtmlToPdf
                 // Get body node
                 HtmlNode body = html.DocumentNode.SelectSingleNode("//body");
 
-                for (int i = 1; i < options.PageOffset; i++)
+                for (int i = options.PageOffset; i > 1; i--)
                 {
                     // Create new node
                     HtmlNode newNode = HtmlNode.CreateNode(string.Format(emptyPage, i));
@@ -77,17 +83,15 @@ namespace HtmlToPdf
                     body.PrependChild(newNode);
                 }
 
-                html.Save(input);
+                html.Save(fullPath);
             }
 
-            string tempPdfFilePath = input + ".pdf";
+            string tempPdfFilePath = TempPdfFile.Create();
 
             NavigationOptions navigationOptions = new NavigationOptions
             {
                 WaitUntil = new[] { WaitUntilNavigation.Networkidle0 }
             };
-
-            string fullPath = Path.GetFullPath(input);
 
             AddTagOptions addTagOptions = null;
             if (!string.IsNullOrEmpty(options.StyleSheet))
@@ -102,7 +106,7 @@ namespace HtmlToPdf
                 }
                 else
                 {
-                    Logger.LogWarning($"File not found: {options.StyleSheet}");
+                    logger.LogWarning($"File not found: {options.StyleSheet}");
                 }
             }
 
@@ -127,7 +131,7 @@ namespace HtmlToPdf
                     pageRanges = $"{options.PageOffset} - {options.PageOffset + options.NumberOfPages - 1}";
                 }
 
-                // Logger.LogError($"Printing pages {pageRanges} of page '{fullPath}'.");
+                logger.LogDebug($"Printing pages {pageRanges} of page '{fullPath}'.");
             }
 
             PdfOptions pdfOptions = new PdfOptions

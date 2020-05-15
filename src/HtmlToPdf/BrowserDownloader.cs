@@ -6,6 +6,7 @@ namespace HtmlToPdf
 {
     using System;
     using System.IO;
+    using System.Linq;
     using System.Security.AccessControl;
     using System.Security.Principal;
     using System.Threading;
@@ -20,7 +21,9 @@ namespace HtmlToPdf
         /// <summary>
         /// Downloads the browser
         /// </summary>
-        internal static void DownloadBrowser()
+        /// <param name="logger">The logger.</param>
+        /// <exception cref="TimeoutException">Timeout waiting for exclusive access</exception>
+        internal static void DownloadBrowser(Logger logger)
         {
             string mutexId = $@"Global\{Directory.GetCurrentDirectory().Replace('\\', '_')}";
 
@@ -43,8 +46,23 @@ namespace HtmlToPdf
                 try
                 {
                     BrowserFetcher browserFetcher = new BrowserFetcher();
-                    Task task = browserFetcher.DownloadAsync(BrowserFetcher.DefaultRevision);
+                    if (browserFetcher.LocalRevisions().Any())
+                    {
+                        // local revision already exists
+                        return;
+                    }
+
+                    logger.LogDebug("Downloading browser...");
+                    Task<RevisionInfo> task = browserFetcher.DownloadAsync(BrowserFetcher.DefaultRevision);
                     task.Wait();
+
+                    RevisionInfo revisionInfo = task.Result;
+                    if (!revisionInfo.Downloaded)
+                    {
+                        throw new Exception($"Browser could not be downlaoded from URL \"{revisionInfo.Url}\".");
+                    }
+
+                    logger.LogDebug($"Browser downloaded to \"{revisionInfo.FolderPath}\".");
                 }
                 finally
                 {

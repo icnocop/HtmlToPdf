@@ -2,6 +2,10 @@
                                                    milliseconds to wait for
                                                    javascript to finish
 
+  --log-level                                      (Default: Info) Set log level
+                                                   to: none, error, warn, or
+                                                   info
+
   --user-style-sheet                               Specify a user style sheet,
                                                    to load with every page
 

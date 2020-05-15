@@ -9,33 +9,84 @@ namespace HtmlToPdf
     /// <summary>
     /// Logger
     /// </summary>
-    internal static class Logger
+    internal class Logger
     {
+        private readonly LogLevel logLevel;
+
         /// <summary>
-        /// Logs the error.
+        /// Initializes a new instance of the <see cref="Logger"/> class.
         /// </summary>
-        /// <param name="ex">The exception.</param>
-        internal static void LogError(Exception ex)
+        /// <param name="logLevel">The log level.</param>
+        public Logger(LogLevel logLevel)
         {
-            LogError(ex.ToString());
+            this.logLevel = logLevel;
         }
 
         /// <summary>
-        /// Logs the error.
+        /// Logs the exception.
+        /// </summary>
+        /// <param name="ex">The exception.</param>
+        internal void LogError(Exception ex)
+        {
+            this.LogError(ex.ToString());
+        }
+
+        /// <summary>
+        /// Logs the error message.
         /// </summary>
         /// <param name="message">The message.</param>
-        internal static void LogError(string message)
+        internal void LogError(string message)
         {
+            if (this.logLevel == LogLevel.None)
+            {
+                return;
+            }
+
             Console.Error.WriteLine(message);
         }
 
         /// <summary>
-        /// Logs the warning.
+        /// Logs the warning message.
         /// </summary>
         /// <param name="message">The message.</param>
-        internal static void LogWarning(string message)
+        internal void LogWarning(string message)
         {
+            if ((this.logLevel == LogLevel.None)
+                || (this.logLevel == LogLevel.Error))
+            {
+                return;
+            }
+
             Console.Error.WriteLine($"Warning: {message}");
+        }
+
+        /// <summary>
+        /// Logs the informational message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        internal void LogInfo(string message)
+        {
+            if ((this.logLevel != LogLevel.Info)
+                && (this.logLevel != LogLevel.Debug))
+            {
+                return;
+            }
+
+            Console.Error.WriteLine(message);
+        }
+
+        /// <summary>
+        /// Logs the message useful for debugging.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        internal void LogDebug(string message)
+        {
+            if (this.logLevel != LogLevel.Debug)
+            {
+                return;
+            }
+
+            Console.Error.WriteLine(message);
         }
     }
 }

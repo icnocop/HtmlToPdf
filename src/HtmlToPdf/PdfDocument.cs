@@ -40,7 +40,11 @@ namespace HtmlToPdf
         /// </summary>
         /// <param name="pdfFilePath">The PDF file path.</param>
         /// <param name="htmlToPdfFiles">The HTML to PDF files.</param>
-        internal static void UpdateLinks(string pdfFilePath, IReadOnlyCollection<HtmlToPdfFile> htmlToPdfFiles)
+        /// <param name="logger">The logger.</param>
+        internal static void UpdateLinks(
+            string pdfFilePath,
+            IReadOnlyCollection<HtmlToPdfFile> htmlToPdfFiles,
+            Logger logger)
         {
             string tempFilePath = Path.GetTempFileName();
 
@@ -88,7 +92,7 @@ namespace HtmlToPdf
 
                                 if (!htmlToPdfFiles.Any(x => x.Input == htmlFilePath))
                                 {
-                                    // Logger.LogError($"WARN: Could not find '{htmlFilePath}'. Referenced in '{pdfFilePath}' on page {i}.");
+                                    logger.LogWarning($"Could not find '{htmlFilePath}'. Referenced in '{pdfFilePath}' on page {i}.");
                                     continue;
                                 }
 

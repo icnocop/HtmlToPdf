@@ -4,9 +4,9 @@
 
 namespace HtmlToPdfTests
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using UglyToad.PdfPig.Content;
 
     /// <summary>
@@ -46,9 +46,9 @@ namespace HtmlToPdfTests
   </body>
 </html>";
 
-            using (TempHtmlFile coverFile = new TempHtmlFile(cover))
+            using (TempHtmlFile coverFile = new TempHtmlFile(cover, this.TestContext))
             {
-                using (TempHtmlFile htmlFile = new TempHtmlFile(html))
+                using (TempHtmlFile htmlFile = new TempHtmlFile(html, this.TestContext))
                 {
                     using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                     {

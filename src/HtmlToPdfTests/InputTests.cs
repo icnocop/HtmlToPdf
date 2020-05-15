@@ -32,7 +32,7 @@ namespace HtmlToPdfTests
 
                 using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                 {
-                    string commandLine = $"\"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                    string commandLine = $"--log-level Error \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
                     HtmlToPdfRunResult result = runner.Run(commandLine);
                     Assert.AreEqual(1, result.ExitCode);
 
