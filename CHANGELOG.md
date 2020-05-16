@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.516.0__ (2020-05-16)
+
+ - Added support for custom footer styles
+
 __v0.0.515.0__ (2020-05-15)
 
  - Added support for the "log-level" command line option

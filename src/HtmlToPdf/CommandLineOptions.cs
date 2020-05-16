@@ -17,7 +17,7 @@ namespace HtmlToPdf
         /// <summary>
         /// Gets or sets the inputs.
         /// </summary>
-        [Value(0, Required = false, MetaName = "[OBJECT] <output file>")]
+        [Value(0, Required = false, MetaName = "<input file>,[<input file>] <output file>")]
         public IEnumerable<string> Inputs { get; set; }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace HtmlToPdf
         /// <summary>
         /// Gets or sets the log level.
         /// </summary>
-        [Option("log-level", Required = false, Default = LogLevel.Info, HelpText = "Set log level to: none, error, warn, or info")]
+        [Option("log-level", Required = false, Default = LogLevel.Info, HelpText = "Set log level to: none, error, warn, info, or debug")]
         public LogLevel LogLevel { get; set; }
 
         /// <summary>
@@ -129,21 +129,10 @@ namespace HtmlToPdf
         public bool NoBackground { get; set; }
 
         /// <summary>
-        /// Gets the footer template.
+        /// Gets or sets the footer style.
         /// </summary>
-        public string FooterTemplate
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(this.FooterRight))
-                {
-                    return string.Empty;
-                }
-
-                return $"<div id=\"footer-template\" style=\"font-size:10px !important; color:#808080; padding-left:10px; padding-right:10px; width: 100%;\"><div style=\"text-align:right;\">{this.FooterRight}</div></div>"
-                    .Replace("[page]", "<span class=\"pageNumber\"></span>");
-            }
-        }
+        [Option("footer-style", Default = "font-size:10px; color:#808080; padding-left:10px; padding-right:10px; width: 100%;")]
+        public string FooterStyle { get; set; }
 
         /// <summary>
         /// Gets the logger level.

@@ -117,9 +117,9 @@ namespace HtmlToPdf
             return exitTask;
         }
 
-        private static async Task<int> RunAsync(Parser parser, string[] args, CommandLineOptions options, Logger logger)
+        private static async Task<int> RunAsync(Parser parser, string[] args, CommandLineOptions commandLineOptions, Logger logger)
         {
-            if (options.ReadArgsFromStdin)
+            if (commandLineOptions.ReadArgsFromStdin)
             {
                 logger.LogDebug("Reading arguments from stdin...");
 
@@ -127,8 +127,8 @@ namespace HtmlToPdf
 
                 logger.LogDebug($"Arguments from stdin: {stdin}");
 
-                options.ReadArgsFromStdin = false;
-                string commandLine = parser.FormatCommandLine(options);
+                commandLineOptions.ReadArgsFromStdin = false;
+                string commandLine = parser.FormatCommandLine(commandLineOptions);
 
                 string newCommandLine = $"{commandLine} {stdin}";
                 logger.LogDebug($"Running with arguments: {newCommandLine}");
@@ -138,12 +138,12 @@ namespace HtmlToPdf
             }
 
             Encoding encoding = Encoding.Default;
-            if (!string.IsNullOrEmpty(options.Encoding))
+            if (!string.IsNullOrEmpty(commandLineOptions.Encoding))
             {
-                encoding = Encoding.GetEncoding(options.Encoding);
+                encoding = Encoding.GetEncoding(commandLineOptions.Encoding);
             }
 
-            List<string> inputs = options.Inputs
+            List<string> inputs = commandLineOptions.Inputs
                 .Select(x => x.ToLower().Trim('"').Replace('/', Path.DirectorySeparatorChar))
                 .ToList();
 
@@ -178,22 +178,26 @@ namespace HtmlToPdf
 
             inputs.RemoveAt(inputs.Count - 1);
 
-            options.UserStyleSheet = options.UserStyleSheet?.Trim('"');
+            commandLineOptions.UserStyleSheet = commandLineOptions.UserStyleSheet?.Trim('"');
 
             BrowserDownloader.DownloadBrowser(logger);
 
             using (Browser browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
+                SlowMo = 0,
                 Headless = true,
+                Timeout = 0,
+                LogProcess = false,
+                EnqueueTransportMessages = true,
                 Devtools = false
             }))
             {
                 MarginOptions marginOptions = new MarginOptions
                 {
-                    Bottom = options.BottomMargin,
-                    Left = options.LeftMargin,
-                    Right = options.RightMargin,
-                    Top = options.TopMargin
+                    Bottom = commandLineOptions.BottomMargin,
+                    Left = commandLineOptions.LeftMargin,
+                    Right = commandLineOptions.RightMargin,
+                    Top = commandLineOptions.TopMargin
                 };
 
                 try
@@ -203,13 +207,13 @@ namespace HtmlToPdf
                     // cover options
                     HtmlToPdfOptions htmlToPdfOptions = new HtmlToPdfOptions
                     {
-                        StyleSheet = options.UserStyleSheet,
-                        JavascriptDelayInMilliseconds = options.JavascriptDelayInMilliseconds,
-                        Landscape = options.Landscape,
-                        PaperFormat = options.PaperFormat,
-                        Height = options.PageHeight,
-                        Width = options.PageWidth,
-                        PrintBackground = options.PrintBackground
+                        StyleSheet = commandLineOptions.UserStyleSheet,
+                        JavascriptDelayInMilliseconds = commandLineOptions.JavascriptDelayInMilliseconds,
+                        Landscape = commandLineOptions.Landscape,
+                        PaperFormat = commandLineOptions.PaperFormat,
+                        Height = commandLineOptions.PageHeight,
+                        Width = commandLineOptions.PageWidth,
+                        PrintBackground = commandLineOptions.PrintBackground
                     };
 
                     if (inputs.Contains("cover") && (!coverAdded))
@@ -243,7 +247,8 @@ namespace HtmlToPdf
 
                     // page options
                     htmlToPdfOptions.MarginOptions = marginOptions;
-                    htmlToPdfOptions.FooterTemplate = options.FooterTemplate;
+                    htmlToPdfOptions.FooterTemplateBuilder.FooterRight = commandLineOptions.FooterRight;
+                    htmlToPdfOptions.FooterTemplateBuilder.FooterStyle = commandLineOptions.FooterStyle;
 
                     var tasks = inputs.Where(x => !htmlToPdfFiles.Any(y => y.Input == x)).Select(async input =>
                     {

@@ -4,8 +4,11 @@
 
 namespace HtmlToPdf
 {
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
+    using ExCSS;
     using HtmlAgilityPack;
     using PuppeteerSharp;
     using PuppeteerSharp.Media;
@@ -47,44 +50,15 @@ namespace HtmlToPdf
                 throw new FileNotFoundException($"File not found: {fullPath}", fullPath);
             }
 
-            if (options.PageOffset > 1)
+            string footerTemplateCss = this.ExtractFooterTemplateCss(fullPath);
+            string footerTemplate = string.Empty;
+            bool displayHeaderFooter = options.FooterTemplateBuilder.DisplayHeaderFooter;
+            if (displayHeaderFooter)
             {
-                // insert empty pages
-                HtmlDocument html = new HtmlDocument();
-                html.Load(fullPath);
-
-                string style = @"<style type=""text/css"" media=""print"">
-  .page-break
-  {
-    page-break-after: always;
-    visibility: hidden;
-  }
-</style>";
-                string emptyPage = "<div class=\"page-break\">Hidden Page {0}<br></div>";
-
-                // Get head node
-                HtmlNode head = html.DocumentNode.SelectSingleNode("//head");
-
-                // Create new node
-                HtmlNode newHeadNode = HtmlNode.CreateNode(style);
-
-                // Add new node as last child of head
-                head.AppendChild(newHeadNode);
-
-                // Get body node
-                HtmlNode body = html.DocumentNode.SelectSingleNode("//body");
-
-                for (int i = options.PageOffset; i > 1; i--)
-                {
-                    // Create new node
-                    HtmlNode newNode = HtmlNode.CreateNode(string.Format(emptyPage, i));
-
-                    // Add new node as first child of body
-                    body.PrependChild(newNode);
-                }
-
-                html.Save(fullPath);
+                footerTemplate = options.FooterTemplateBuilder.Build(footerTemplateCss);
             }
+
+            this.PrependEmptyPages(fullPath, options.PageOffset);
 
             string tempPdfFilePath = TempPdfFile.Create();
 
@@ -136,8 +110,8 @@ namespace HtmlToPdf
 
             PdfOptions pdfOptions = new PdfOptions
             {
-                DisplayHeaderFooter = options.DisplayHeaderFooter,
-                FooterTemplate = options.FooterTemplate,
+                DisplayHeaderFooter = displayHeaderFooter,
+                FooterTemplate = footerTemplate,
                 Format = paperFormat,
                 HeaderTemplate = string.Empty,
                 Height = options.Height,
@@ -167,6 +141,87 @@ namespace HtmlToPdf
             }
 
             return tempPdfFilePath;
+        }
+
+        private string ExtractFooterTemplateCss(string htmlFilePath)
+        {
+            HtmlDocument html = new HtmlDocument();
+            html.Load(htmlFilePath);
+
+            // get styles for print media
+            IEnumerable<HtmlNode> styles = html.DocumentNode
+                .Descendants("style")
+                .Where(x => (x.Attributes["type"].Value == "text/css")
+                    && (x.Attributes["media"].Value == "print"));
+
+            // get style for "#footer-template"
+            var parser = new StylesheetParser();
+            IRule styleRule = null;
+            foreach (HtmlNode style in styles)
+            {
+                var stylesheet = parser.Parse(style.InnerHtml);
+                var itemStyleRule = stylesheet.StyleRules
+                    .Cast<StyleRule>()
+                    .SingleOrDefault(x => x.SelectorText == "#footer-template");
+                if (itemStyleRule == null)
+                {
+                    continue;
+                }
+
+                styleRule = itemStyleRule;
+                break;
+            }
+
+            if (styleRule == null)
+            {
+                return null;
+            }
+
+            return $"<style>{styleRule.ToCss()}</style>";
+        }
+
+        private void PrependEmptyPages(string htmlFilePath, int pages)
+        {
+            if (pages <= 0)
+            {
+                return;
+            }
+
+            // insert empty pages
+            HtmlDocument html = new HtmlDocument();
+            html.Load(htmlFilePath);
+
+            string style = @"<style type=""text/css"" media=""print"">
+  .page-break
+  {
+    page-break-after: always;
+    visibility: hidden;
+  }
+</style>";
+            string emptyPage = "<div class=\"page-break\">Hidden Page {0}<br></div>";
+
+            // Get head node
+            HtmlNode head = html.DocumentNode.SelectSingleNode("//head");
+
+            // Create new node
+            HtmlNode newHeadNode = HtmlNode.CreateNode(style);
+
+            // Add new node as last child of head
+            head.AppendChild(newHeadNode);
+
+            // Get body node
+            HtmlNode body = html.DocumentNode.SelectSingleNode("//body");
+
+            for (int i = pages; i > 1; i--)
+            {
+                // Create new node
+                HtmlNode newNode = HtmlNode.CreateNode(string.Format(emptyPage, i));
+
+                // Add new node as first child of body
+                body.PrependChild(newNode);
+            }
+
+            html.Save(htmlFilePath);
         }
     }
 }
