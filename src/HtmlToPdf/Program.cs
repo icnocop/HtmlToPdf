@@ -276,10 +276,15 @@ namespace HtmlToPdf
 
                     await Task.WhenAll(tasks);
 
-                    // set page numbers for each HTML file
-                    int currentPageNumber = 1;
-                    foreach (HtmlToPdfFile htmlToPdfFile in htmlToPdfFiles.OrderBy(x => x.Index))
+                    // print HTML files
+                    tasks = htmlToPdfFiles.Select(async htmlToPdfFile =>
                     {
+                        // sum the number of pages in previous documents to get the current page number offset
+                        int currentPageNumber = htmlToPdfFiles
+                            .Where(x => x.Index < htmlToPdfFile.Index)
+                            .Sum(x => x.NumberOfPages) + 1;
+
+                        // print as pdf with page number offset
                         htmlToPdfFile.OutputPdfFilePageNumber = currentPageNumber;
                         htmlToPdfOptions.PageOffset = currentPageNumber;
                         htmlToPdfOptions.NumberOfPages = htmlToPdfFile.NumberOfPages;
@@ -297,9 +302,9 @@ namespace HtmlToPdf
 
                             htmlToPdfFile.PdfFilePath = pdfFile;
                         }
+                    });
 
-                        currentPageNumber += htmlToPdfOptions.NumberOfPages;
-                    }
+                    await Task.WhenAll(tasks);
                 }
                 finally
                 {

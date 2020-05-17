@@ -181,7 +181,7 @@ namespace HtmlToPdfTests
 <html>
   <head>
     <style type=""text/css"" media=""print"">
-            #footer-template {display:none !important;}
+            #footer-template {display:none}
     </style>
   </head>
   <body>

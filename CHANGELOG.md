@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.517.2__ (2020-05-17)
+
+ - Improved performance
+
 __v0.0.516.0__ (2020-05-16)
 
  - Added support for custom footer styles

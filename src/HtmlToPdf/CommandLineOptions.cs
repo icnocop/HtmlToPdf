@@ -17,7 +17,7 @@ namespace HtmlToPdf
         /// <summary>
         /// Gets or sets the inputs.
         /// </summary>
-        [Value(0, Required = false, MetaName = "<input file>,[<input file>] <output file>")]
+        [Value(0, Required = false, MetaName = "<input file> [<input file> ...] <output file>")]
         public IEnumerable<string> Inputs { get; set; }
 
         /// <summary>

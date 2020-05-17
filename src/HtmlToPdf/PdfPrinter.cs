@@ -151,8 +151,8 @@ namespace HtmlToPdf
             // get styles for print media
             IEnumerable<HtmlNode> styles = html.DocumentNode
                 .Descendants("style")
-                .Where(x => (x.Attributes["type"].Value == "text/css")
-                    && (x.Attributes["media"].Value == "print"));
+                .Where(x => (x.Attributes["type"]?.Value == "text/css")
+                    && (x.Attributes["media"]?.Value == "print"));
 
             // get style for "#footer-template"
             var parser = new StylesheetParser();
