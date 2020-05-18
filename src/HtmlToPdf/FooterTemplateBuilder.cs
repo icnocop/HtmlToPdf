@@ -42,7 +42,7 @@ namespace HtmlToPdf
                 return string.Empty;
             }
 
-            return $"{footerTemplateCss ?? $"<style>#footer-template{{{this.FooterStyle}}}</style>"}<div id=\"footer-template\"><div style=\"text-align:right;\">{this.FooterRight}</div></div>"
+            return $"<div id=\"footer-template\" style=\"{footerTemplateCss ?? this.FooterStyle}\"><div style=\"text-align:right;\">{this.FooterRight}</div></div>"
                 .Replace("[page]", "<span class=\"pageNumber\"></span>");
         }
     }

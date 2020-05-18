@@ -248,8 +248,9 @@ namespace HtmlToPdf
                     // page options
                     htmlToPdfOptions.MarginOptions = marginOptions;
                     htmlToPdfOptions.FooterTemplateBuilder.FooterRight = commandLineOptions.FooterRight;
-                    htmlToPdfOptions.FooterTemplateBuilder.FooterStyle = commandLineOptions.FooterStyle;
+                    htmlToPdfOptions.FooterTemplateBuilder.FooterStyle = commandLineOptions.FooterStyle.Trim('"');
 
+                    // count the number of PDF pages each HTML file will be printed as
                     var tasks = inputs.Where(x => !htmlToPdfFiles.Any(y => y.Input == x)).Select(async input =>
                     {
                         // print as pdf
@@ -258,6 +259,7 @@ namespace HtmlToPdf
                             htmlToPdfOptions,
                             logger);
 
+                        // count the number of pages
                         int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
 
                         logger.LogDebug($"\"{input}\" contains number of PDF pages: {numberOfPages}.");
@@ -276,7 +278,7 @@ namespace HtmlToPdf
 
                     await Task.WhenAll(tasks);
 
-                    // print HTML files
+                    // update models and optionally re-print HTML files to include footers with page numbers
                     tasks = htmlToPdfFiles.Select(async htmlToPdfFile =>
                     {
                         // sum the number of pages in previous documents to get the current page number offset

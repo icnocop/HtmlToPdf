@@ -156,7 +156,7 @@ namespace HtmlToPdf
 
             // get style for "#footer-template"
             var parser = new StylesheetParser();
-            IRule styleRule = null;
+            StyleRule styleRule = null;
             foreach (HtmlNode style in styles)
             {
                 var stylesheet = parser.Parse(style.InnerHtml);
@@ -177,12 +177,12 @@ namespace HtmlToPdf
                 return null;
             }
 
-            return $"<style>{styleRule.ToCss()}</style>";
+            return styleRule.Style.ToCss();
         }
 
         private void PrependEmptyPages(string htmlFilePath, int pages)
         {
-            if (pages <= 0)
+            if (pages <= 1)
             {
                 return;
             }
