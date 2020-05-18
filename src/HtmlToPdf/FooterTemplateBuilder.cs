@@ -42,8 +42,12 @@ namespace HtmlToPdf
                 return string.Empty;
             }
 
+            // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
             return $"<div id=\"footer-template\" style=\"{footerTemplateCss ?? this.FooterStyle}\"><div style=\"text-align:right;\">{this.FooterRight}</div></div>"
-                .Replace("[page]", "<span class=\"pageNumber\"></span>");
+                .Replace("[page]", "<span class=\"pageNumber\"></span>")
+                .Replace("[date]", "<span class=\"date\"></span>")
+                .Replace("[title]", "<span class=\"title\"></span>")
+                .Replace("[webpage]", "<span class=\"url\"></span>");
         }
     }
 }

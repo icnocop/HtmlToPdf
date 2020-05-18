@@ -7,7 +7,9 @@ namespace HtmlToPdfTests
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using DotLiquid;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Pathoschild.NaturalTimeParser.Extensions.DotLiquid;
     using UglyToad.PdfPig.Content;
 
     /// <summary>
@@ -24,14 +26,21 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing footer-right with a page placeholder inserts a page number in the footer.
         /// </summary>
+        /// <param name="footerRightCommandLineArgument">The footer right command line argument.</param>
+        /// <param name="expectedFooterTextTemplate">The expected footer text template.</param>
         [TestMethod]
-        public void FooterRight_WithPage_InsertsPageNumberInFooter()
+        [DataRow("[page]", "1")]
+        [DataRow("[date]", "{{ 'today' | as_date | date:'M/dd/yyyy' }}")]
+        [DataRow("[title]", "The title of the test page")]
+        [DataRow("[webpage]", "{{url}}")]
+        public void FooterRight_WithVariable_InsertsPageNumberInFooter(string footerRightCommandLineArgument, string expectedFooterTextTemplate)
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner();
 
             string html = @"
 <html>
   <head>
+    <title>The title of the test page</title>
   </head>
   <body>
    Test Page
@@ -40,9 +49,20 @@ namespace HtmlToPdfTests
 
             using (TempHtmlFile htmlFile = new TempHtmlFile(html))
             {
+                var uri = new Uri(htmlFile.FilePath);
+
+                Dictionary<string, object> dictionary = new Dictionary<string, object>
+                {
+                    { "url", uri.AbsoluteUri }
+                };
+                Hash hash = Hash.FromDictionary(dictionary);
+                Template.RegisterFilter(typeof(NaturalDateFilter));
+                Template template = Template.Parse(expectedFooterTextTemplate);
+                string expectedFooterText = template.Render(hash);
+
                 using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                 {
-                    string commandLine = $"--footer-right [page] \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                    string commandLine = $"--margin-bottom 10mm --footer-right {footerRightCommandLineArgument} \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
                     HtmlToPdfRunResult result = runner.Run(commandLine);
                     Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -51,9 +71,9 @@ namespace HtmlToPdfTests
                         Assert.AreEqual(1, pdfDocument.NumberOfPages);
                         Page page = pdfDocument.GetPage(1);
                         IEnumerable<Word> words = page.GetWords();
-                        Assert.AreEqual(3, words.Count());
+                        Assert.IsTrue(words.Count() >= 3);
                         Assert.AreEqual("Test Page", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-                        Assert.AreEqual("1", words.Last().Text); // the page number
+                        Assert.AreEqual(expectedFooterText.ToLower(), string.Join(" ", words.Skip(2).Select(x => x.Text.ToLower())));
                     }
                 }
             }

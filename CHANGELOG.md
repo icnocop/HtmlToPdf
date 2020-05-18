@@ -1,5 +1,10 @@
 # Change Log
 
+__v0.0.518.3__ (2020-05-18)
+
+ - Fixed issues with footer template builder
+ - Added support for the `[date]`, `[title]`, and `[webpage]` variables in the header/footer
+
 __v0.0.517.2__ (2020-05-17)
 
  - Improved performance
