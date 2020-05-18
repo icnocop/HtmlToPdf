@@ -8,3 +8,5 @@ Convert HTML to PDF using headless Chrome with a wkhtmltopdf compatible CLI
 [![Code Coverage](https://img.shields.io/azure-devops/coverage/rami/HtmlToPdf/14/master?color=dark%20green&label=Code%20Coverage&logo=Azure%20Artifacts)](https://dev.azure.com/rami/HtmlToPdf/_build/latest?definitionId=14&branchName=master)
 
 [Command Line Usage](https://raw.githubusercontent.com/icnocop/HtmlToPdf/master/USAGE.md)
+
+[Feature Compatibility](https://github.com/icnocop/HtmlToPdf/blob/master/COMPATIBILITY.md)
