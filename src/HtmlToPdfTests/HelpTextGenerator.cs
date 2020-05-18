@@ -4,6 +4,7 @@
 
 namespace HtmlToPdfTests
 {
+    using System;
     using System.Diagnostics;
     using System.IO;
     using System.Reflection;
@@ -21,7 +22,7 @@ namespace HtmlToPdfTests
         /// <returns>
         /// The help text.
         /// </returns>
-        public static string Generate(string errorMessage, string detailedErrorMessage = null)
+        public static string Generate(string errorMessage = null, string detailedErrorMessage = null)
         {
             Assembly currentAssembly = Assembly.GetExecutingAssembly();
             string version = FileVersionInfo.GetVersionInfo(currentAssembly.Location).FileVersion;
@@ -29,14 +30,8 @@ namespace HtmlToPdfTests
 
             string output = $@"HtmlToPdf {version}
 Copyright © 2020
-
-ERROR(S):
-  {errorMessage}
-
-{usage}
-
-
-{detailedErrorMessage}";
+{(errorMessage == null ? string.Empty : $"{Environment.NewLine}ERROR(S):{Environment.NewLine}  {errorMessage}{Environment.NewLine}")}
+{usage}{(detailedErrorMessage == null ? string.Empty : $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{detailedErrorMessage}")}";
 
             return output;
         }

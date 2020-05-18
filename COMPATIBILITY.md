@@ -11,12 +11,12 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | -d, --dpi                      | :x:                |                                          |
 | -H, --extended-help            | :x:                |                                          |
 | -g, --grayscale                | :x:                |                                          |
-| -h, --help                     | :x:                |                                          |
+| -h, --help                     | :white_check_mark: | Only `--help` is supported               |
 | --htmldoc                      | :x:                |                                          |
 | --image-dpi                    | :x:                |                                          |
 | --image-quality                | :x:                |                                          |
 | --license                      | :x:                |                                          |
-| --log-level                    | :heavy_check_mark: | Added an additional `Debug` log level   |
+| --log-level                    | :heavy_check_mark: | Added an additional `Debug` log level    |
 | -l, --lowquality               | :x:                |                                          |
 | --manpage                      | :x:                |                                          |
 | -B, --margin-bottom            | :heavy_check_mark: |                                          |
@@ -33,7 +33,7 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | --readme                       | :x:                |                                          |
 | --title                        | :x:                |                                          |
 | --use-xserver                  | :x:                |                                          |
-| -V, --version                  | :x:                |                                          |
+| -V, --version                  | :white_check_mark: | Only `--version` is supported            |
 | --dump-default-toc-xsl         | :x:                |                                          |
 | --dump-outline                 | :x:                |                                          |
 | --outline                      | :x:                |                                          |
@@ -108,7 +108,7 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | --footer-left                  | :x:                |                                          |
 | --footer-line                  | :x:                |                                          |
 | --no-footer-line               | :x:                |                                          |
-| --footer-right                 | :white_check_mark: | Only the `[page]` variable is supported |
+| --footer-right                 | :white_check_mark: | Only the `[page]` variable is supported  |
 | --footer-spacing               | :x:                |                                          |
 | --header-center                | :x:                |                                          |
 | --header-font-name             | :x:                |                                          |

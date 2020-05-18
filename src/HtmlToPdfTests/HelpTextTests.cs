@@ -30,7 +30,23 @@ namespace HtmlToPdfTests
             HtmlToPdfRunResult result = runner.Run("--log-level Error");
             Assert.AreEqual(1, result.ExitCode, result.Output);
             Assert.IsTrue(string.IsNullOrEmpty(result.StandardOutput), result.StandardOutput);
-            Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput), result.StandardError);
+            Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput.Trim()), result.StandardError);
+        }
+
+        /// <summary>
+        /// Asserts that passing the "--help" argument displays the help text.
+        /// </summary>
+        [TestMethod]
+        public void HelpArgument_DisplaysHelpText()
+        {
+            string expectedOutput = HelpTextGenerator.Generate();
+
+            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+
+            HtmlToPdfRunResult result = runner.Run("--help");
+            Assert.AreEqual(1, result.ExitCode, result.Output);
+            Assert.IsTrue(string.IsNullOrEmpty(result.StandardOutput), result.StandardOutput);
+            Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput.Trim()), result.StandardError);
         }
     }
 }
