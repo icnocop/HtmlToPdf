@@ -200,8 +200,8 @@ namespace HtmlToPdfTests
             string html1 = @"
 <html>
   <head>
-    <style type=""text/css"" media=""print"">
-            #footer-template {display:none}
+    <style>
+        @page {margin-right: 0;}
     </style>
   </head>
   <body>
@@ -242,6 +242,54 @@ namespace HtmlToPdfTests
                             Assert.AreEqual("Page 2", $"{words.ElementAt(0)} {words.ElementAt(1)}");
                             Assert.AreEqual("2", words.Last().Text); // the page number
                         }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Asserts that passing footer-right with CSS to hide the footer on the first page of a mult-page HTML does not show the footer on the first page.
+        /// </summary>
+        [TestMethod]
+        public void FooterRight_WithCssToHideFooterOnFirstPageOfMultiplePages_DoesNotShowFooterOnFirstPage()
+        {
+            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+
+            string html1 = @"
+<html>
+  <head>
+    <style>
+        @page:first {margin-right: 0;}
+    </style>
+  </head>
+  <body>
+   Page 1
+   <p style=""page-break-before: always""/>
+   Page 2
+  </body>
+</html>";
+
+            using (TempHtmlFile htmlFile1 = new TempHtmlFile(html1, this.TestContext))
+            {
+                using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
+                {
+                    string commandLine = $"--footer-right [page] \"{htmlFile1.FilePath}\" \"{pdfFile.FilePath}\"";
+                    HtmlToPdfRunResult result = runner.Run(commandLine);
+                    Assert.AreEqual(0, result.ExitCode, result.Output);
+
+                    using (var pdfDocument = UglyToad.PdfPig.PdfDocument.Open(pdfFile.FilePath))
+                    {
+                        Assert.AreEqual(2, pdfDocument.NumberOfPages);
+                        Page page1 = pdfDocument.GetPage(1);
+                        IEnumerable<Word> words = page1.GetWords();
+                        Assert.AreEqual(2, words.Count(), string.Join(" ", words.Select(x => x.Text)));
+                        Assert.AreEqual("Page 1", $"{words.ElementAt(0)} {words.ElementAt(1)}");
+
+                        Page page2 = pdfDocument.GetPage(2);
+                        words = page2.GetWords();
+                        Assert.AreEqual(3, words.Count());
+                        Assert.AreEqual("Page 2", $"{words.ElementAt(0)} {words.ElementAt(1)}");
+                        Assert.AreEqual("2", words.Last().Text); // the page number
                     }
                 }
             }

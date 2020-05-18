@@ -8,7 +8,6 @@ namespace HtmlToPdf
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using ExCSS;
     using HtmlAgilityPack;
     using PuppeteerSharp;
     using PuppeteerSharp.Media;
@@ -50,12 +49,11 @@ namespace HtmlToPdf
                 throw new FileNotFoundException($"File not found: {fullPath}", fullPath);
             }
 
-            string footerTemplateCss = this.ExtractFooterTemplateCss(fullPath);
             string footerTemplate = string.Empty;
             bool displayHeaderFooter = options.FooterTemplateBuilder.DisplayHeaderFooter;
             if (displayHeaderFooter)
             {
-                footerTemplate = options.FooterTemplateBuilder.Build(footerTemplateCss);
+                footerTemplate = options.FooterTemplateBuilder.Build();
             }
 
             this.PrependEmptyPages(fullPath, options.PageOffset);
@@ -141,43 +139,6 @@ namespace HtmlToPdf
             }
 
             return tempPdfFilePath;
-        }
-
-        private string ExtractFooterTemplateCss(string htmlFilePath)
-        {
-            HtmlDocument html = new HtmlDocument();
-            html.Load(htmlFilePath);
-
-            // get styles for print media
-            IEnumerable<HtmlNode> styles = html.DocumentNode
-                .Descendants("style")
-                .Where(x => (x.Attributes["type"]?.Value == "text/css")
-                    && (x.Attributes["media"]?.Value == "print"));
-
-            // get style for "#footer-template"
-            var parser = new StylesheetParser();
-            StyleRule styleRule = null;
-            foreach (HtmlNode style in styles)
-            {
-                var stylesheet = parser.Parse(style.InnerHtml);
-                var itemStyleRule = stylesheet.StyleRules
-                    .Cast<StyleRule>()
-                    .SingleOrDefault(x => x.SelectorText == "#footer-template");
-                if (itemStyleRule == null)
-                {
-                    continue;
-                }
-
-                styleRule = itemStyleRule;
-                break;
-            }
-
-            if (styleRule == null)
-            {
-                return null;
-            }
-
-            return styleRule.Style.ToCss();
         }
 
         private void PrependEmptyPages(string htmlFilePath, int pages)

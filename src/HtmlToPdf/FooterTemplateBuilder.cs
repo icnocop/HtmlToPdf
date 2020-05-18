@@ -33,9 +33,8 @@ namespace HtmlToPdf
         /// <summary>
         /// Builds the footer template with the specified CSS.
         /// </summary>
-        /// <param name="footerTemplateCss">The footer template CSS.</param>
         /// <returns>The footer template.</returns>
-        internal string Build(string footerTemplateCss)
+        internal string Build()
         {
             if (string.IsNullOrEmpty(this.FooterRight))
             {
@@ -43,7 +42,7 @@ namespace HtmlToPdf
             }
 
             // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
-            return $"<div id=\"footer-template\" style=\"{footerTemplateCss ?? this.FooterStyle}\"><div style=\"text-align:right;\">{this.FooterRight}</div></div>"
+            return $"<div id=\"footer-template\" style=\"{this.FooterStyle}\"><div style=\"text-align:right;\">{this.FooterRight}</div></div>"
                 .Replace("[page]", "<span class=\"pageNumber\"></span>")
                 .Replace("[date]", "<span class=\"date\"></span>")
                 .Replace("[title]", "<span class=\"title\"></span>")
