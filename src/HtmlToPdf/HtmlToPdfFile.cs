@@ -38,5 +38,10 @@ namespace HtmlToPdf
         /// Gets or sets a value indicating whether to print the footer.
         /// </summary>
         public bool PrintFooter { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to skip printing this file.
+        /// </summary>
+        public bool Skip { get; set; }
     }
 }

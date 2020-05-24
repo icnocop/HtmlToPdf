@@ -13,7 +13,7 @@ $minorVersion = 0
 $firstBuildYear = 2020
 
 $currentDate = Get-Date
-$currentDate.ToUniversalTime()
+$currentDate = $currentDate.ToUniversalTime()
 $currentYear = $currentDate.ToString("yyyy")
 $buildYear = [Convert]::ToInt32($currentYear)
 $currentMonthDay = $currentDate.ToString("MMdd")

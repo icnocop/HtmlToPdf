@@ -131,6 +131,7 @@
     <Compile Include="FooterFontSizeTests.cs" />
     <Compile Include="InputTests.cs" />
     <Compile Include="HelpTextGenerator.cs" />
+    <Compile Include="PageOffsetTests.cs" />
     <Compile Include="TempDirectory.cs" />
     <Compile Include="TopMarginTests.cs" />
     <Compile Include="RightMarginTests.cs" />

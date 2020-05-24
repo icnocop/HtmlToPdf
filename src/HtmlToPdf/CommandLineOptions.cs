@@ -101,25 +101,25 @@ namespace HtmlToPdf
         /// <summary>
         /// Gets or sets the bottom margin.
         /// </summary>
-        [Option('B', "margin-bottom", MetaValue = "unitreal", HelpText = "Set the page bottom margin")]
+        [Option('B', "margin-bottom", MetaValue = "<unitreal>", HelpText = "Set the page bottom margin")]
         public string BottomMargin { get; set; }
 
         /// <summary>
         /// Gets or sets the left margin.
         /// </summary>
-        [Option('L', "margin-left", Default = "10mm", MetaValue = "unitreal", HelpText = "Set the page left margin")]
+        [Option('L', "margin-left", Default = "10mm", MetaValue = "<unitreal>", HelpText = "Set the page left margin")]
         public string LeftMargin { get; set; }
 
         /// <summary>
         /// Gets or sets the right margin.
         /// </summary>
-        [Option('R', "margin-right", Default = "10mm", MetaValue = "unitreal", HelpText = "Set the page right margin")]
+        [Option('R', "margin-right", Default = "10mm", MetaValue = "<unitreal>", HelpText = "Set the page right margin")]
         public string RightMargin { get; set; }
 
         /// <summary>
         /// Gets or sets the top margin.
         /// </summary>
-        [Option('T', "margin-top", MetaValue = "unitreal", HelpText = "Set the page top margin")]
+        [Option('T', "margin-top", MetaValue = "<unitreal>", HelpText = "Set the page top margin")]
         public string TopMargin { get; set; }
 
         /// <summary>
@@ -137,13 +137,13 @@ namespace HtmlToPdf
         /// <summary>
         /// Gets or sets the height of the page.
         /// </summary>
-        [Option("page-height", MetaValue = "unitreal", HelpText = "Page height")]
+        [Option("page-height", MetaValue = "<unitreal>", HelpText = "Page height")]
         public string PageHeight { get; set; }
 
         /// <summary>
         /// Gets or sets the width of the page.
         /// </summary>
-        [Option("page-width", MetaValue = "unitreal", HelpText = "Page width")]
+        [Option("page-width", MetaValue = "<unitreal>", HelpText = "Page width")]
         public string PageWidth { get; set; }
 
         /// <summary>
@@ -157,6 +157,12 @@ namespace HtmlToPdf
         /// </summary>
         [Option("no-background", HelpText = "Do not print background")]
         public bool NoBackground { get; set; }
+
+        /// <summary>
+        /// Gets or sets the page offset.
+        /// </summary>
+        [Option("page-offset", Default = 0, MetaValue = "<offset>", HelpText = "The starting page number")]
+        public int PageOffset { get; set; }
 
         /// <summary>
         /// Gets the logger level.

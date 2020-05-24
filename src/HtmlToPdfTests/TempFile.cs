@@ -27,6 +27,15 @@ namespace HtmlToPdfTests
 
             string tempFilePath = Path.GetTempFileName();
             string newFilePath = tempFilePath.Replace(".tmp", fileExtension);
+
+            // make sure file is unique
+            while (File.Exists(newFilePath))
+            {
+                File.Delete(tempFilePath);
+                tempFilePath = Path.GetTempFileName();
+                newFilePath = tempFilePath.Replace(".tmp", fileExtension);
+            }
+
             File.Move(tempFilePath, newFilePath);
             this.FilePath = newFilePath;
         }

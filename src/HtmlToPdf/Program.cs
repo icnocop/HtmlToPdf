@@ -297,9 +297,15 @@ namespace HtmlToPdf
                             .Where(x => x.Index < htmlToPdfFile.Index)
                             .Sum(x => x.NumberOfPages) + 1;
 
+                        if ((currentPageNumber + htmlToPdfFile.NumberOfPages) <= (commandLineOptions.PageOffset + 1))
+                        {
+                            htmlToPdfFile.Skip = true;
+                            return;
+                        }
+
                         // print as pdf with page number offset
                         htmlToPdfFile.OutputPdfFilePageNumber = currentPageNumber;
-                        htmlToPdfOptions.PageOffset = currentPageNumber;
+                        htmlToPdfOptions.PageOffset = currentPageNumber - commandLineOptions.PageOffset;
                         htmlToPdfOptions.NumberOfPages = htmlToPdfFile.NumberOfPages;
 
                         if (htmlToPdfFile.PrintFooter)
@@ -327,6 +333,7 @@ namespace HtmlToPdf
 
             // merge pdf files
             byte[] mergedBytes = PdfMerger.Merge(htmlToPdfFiles
+                .Where(x => !x.Skip)
                 .OrderBy(x => x.OutputPdfFilePageNumber)
                 .Select(x => x.PdfFilePath));
 

@@ -73,7 +73,7 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | --minimum-font-size            | :x:                 |                                                                                        |
 | --exclude-from-outline         | :x:                 |                                                                                        |
 | --include-in-outline           | :x:                 |                                                                                        |
-| --page-offset                  | :x:                 |                                                                                        |
+| --page-offset                  | :heavy_check_mark:  |                                                                                        |
 | --password                     | :x:                 |                                                                                        |
 | --disable-plugins              | :x:                 |                                                                                        |
 | --enable-plugins               | :x:                 |                                                                                        |
@@ -104,7 +104,7 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | --footer-center                | :heavy_check_mark:* | Only the `[page]`, `[date]`, `[title]`, and `[webpage]` variables are supported.       |
 | --footer-font-name             | :heavy_check_mark:  |                                                                                        |
 | --footer-font-size             | :heavy_check_mark:  |                                                                                        |
-| --footer-html                  | :heavy_check_mark:  |                                                                                        |
+| --footer-html                  | :heavy_check_mark:* | Only the `[page]`, `[date]`, `[title]`, and `[webpage]` variables are supported.       |
 | --footer-left                  | :heavy_check_mark:* | Only the `[page]`, `[date]`, `[title]`, and `[webpage]` variables are supported.       |
 | --footer-line                  | :x:                 |                                                                                        |
 | --no-footer-line               | :x:                 |                                                                                        |

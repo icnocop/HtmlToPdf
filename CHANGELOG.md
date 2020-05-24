@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.524.5__ (2020-05-24)
+
+ - Added support for --page-offset command line option
+ 
 __v0.0.524.4__ (2020-05-24)
 
  - Added support for --footer-font-size, --footer-font-name, and --footer-html command line options
