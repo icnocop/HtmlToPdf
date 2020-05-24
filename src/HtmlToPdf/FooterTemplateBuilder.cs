@@ -16,7 +16,9 @@ namespace HtmlToPdf
         {
             get
             {
-                return !string.IsNullOrEmpty(this.FooterRight);
+                return !(string.IsNullOrEmpty(this.FooterLeft)
+                    && string.IsNullOrEmpty(this.FooterCenter)
+                    && string.IsNullOrEmpty(this.FooterRight));
             }
         }
 
@@ -24,6 +26,16 @@ namespace HtmlToPdf
         /// Gets or sets the footer style.
         /// </summary>
         public string FooterStyle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the footer left.
+        /// </summary>
+        public string FooterLeft { get; set; }
+
+        /// <summary>
+        /// Gets or sets the footer center.
+        /// </summary>
+        public string FooterCenter { get; set; }
 
         /// <summary>
         /// Gets or sets the footer right.
@@ -36,13 +48,18 @@ namespace HtmlToPdf
         /// <returns>The footer template.</returns>
         internal string Build()
         {
-            if (string.IsNullOrEmpty(this.FooterRight))
+            if (!this.DisplayHeaderFooter)
             {
                 return string.Empty;
             }
 
             // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
-            return $"<div id=\"footer-template\" style=\"{this.FooterStyle}\"><div style=\"text-align:right;\">{this.FooterRight}</div></div>"
+            return $@"
+<div id=""footer-template"" style=""{this.FooterStyle}"">
+    <div style=""float:left;"">{this.FooterLeft}</div>
+    <div style=""text-align:center;position:absolute;top:0;right:0;bottom:0;left:0;"">{this.FooterCenter}</div>
+    <div style=""float:right;"">{this.FooterRight}</div>
+</div>"
                 .Replace("[page]", "<span class=\"pageNumber\"></span>")
                 .Replace("[date]", "<span class=\"date\"></span>")
                 .Replace("[title]", "<span class=\"title\"></span>")

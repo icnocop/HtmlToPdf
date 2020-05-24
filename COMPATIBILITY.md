@@ -101,11 +101,11 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | --viewport-size                | :x:                 |                                                                                        |
 | --window-status                | :x:                 |                                                                                        |
 | --zoom                         | :x:                 |                                                                                        |
-| --footer-center                | :x:                 |                                                                                        |
+| --footer-center                | :heavy_check_mark:* | Only the `[page]`, `[date]`, `[title]`, and `[webpage]` variables are supported.       |
 | --footer-font-name             | :x:                 |                                                                                        |
 | --footer-font-size             | :x:                 |                                                                                        |
 | --footer-html                  | :x:                 |                                                                                        |
-| --footer-left                  | :x:                 |                                                                                        |
+| --footer-left                  | :heavy_check_mark:* | Only the `[page]`, `[date]`, `[title]`, and `[webpage]` variables are supported.       |
 | --footer-line                  | :x:                 |                                                                                        |
 | --no-footer-line               | :x:                 |                                                                                        |
 | --footer-right                 | :heavy_check_mark:* | Only the `[page]`, `[date]`, `[title]`, and `[webpage]` variables are supported.       |

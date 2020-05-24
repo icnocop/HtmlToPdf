@@ -13,6 +13,11 @@
                                                             sheet, to load with
                                                             every page
 
+  --footer-left=<text>                                      Left aligned footer
+                                                            text
+
+  --footer-center=<text>                                    Centered footer text
+
   --footer-right=<text>                                     Right aligned footer
                                                             text
 
@@ -54,6 +59,7 @@
   --footer-style                                            (Default:
                                                             font-size:10px;
                                                             color:#808080;
+                                                            position: relative;
                                                             padding-left:10px;
                                                             padding-right:10px;
                                                             width: 100%;)

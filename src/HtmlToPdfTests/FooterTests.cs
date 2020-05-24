@@ -1,4 +1,4 @@
-﻿// <copyright file="FooterRightTests.cs" company="HtmlToPdf">
+﻿// <copyright file="FooterTests.cs" company="HtmlToPdf">
 // Copyright (c) HtmlToPdf. All rights reserved.
 // </copyright>
 
@@ -13,10 +13,10 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Footer Right Tests
+    /// Footer Tests
     /// </summary>
     [TestClass]
-    public class FooterRightTests
+    public class FooterTests
     {
         /// <summary>
         /// Gets or sets the test context.
@@ -24,16 +24,16 @@ namespace HtmlToPdfTests
         public TestContext TestContext { get; set; }
 
         /// <summary>
-        /// Asserts that passing footer-right with a page placeholder inserts a page number in the footer.
+        /// Asserts that passing footer-right with a variable placeholder replaces the variable in the footer.
         /// </summary>
-        /// <param name="footerRightCommandLineArgument">The footer right command line argument.</param>
+        /// <param name="footerCommandLineArgument">The footer command line argument.</param>
         /// <param name="expectedFooterTextTemplate">The expected footer text template.</param>
         [TestMethod]
         [DataRow("[page]", "1")]
         [DataRow("[date]", "{{ 'today' | as_date | date:'M/dd/yyyy' }}")]
         [DataRow("[title]", "The title of the test page")]
         [DataRow("[webpage]", "{{url}}")]
-        public void FooterRight_WithVariable_InsertsPageNumberInFooter(string footerRightCommandLineArgument, string expectedFooterTextTemplate)
+        public void FooterRight_WithVariable_ReplacesVariableInFooter(string footerCommandLineArgument, string expectedFooterTextTemplate)
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner();
 
@@ -62,7 +62,7 @@ namespace HtmlToPdfTests
 
                 using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                 {
-                    string commandLine = $"--margin-bottom 10mm --footer-right {footerRightCommandLineArgument} \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                    string commandLine = $"--margin-bottom 10mm --footer-right {footerCommandLineArgument} \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
                     HtmlToPdfRunResult result = runner.Run(commandLine);
                     Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -80,10 +80,14 @@ namespace HtmlToPdfTests
         }
 
         /// <summary>
-        /// Asserts that passing footer-right with a page placeholder inserts a page number in the footer in multiple pages.
+        /// Asserts that passing footer with a page placeholder inserts a page number in the footer in multiple pages.
         /// </summary>
+        /// <param name="footerCommandLineArgument">The footer command line argument.</param>
         [TestMethod]
-        public void FooterRight_WithPage_InsertsPageNumberInFooterInMultiplePages()
+        [DataRow("--footer-left")]
+        [DataRow("--footer-center")]
+        [DataRow("--footer-right")]
+        public void Footer_WithPage_InsertsPageNumberInFooterInMultiplePages(string footerCommandLineArgument)
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner();
 
@@ -111,7 +115,7 @@ namespace HtmlToPdfTests
                 {
                     using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                     {
-                        string commandLine = $"--footer-right [page] \"{htmlFile1.FilePath}\" \"{htmlFile2.FilePath}\" \"{pdfFile.FilePath}\"";
+                        string commandLine = $"--margin-bottom 10mm {footerCommandLineArgument} [page] \"{htmlFile1.FilePath}\" \"{htmlFile2.FilePath}\" \"{pdfFile.FilePath}\"";
                         HtmlToPdfRunResult result = runner.Run(commandLine);
                         Assert.AreEqual(0, result.ExitCode, result.Output);
 

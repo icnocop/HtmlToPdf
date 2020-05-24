@@ -132,7 +132,7 @@
     <Compile Include="OrientationTests.cs" />
     <Compile Include="PageWidthTests.cs" />
     <Compile Include="PageSizeTests.cs" />
-    <Compile Include="FooterRightTests.cs" />
+    <Compile Include="FooterTests.cs" />
     <Compile Include="TempCssFile.cs" />
     <Compile Include="CoverTests.cs" />
     <Compile Include="UpdateLinksTests.cs" />

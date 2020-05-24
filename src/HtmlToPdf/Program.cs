@@ -247,6 +247,8 @@ namespace HtmlToPdf
 
                     // page options
                     htmlToPdfOptions.MarginOptions = marginOptions;
+                    htmlToPdfOptions.FooterTemplateBuilder.FooterLeft = commandLineOptions.FooterLeft;
+                    htmlToPdfOptions.FooterTemplateBuilder.FooterCenter = commandLineOptions.FooterCenter;
                     htmlToPdfOptions.FooterTemplateBuilder.FooterRight = commandLineOptions.FooterRight;
                     htmlToPdfOptions.FooterTemplateBuilder.FooterStyle = commandLineOptions.FooterStyle.Trim('"');
 

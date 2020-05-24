@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.524.2__ (2020-05-24)
+
+ - Added support for --footer-left and --footer-right command line options
+
 __v0.0.518.3__ (2020-05-18)
 
  - Fixed issues with footer template builder

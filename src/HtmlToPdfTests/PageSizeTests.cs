@@ -61,7 +61,7 @@ namespace HtmlToPdfTests
                         "A required value not bound to option name is missing.",
                         string.Join(Environment.NewLine, expectedErrorMessage));
                     Assert.IsTrue(string.IsNullOrEmpty(result.StandardOutput), result.StandardOutput);
-                    Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput), result.StandardError);
+                    Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput.Trim()), result.StandardError);
                 }
             }
         }

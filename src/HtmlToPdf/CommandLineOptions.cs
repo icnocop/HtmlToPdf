@@ -57,6 +57,18 @@ namespace HtmlToPdf
         public string UserStyleSheet { get; set; }
 
         /// <summary>
+        /// Gets or sets the footer left.
+        /// </summary>
+        [Option("footer-left", MetaValue = "<text>", HelpText = "Left aligned footer text")]
+        public string FooterLeft { get; set; }
+
+        /// <summary>
+        /// Gets or sets the footer center.
+        /// </summary>
+        [Option("footer-center", MetaValue = "<text>", HelpText = "Centered footer text")]
+        public string FooterCenter { get; set; }
+
+        /// <summary>
         /// Gets or sets the footer right.
         /// </summary>
         [Option("footer-right", MetaValue = "<text>", HelpText = "Right aligned footer text")]
@@ -131,7 +143,7 @@ namespace HtmlToPdf
         /// <summary>
         /// Gets or sets the footer style.
         /// </summary>
-        [Option("footer-style", Default = "font-size:10px; color:#808080; padding-left:10px; padding-right:10px; width: 100%;")]
+        [Option("footer-style", Default = "font-size:10px; color:#808080; position: relative; padding-left:10px; padding-right:10px; width: 100%;")]
         public string FooterStyle { get; set; }
 
         /// <summary>

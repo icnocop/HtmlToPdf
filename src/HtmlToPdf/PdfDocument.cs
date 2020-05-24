@@ -90,9 +90,9 @@ namespace HtmlToPdf
 
                                 string htmlFilePath = uri.LocalPath.ToLower();
 
-                                if (!htmlToPdfFiles.Any(x => x.Input == htmlFilePath))
+                                if (!htmlToPdfFiles.Any(x => string.Compare(x.Input, htmlFilePath, StringComparison.OrdinalIgnoreCase) == 0))
                                 {
-                                    logger.LogWarning($"Could not find '{htmlFilePath}'. Referenced in '{pdfFilePath}' on page {i}.");
+                                    logger.LogDebug($"Could not find '{htmlFilePath}'. Referenced in '{pdfFilePath}' on page {i}.");
                                     continue;
                                 }
 
