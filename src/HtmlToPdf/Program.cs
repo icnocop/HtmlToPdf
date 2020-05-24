@@ -250,7 +250,16 @@ namespace HtmlToPdf
                     htmlToPdfOptions.FooterTemplateBuilder.FooterLeft = commandLineOptions.FooterLeft;
                     htmlToPdfOptions.FooterTemplateBuilder.FooterCenter = commandLineOptions.FooterCenter;
                     htmlToPdfOptions.FooterTemplateBuilder.FooterRight = commandLineOptions.FooterRight;
-                    htmlToPdfOptions.FooterTemplateBuilder.FooterStyle = commandLineOptions.FooterStyle.Trim('"');
+
+                    string footerFontSize = commandLineOptions.FooterFontSize;
+                    if (char.IsDigit(footerFontSize.Last()))
+                    {
+                        footerFontSize += "px";
+                    }
+
+                    htmlToPdfOptions.FooterTemplateBuilder.FooterFontSize = footerFontSize;
+                    htmlToPdfOptions.FooterTemplateBuilder.FooterFontName = commandLineOptions.FooterFontName;
+                    htmlToPdfOptions.FooterTemplateBuilder.FooterHtml = commandLineOptions.FooterHtml;
 
                     // count the number of PDF pages each HTML file will be printed as
                     var tasks = inputs.Where(x => !htmlToPdfFiles.Any(y => y.Input == x)).Select(async input =>

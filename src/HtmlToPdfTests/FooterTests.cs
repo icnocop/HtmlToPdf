@@ -62,7 +62,7 @@ namespace HtmlToPdfTests
 
                 using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                 {
-                    string commandLine = $"--margin-bottom 10mm --footer-right {footerCommandLineArgument} \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                    string commandLine = $"--margin-bottom 5mm --footer-right {footerCommandLineArgument} \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
                     HtmlToPdfRunResult result = runner.Run(commandLine);
                     Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -71,7 +71,7 @@ namespace HtmlToPdfTests
                         Assert.AreEqual(1, pdfDocument.NumberOfPages);
                         Page page = pdfDocument.GetPage(1);
                         IEnumerable<Word> words = page.GetWords();
-                        Assert.IsTrue(words.Count() >= 3);
+                        Assert.IsTrue(words.Count() >= 3, $"{words.Count()}");
                         Assert.AreEqual("Test Page", $"{words.ElementAt(0)} {words.ElementAt(1)}");
                         Assert.AreEqual(expectedFooterText.ToLower(), string.Join(" ", words.Skip(2).Select(x => x.Text.ToLower())));
                     }
@@ -115,7 +115,7 @@ namespace HtmlToPdfTests
                 {
                     using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                     {
-                        string commandLine = $"--margin-bottom 10mm {footerCommandLineArgument} [page] \"{htmlFile1.FilePath}\" \"{htmlFile2.FilePath}\" \"{pdfFile.FilePath}\"";
+                        string commandLine = $"--margin-bottom 5mm {footerCommandLineArgument} [page] \"{htmlFile1.FilePath}\" \"{htmlFile2.FilePath}\" \"{pdfFile.FilePath}\"";
                         HtmlToPdfRunResult result = runner.Run(commandLine);
                         Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -133,60 +133,6 @@ namespace HtmlToPdfTests
                             Assert.AreEqual(3, words.Count());
                             Assert.AreEqual("Page 2", $"{words.ElementAt(0)} {words.ElementAt(1)}");
                             Assert.AreEqual("2", words.Last().Text); // the page number
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Asserts that passing footer-right with footer-style page inserts the footer style in all pages.
-        /// </summary>
-        [TestMethod]
-        public void FooterRight_WithFooterStyle_InsertsFooterStyleInAllPages()
-        {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
-
-            string html1 = @"
-<html>
-  <head>
-  </head>
-  <body>
-   Page 1
-  </body>
-</html>";
-
-            string html2 = @"
-<html>
-  <head>
-  </head>
-  <body>
-   Page 2
-  </body>
-</html>";
-
-            using (TempHtmlFile htmlFile1 = new TempHtmlFile(html1))
-            {
-                using (TempHtmlFile htmlFile2 = new TempHtmlFile(html2))
-                {
-                    using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
-                    {
-                        string commandLine = $"--footer-right [page] --footer-style display:none; \"{htmlFile1.FilePath}\" \"{htmlFile2.FilePath}\" \"{pdfFile.FilePath}\"";
-                        HtmlToPdfRunResult result = runner.Run(commandLine);
-                        Assert.AreEqual(0, result.ExitCode, result.Output);
-
-                        using (var pdfDocument = UglyToad.PdfPig.PdfDocument.Open(pdfFile.FilePath))
-                        {
-                            Assert.AreEqual(2, pdfDocument.NumberOfPages);
-                            Page page1 = pdfDocument.GetPage(1);
-                            IEnumerable<Word> words = page1.GetWords();
-                            Assert.AreEqual(2, words.Count());
-                            Assert.AreEqual("Page 1", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-
-                            Page page2 = pdfDocument.GetPage(2);
-                            words = page2.GetWords();
-                            Assert.AreEqual(2, words.Count());
-                            Assert.AreEqual("Page 2", $"{words.ElementAt(0)} {words.ElementAt(1)}");
                         }
                     }
                 }
@@ -259,7 +205,7 @@ namespace HtmlToPdfTests
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner();
 
-            string html1 = @"
+            string html = @"
 <html>
   <head>
     <style>
@@ -273,11 +219,11 @@ namespace HtmlToPdfTests
   </body>
 </html>";
 
-            using (TempHtmlFile htmlFile1 = new TempHtmlFile(html1, this.TestContext))
+            using (TempHtmlFile htmlFile = new TempHtmlFile(html, this.TestContext))
             {
                 using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                 {
-                    string commandLine = $"--footer-right [page] \"{htmlFile1.FilePath}\" \"{pdfFile.FilePath}\"";
+                    string commandLine = $"--footer-right [page] \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
                     HtmlToPdfRunResult result = runner.Run(commandLine);
                     Assert.AreEqual(0, result.ExitCode, result.Output);
 

@@ -75,6 +75,24 @@ namespace HtmlToPdf
         public string FooterRight { get; set; }
 
         /// <summary>
+        /// Gets or sets the size of the footer font.
+        /// </summary>
+        [Option("footer-font-size", Default = "12", MetaValue = "<size>", HelpText = "Footer font size")]
+        public string FooterFontSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the footer font.
+        /// </summary>
+        [Option("footer-font-name", Default = "Arial", MetaValue = "<name>", HelpText = "Footer font name")]
+        public string FooterFontName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the footer HTML.
+        /// </summary>
+        [Option("footer-html", MetaValue = "<url>", HelpText = "HTML footer")]
+        public string FooterHtml { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether or not to read arguments from standard input.
         /// </summary>
         [Option("read-args-from-stdin", HelpText = "Read command line arguments from stdin")]
@@ -139,12 +157,6 @@ namespace HtmlToPdf
         /// </summary>
         [Option("no-background", HelpText = "Do not print background")]
         public bool NoBackground { get; set; }
-
-        /// <summary>
-        /// Gets or sets the footer style.
-        /// </summary>
-        [Option("footer-style", Default = "font-size:10px; color:#808080; position: relative; padding-left:10px; padding-right:10px; width: 100%;")]
-        public string FooterStyle { get; set; }
 
         /// <summary>
         /// Gets the logger level.

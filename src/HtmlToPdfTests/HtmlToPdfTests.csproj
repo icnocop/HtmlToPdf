@@ -53,6 +53,9 @@
     <Reference Include="DotLiquid, Version=1.7.0.0, Culture=neutral, PublicKeyToken=82e46016ecf9f07c, processorArchitecture=MSIL">
       <HintPath>..\packages\DotLiquid.1.7.0\lib\NET40\DotLiquid.dll</HintPath>
     </Reference>
+    <Reference Include="Huygens, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Huygens.1.5.0\lib\net46\Huygens.dll</HintPath>
+    </Reference>
     <Reference Include="itext.barcodes, Version=7.1.10.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\itext7.7.1.10\lib\net40\itext.barcodes.dll</HintPath>
     </Reference>
@@ -98,6 +101,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="UglyToad.PdfPig, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PdfPig.0.1.1\lib\net47\UglyToad.PdfPig.dll</HintPath>
     </Reference>
@@ -122,8 +126,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackgroundTests.cs" />
+    <Compile Include="FooterHtmlTests.cs" />
+    <Compile Include="FooterFontNameTests.cs" />
+    <Compile Include="FooterFontSizeTests.cs" />
     <Compile Include="InputTests.cs" />
     <Compile Include="HelpTextGenerator.cs" />
+    <Compile Include="TempDirectory.cs" />
     <Compile Include="TopMarginTests.cs" />
     <Compile Include="RightMarginTests.cs" />
     <Compile Include="LeftMarginTests.cs" />

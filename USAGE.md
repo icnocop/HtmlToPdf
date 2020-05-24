@@ -21,6 +21,14 @@
   --footer-right=<text>                                     Right aligned footer
                                                             text
 
+  --footer-font-size=<size>                                 (Default: 12) Footer
+                                                            font size
+
+  --footer-font-name=<name>                                 (Default: Arial)
+                                                            Footer font name
+
+  --footer-html=<url>                                       HTML footer
+
   --read-args-from-stdin                                    Read command line
                                                             arguments from stdin
 
@@ -55,14 +63,6 @@
 
   --no-background                                           Do not print
                                                             background
-
-  --footer-style                                            (Default:
-                                                            font-size:10px;
-                                                            color:#808080;
-                                                            position: relative;
-                                                            padding-left:10px;
-                                                            padding-right:10px;
-                                                            width: 100%;)
 
   --help                                                    Display this help
                                                             screen.
