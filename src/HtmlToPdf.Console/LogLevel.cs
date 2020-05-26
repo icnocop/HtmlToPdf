@@ -2,7 +2,7 @@
 // Copyright (c) HtmlToPdf. All rights reserved.
 // </copyright>
 
-namespace HtmlToPdf
+namespace HtmlToPdf.Console
 {
     /// <summary>
     /// Log Level

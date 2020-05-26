@@ -2,7 +2,7 @@
 // Copyright (c) HtmlToPdf. All rights reserved.
 // </copyright>
 
-namespace HtmlToPdf
+namespace HtmlToPdf.Console
 {
     using System;
     using System.Collections.Generic;

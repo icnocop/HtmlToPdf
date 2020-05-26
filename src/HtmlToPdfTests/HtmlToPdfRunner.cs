@@ -22,7 +22,7 @@ namespace HtmlToPdfTests
         /// <summary>
         /// The HTML to PDF executable
         /// </summary>
-        public const string HtmlToPdfExe = "HtmlToPdf.exe";
+        public const string HtmlToPdfExe = "HtmlToPdf.Console.exe";
 
         private readonly string exeFileName;
 

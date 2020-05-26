@@ -23,7 +23,7 @@ namespace HtmlToPdf
         /// </summary>
         /// <param name="logger">The logger.</param>
         /// <exception cref="TimeoutException">Timeout waiting for exclusive access</exception>
-        internal static void DownloadBrowser(Logger logger)
+        internal static void DownloadBrowser(ILogger logger)
         {
             string mutexId = $@"Global\{Directory.GetCurrentDirectory().Replace('\\', '_')}";
 

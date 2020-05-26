@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8A928052-04B2-460A-8A2A-5244ED2725D7}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>HtmlToPdf</RootNamespace>
     <AssemblyName>HtmlToPdf</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\HtmlToPdf.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
@@ -186,19 +189,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BrowserDownloader.cs" />
-    <Compile Include="CommandLineOptions.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="FooterTemplateBuilder.cs" />
     <Compile Include="HtmlFileParser.cs" />
     <Compile Include="HtmlToPdfFile.cs" />
     <Compile Include="HtmlToPdfOptions.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="LogLevel.cs" />
-    <Compile Include="ParserResultExtensions.cs" />
     <Compile Include="PdfDocument.cs" />
     <Compile Include="PdfMerger.cs" />
     <Compile Include="PdfPrinter.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="HtmlToPdfProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TempCopyHtmlFile.cs" />
     <Compile Include="TempPdfFile.cs" />
@@ -209,9 +211,6 @@
     </AdditionalFiles>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="rename.cmd">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />

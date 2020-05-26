@@ -2,14 +2,14 @@
 // Copyright (c) HtmlToPdf. All rights reserved.
 // </copyright>
 
-namespace HtmlToPdf
+namespace HtmlToPdf.Console
 {
     using System;
 
     /// <summary>
     /// Logger
     /// </summary>
-    internal class Logger
+    internal class Logger : ILogger
     {
         private readonly LogLevel logLevel;
 
@@ -26,7 +26,7 @@ namespace HtmlToPdf
         /// Logs the exception.
         /// </summary>
         /// <param name="ex">The exception.</param>
-        internal void LogError(Exception ex)
+        public void LogError(Exception ex)
         {
             this.LogError(ex.ToString());
         }
@@ -35,7 +35,7 @@ namespace HtmlToPdf
         /// Logs the error message.
         /// </summary>
         /// <param name="message">The message.</param>
-        internal void LogError(string message)
+        public void LogError(string message)
         {
             if (this.logLevel == LogLevel.None)
             {
@@ -49,7 +49,7 @@ namespace HtmlToPdf
         /// Logs the warning message.
         /// </summary>
         /// <param name="message">The message.</param>
-        internal void LogWarning(string message)
+        public void LogWarning(string message)
         {
             if ((this.logLevel == LogLevel.None)
                 || (this.logLevel == LogLevel.Error))
@@ -64,7 +64,7 @@ namespace HtmlToPdf
         /// Logs the informational message.
         /// </summary>
         /// <param name="message">The message.</param>
-        internal void LogInfo(string message)
+        public void LogInfo(string message)
         {
             if ((this.logLevel != LogLevel.Info)
                 && (this.logLevel != LogLevel.Debug))
@@ -79,7 +79,7 @@ namespace HtmlToPdf
         /// Logs the message useful for debugging.
         /// </summary>
         /// <param name="message">The message.</param>
-        internal void LogDebug(string message)
+        public void LogDebug(string message)
         {
             if (this.logLevel != LogLevel.Debug)
             {

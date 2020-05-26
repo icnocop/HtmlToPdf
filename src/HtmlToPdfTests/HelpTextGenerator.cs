@@ -28,7 +28,7 @@ namespace HtmlToPdfTests
             string version = FileVersionInfo.GetVersionInfo(currentAssembly.Location).FileVersion;
             string usage = File.ReadAllText(@"..\..\..\..\USAGE.md");
 
-            string output = $@"HtmlToPdf {version}
+            string output = $@"HtmlToPdf.Console {version}
 Copyright © 2020
 {(errorMessage == null ? string.Empty : $"{Environment.NewLine}ERROR(S):{Environment.NewLine}  {errorMessage}{Environment.NewLine}")}
 {usage}{(detailedErrorMessage == null ? string.Empty : $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{detailedErrorMessage}")}";

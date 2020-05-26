@@ -73,7 +73,7 @@ namespace HtmlToPdf
         internal static void UpdateLinks(
             string pdfFilePath,
             IReadOnlyCollection<HtmlToPdfFile> htmlToPdfFiles,
-            Logger logger)
+            ILogger logger)
         {
             string tempFilePath = Path.GetTempFileName();
 

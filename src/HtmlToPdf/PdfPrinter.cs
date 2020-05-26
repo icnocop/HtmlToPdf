@@ -17,7 +17,7 @@ namespace HtmlToPdf
     internal class PdfPrinter
     {
         private readonly Browser browser;
-        private readonly Logger logger;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PdfPrinter" /> class.
@@ -26,7 +26,7 @@ namespace HtmlToPdf
         /// <param name="logger">The logger.</param>
         public PdfPrinter(
             Browser browser,
-            Logger logger)
+            ILogger logger)
         {
             this.browser = browser;
             this.logger = logger;

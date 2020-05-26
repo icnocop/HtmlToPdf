@@ -26,6 +26,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B1A9E8E3
 		..\build\SetBuildNumber.ps1 = ..\build\SetBuildNumber.ps1
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlToPdf.Console", "HtmlToPdf.Console\HtmlToPdf.Console.csproj", "{15C187E3-A1D7-4756-A393-7DF307F0F0E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{BD1ECDF3-06AE-4EEF-B322-A58ADDDE6F25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD1ECDF3-06AE-4EEF-B322-A58ADDDE6F25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD1ECDF3-06AE-4EEF-B322-A58ADDDE6F25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15C187E3-A1D7-4756-A393-7DF307F0F0E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15C187E3-A1D7-4756-A393-7DF307F0F0E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15C187E3-A1D7-4756-A393-7DF307F0F0E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15C187E3-A1D7-4756-A393-7DF307F0F0E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
