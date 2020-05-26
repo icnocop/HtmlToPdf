@@ -6,6 +6,7 @@ namespace HtmlToPdfTests
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Web;
     using iText.Kernel.Pdf;
     using iText.Kernel.Pdf.Annot;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -24,10 +25,13 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that the link in one file which links to the next file is updated.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         [TestMethod]
-        public void OneFile_LinksToTheNextFile_UpdatesLink()
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, DisplayName = "wkhtmltopdf.exe")]
+        public void OneFile_LinksToTheNextFile_UpdatesLink(string exeFileName)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
             string htmlFile2Contents = @"
 <html>
@@ -81,25 +85,36 @@ namespace HtmlToPdfTests
 
                                 // get GoTo sub-type
                                 PdfName s = action.GetAsName(PdfName.S);
-                                Assert.AreEqual(PdfName.GoTo, s);
 
-                                // get destination
-                                PdfArray destination = action.GetAsArray(PdfName.D);
-                                PdfIndirectReference destinationPageReference = destination.GetAsDictionary(0).GetIndirectReference();
-                                PdfName zoom = destination.GetAsName(1);
-                                PdfNumber pageOffset = destination.GetAsNumber(2);
+                                if (exeFileName == HtmlToPdfRunner.HtmlToPdfExe)
+                                {
+                                    Assert.AreEqual(PdfName.GoTo, s);
 
-                                // get expected values
-                                PdfPage pdfPage2 = pdfDocument.GetPage(2);
-                                PdfDictionary page2Dictionary = pdfPage2.GetPdfObject();
-                                PdfIndirectReference expectedPageReference = page2Dictionary.GetIndirectReference();
-                                PdfName expectedZoom = PdfName.FitH;
-                                float expectedPageOffset = pdfPage2.GetPageSize().GetTop();
+                                    // get destination
+                                    PdfArray destination = action.GetAsArray(PdfName.D);
+                                    PdfIndirectReference destinationPageReference = destination.GetAsDictionary(0).GetIndirectReference();
+                                    PdfName zoom = destination.GetAsName(1);
+                                    PdfNumber pageOffset = destination.GetAsNumber(2);
 
-                                // assert
-                                Assert.AreEqual(expectedPageReference, destinationPageReference);
-                                Assert.AreEqual(expectedZoom, zoom);
-                                Assert.AreEqual(expectedPageOffset, pageOffset.FloatValue());
+                                    // get expected values
+                                    PdfPage pdfPage2 = pdfDocument.GetPage(2);
+                                    PdfDictionary page2Dictionary = pdfPage2.GetPdfObject();
+                                    PdfIndirectReference expectedPageReference = page2Dictionary.GetIndirectReference();
+                                    PdfName expectedZoom = PdfName.FitH;
+                                    float expectedPageOffset = pdfPage2.GetPageSize().GetTop();
+
+                                    // assert
+                                    Assert.AreEqual(expectedPageReference, destinationPageReference);
+                                    Assert.AreEqual(expectedZoom, zoom);
+                                    Assert.AreEqual(expectedPageOffset, pageOffset.FloatValue());
+                                }
+                                else if (exeFileName == HtmlToPdfRunner.WkhtmltopdfExe)
+                                {
+                                    Assert.AreEqual(PdfName.URI, s);
+
+                                    PdfString uri = action.GetAsString(PdfName.URI);
+                                    Assert.AreEqual(htmlFile2.FilePath, HttpUtility.UrlDecode(uri.ToString()));
+                                }
                             }
                         }
                     }

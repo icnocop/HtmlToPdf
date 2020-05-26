@@ -21,12 +21,15 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing no-outline doesn't produce an error.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         [TestMethod]
-        public void NoOutline_DoesNotError()
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, DisplayName = "wkhtmltopdf.exe")]
+        public void NoOutline_DoesNotError(string exeFileName)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>

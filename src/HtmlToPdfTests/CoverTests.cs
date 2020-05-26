@@ -23,12 +23,15 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing a cover with an HTML file inserts a cover as the first page.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         [TestMethod]
-        public void Cover_WithHtmlFile_InsertsCoverAsFirstPage()
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, DisplayName = "wkhtmltopdf.exe")]
+        public void Cover_WithHtmlFile_InsertsCoverAsFirstPage(string exeFileName)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string cover = @"
+            string cover = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -37,7 +40,7 @@ namespace HtmlToPdfTests
   </body>
 </html>";
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -72,12 +75,15 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing a footer doesn't apply to the cover page.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         [TestMethod]
-        public void Cover_WithFooter_DoesNotApplyToCoverPage()
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, DisplayName = "wkhtmltopdf.exe")]
+        public void Cover_WithFooter_DoesNotApplyToCoverPage(string exeFileName)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string cover = @"
+            string cover = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -86,7 +92,7 @@ namespace HtmlToPdfTests
   </body>
 </html>";
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -114,7 +120,7 @@ namespace HtmlToPdfTests
                             IEnumerable<Word> words = page2.GetWords();
                             Assert.AreEqual(3, words.Count());
                             Assert.AreEqual("Page 2", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-                            Assert.AreEqual("2", words.Last().Text); // the page number
+                            Assert.AreEqual("2", words.Last().Text, "Page number");
                         }
                     }
                 }

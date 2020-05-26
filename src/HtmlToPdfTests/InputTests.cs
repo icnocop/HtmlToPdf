@@ -24,7 +24,7 @@ namespace HtmlToPdfTests
         [TestMethod]
         public void Input_WithFileDoesNotExist_ReturnsAnError()
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(HtmlToPdfRunner.HtmlToPdfExe);
 
             using (TempHtmlFile htmlFile = new TempHtmlFile())
             {

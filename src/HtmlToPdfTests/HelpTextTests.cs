@@ -25,7 +25,7 @@ namespace HtmlToPdfTests
                 "A required value not bound to option name is missing.",
                 "System.ApplicationException: At least one input and one output must be specified.");
 
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(HtmlToPdfRunner.HtmlToPdfExe);
 
             HtmlToPdfRunResult result = runner.Run("--log-level Error");
             Assert.AreEqual(1, result.ExitCode, result.Output);
@@ -41,7 +41,7 @@ namespace HtmlToPdfTests
         {
             string expectedOutput = HelpTextGenerator.Generate();
 
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(HtmlToPdfRunner.HtmlToPdfExe);
 
             HtmlToPdfRunResult result = runner.Run("--help");
             Assert.AreEqual(1, result.ExitCode, result.Output);

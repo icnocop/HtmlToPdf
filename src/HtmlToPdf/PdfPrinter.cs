@@ -4,6 +4,7 @@
 
 namespace HtmlToPdf
 {
+    using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
     using HtmlAgilityPack;
@@ -16,14 +17,19 @@ namespace HtmlToPdf
     internal class PdfPrinter
     {
         private readonly Browser browser;
+        private readonly Logger logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PdfPrinter"/> class.
+        /// Initializes a new instance of the <see cref="PdfPrinter" /> class.
         /// </summary>
         /// <param name="browser">The browser.</param>
-        public PdfPrinter(Browser browser)
+        /// <param name="logger">The logger.</param>
+        public PdfPrinter(
+            Browser browser,
+            Logger logger)
         {
             this.browser = browser;
+            this.logger = logger;
         }
 
         /// <summary>
@@ -31,7 +37,7 @@ namespace HtmlToPdf
         /// </summary>
         /// <param name="input">The input.</param>
         /// <param name="options">The options.</param>
-        /// <param name="logger">The logger.</param>
+        /// <param name="variables">The variables.</param>
         /// <returns>
         /// A task with the PDF file path as a result.
         /// </returns>
@@ -39,22 +45,13 @@ namespace HtmlToPdf
         internal async Task<string> PrintAsPdfAsync(
             string input,
             HtmlToPdfOptions options,
-            Logger logger)
+            Dictionary<string, string> variables)
         {
             string fullPath = Path.GetFullPath(input);
             if (!File.Exists(fullPath))
             {
                 throw new FileNotFoundException($"File not found: {fullPath}", fullPath);
             }
-
-            string footerTemplate = string.Empty;
-            bool displayHeaderFooter = options.FooterTemplateBuilder.DisplayHeaderFooter;
-            if (displayHeaderFooter)
-            {
-                footerTemplate = options.FooterTemplateBuilder.Build();
-            }
-
-            this.PrependEmptyPages(fullPath, options.PageOffset);
 
             string tempPdfFilePath = TempPdfFile.Create();
 
@@ -76,64 +73,77 @@ namespace HtmlToPdf
                 }
                 else
                 {
-                    logger.LogWarning($"File not found: {options.StyleSheet}");
+                    this.logger.LogWarning($"File not found: {options.StyleSheet}");
                 }
             }
 
             // the paper format takes priority over width and height
             // if a page width or height is set, unset the paper format
             PaperFormat paperFormat = options.PaperFormat;
-            if ((!string.IsNullOrEmpty(options.Width))
-                || (!string.IsNullOrEmpty(options.Height)))
+            string width = options.Width;
+            string height = options.Height;
+            if ((!string.IsNullOrEmpty(width))
+                || (!string.IsNullOrEmpty(height)))
             {
                 paperFormat = null;
             }
 
-            string pageRanges = string.Empty;
-            if (options.PageOffset > 1)
+            using (TempCopyHtmlFile tempHtmlFile = new TempCopyHtmlFile(fullPath))
             {
-                if (options.NumberOfPages == 1)
+                this.PrependEmptyPages(tempHtmlFile.FilePath, options.PageOffset + options.PageNumberOffset);
+
+                string pageRanges = string.Empty;
+                if ((options.PageOffset + options.PageNumberOffset) > 0)
                 {
-                    pageRanges = $"{options.PageOffset}";
-                }
-                else
-                {
-                    pageRanges = $"{options.PageOffset} - {options.PageOffset + options.NumberOfPages - 1}";
-                }
+                    pageRanges = $"{options.PageOffset + options.PageNumberOffset + 1} - {options.PageOffset + options.PageNumberOffset + options.NumberOfPages}";
 
-                logger.LogDebug($"Printing pages {pageRanges} of page '{fullPath}'.");
-            }
-
-            PdfOptions pdfOptions = new PdfOptions
-            {
-                DisplayHeaderFooter = displayHeaderFooter,
-                FooterTemplate = footerTemplate,
-                Format = paperFormat,
-                HeaderTemplate = string.Empty,
-                Height = options.Height,
-                Landscape = options.Landscape,
-                MarginOptions = options.MarginOptions,
-                PreferCSSPageSize = false,
-                PageRanges = pageRanges,
-                PrintBackground = options.PrintBackground,
-                Scale = 1,
-                Width = options.Width
-            };
-
-            using (Page page = await this.browser.NewPageAsync())
-            {
-                await page.GoToAsync(fullPath, navigationOptions);
-
-                if (addTagOptions != null)
-                {
-                    await page.AddStyleTagAsync(addTagOptions);
+                    this.logger.LogDebug($"Printing pages {pageRanges} of page '{fullPath}'.");
                 }
 
-                await page.WaitForTimeoutAsync(options.JavascriptDelayInMilliseconds);
+                string footerTemplate = string.Empty;
+                bool displayHeaderFooter = options.FooterTemplateBuilder.DisplayHeaderFooter;
+                if (displayHeaderFooter)
+                {
+                    // page variables
+                    Dictionary<string, string> pageVariables = new Dictionary<string, string>(variables)
+                    {
+                        { "webpage", fullPath }
+                    };
 
-                await page.PdfAsync(tempPdfFilePath, pdfOptions);
+                    footerTemplate = options.FooterTemplateBuilder.Build(pageVariables);
+                }
 
-                await page.CloseAsync();
+                PdfOptions pdfOptions = new PdfOptions
+                {
+                    DisplayHeaderFooter = displayHeaderFooter,
+                    FooterTemplate = footerTemplate,
+                    Format = paperFormat,
+                    HeaderTemplate = string.Empty,
+                    Height = height,
+                    Landscape = options.Landscape,
+                    MarginOptions = options.MarginOptions,
+                    PreferCSSPageSize = false,
+                    PageRanges = pageRanges,
+                    PrintBackground = options.PrintBackground,
+                    Scale = 1,
+                    Width = width
+                };
+
+                using (Page page = await this.browser.NewPageAsync())
+                {
+                    await page.GoToAsync(tempHtmlFile.FilePath, navigationOptions);
+
+                    if (addTagOptions != null)
+                    {
+                        await page.AddStyleTagAsync(addTagOptions);
+                    }
+
+                    await page.WaitForTimeoutAsync(options.JavascriptDelayInMilliseconds);
+
+                    await page.PdfAsync(tempPdfFilePath, pdfOptions);
+
+                    await page.CloseAsync();
+                }
             }
 
             return tempPdfFilePath;
@@ -141,10 +151,12 @@ namespace HtmlToPdf
 
         private void PrependEmptyPages(string htmlFilePath, int pages)
         {
-            if (pages <= 1)
+            if (pages <= 0)
             {
                 return;
             }
+
+            this.logger.LogDebug($"Inserting {pages} empty page(s) in {htmlFilePath}.");
 
             // insert empty pages
             HtmlDocument html = new HtmlDocument();
@@ -171,7 +183,7 @@ namespace HtmlToPdf
             // Get body node
             HtmlNode body = html.DocumentNode.SelectSingleNode("//body");
 
-            for (int i = pages; i > 1; i--)
+            for (int i = pages; i > 0; i--)
             {
                 // Create new node
                 HtmlNode newNode = HtmlNode.CreateNode(string.Format(emptyPage, i));

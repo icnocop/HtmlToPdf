@@ -24,9 +24,9 @@ namespace HtmlToPdfTests
         [TestMethod]
         public void NoJavascriptDelay_ReturnsError()
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(HtmlToPdfRunner.HtmlToPdfExe);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -61,17 +61,21 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing a Javascript delay delays the specified number of milliseconds.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         /// <param name="javascriptDelayInMilliseconds">The javascript delay in milliseconds.</param>
         /// <param name="expectedMinJavascriptDelayInMilliseconds">The expected minimum javascript delay in milliseconds.</param>
         [TestMethod]
-        [DataRow(null, 100, DisplayName = "Default")]
-        [DataRow("3000", 500, DisplayName = "3000")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, null, 100, DisplayName = "HtmlToPdf.exe Default")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, null, 22, DisplayName = "wkhtmltopdf.exe Default")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "3000", 500, DisplayName = "HtmlToPdf.exe 3000")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "3000", 298, DisplayName = "wkhtmltopdf.exe 3000")]
         public void JavascriptDelayTest(
+            string exeFileName,
             string javascriptDelayInMilliseconds,
             double expectedMinJavascriptDelayInMilliseconds)
         {
             string htmlFilePath = "JavascriptCounter.html";
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
             using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
             {

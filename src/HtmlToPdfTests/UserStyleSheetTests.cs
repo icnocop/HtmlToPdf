@@ -23,12 +23,15 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts passing user-style-sheet with CSS setting the body color to blue makes the letters in the PDF blue.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         [TestMethod]
-        public void UserStyleSheet_WithBodyColorBlue_MakesLettersBlue()
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, DisplayName = "wkhtmltopdf.exe")]
+        public void UserStyleSheet_WithBodyColorBlue_MakesLettersBlue(string exeFileName)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>

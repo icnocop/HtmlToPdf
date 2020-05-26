@@ -21,14 +21,18 @@ namespace HtmlToPdfTests
         public TestContext TestContext { get; set; }
 
         /// <summary>
-        /// Asserts that the default footer-font-name is Arial MT.
+        /// Asserts that the default footer-font-name is Arial.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
+        /// <param name="expectedFontName">Expected name of the font.</param>
         [TestMethod]
-        public void FooterFontName_DefaultValue_IsArialMT()
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "ArialMT", DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "ArialRegular", DisplayName = "wkhtmltopdf.exe")]
+        public void FooterFontName_DefaultValue_IsArial(string exeFileName, string expectedFontName)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -53,7 +57,7 @@ namespace HtmlToPdfTests
                         Assert.AreEqual(3, words.Count());
                         Assert.AreEqual("Page 1", $"{words.ElementAt(0)} {words.ElementAt(1)}");
 
-                        Assert.AreEqual("ArialMT", $"{words.ElementAt(2).FontName}");
+                        Assert.AreEqual(expectedFontName, $"{words.ElementAt(2).FontName}");
                     }
                 }
             }
@@ -62,12 +66,16 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing footer-font-name "Times New Roman" sets the footer font family to "Times New Roman".
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
+        /// <param name="expectedFontName">Expected name of the font.</param>
         [TestMethod]
-        public void FooterFontName_WithTimesNewRoman_SetsTheFooterFontFamilyToTimesNewRoman()
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "TimesNewRomanPSMT", DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "TimesNewRomanRegular", DisplayName = "wkhtmltopdf.exe")]
+        public void FooterFontName_WithTimesNewRoman_SetsTheFooterFontFamilyToTimesNewRoman(string exeFileName, string expectedFontName)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -92,7 +100,7 @@ namespace HtmlToPdfTests
                         Assert.AreEqual(3, words.Count());
                         Assert.AreEqual("Page 1", $"{words.ElementAt(0)} {words.ElementAt(1)}");
 
-                        Assert.AreEqual("TimesNewRomanPSMT", $"{words.ElementAt(2).FontName}");
+                        Assert.AreEqual(expectedFontName, $"{words.ElementAt(2).FontName}");
                     }
                 }
             }

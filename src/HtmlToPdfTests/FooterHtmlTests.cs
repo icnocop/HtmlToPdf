@@ -30,12 +30,15 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing footer-html with a local file sets the footer with the contents of the file.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         [TestMethod]
-        public void FooterHtml_WithLocalFilePath_SetsTheFooterWithContentsOfFile()
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, DisplayName = "wkhtmltopdf.exe")]
+        public void FooterHtml_WithLocalFilePath_SetsTheFooterWithContentsOfFile(string exeFileName)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -73,12 +76,15 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing footer-html with a URL sets the footer with the contents of the URL.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         [TestMethod]
-        public void FooterHtml_WithUrl_SetsTheFooterWithContentsOfUrl()
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, DisplayName = "wkhtmltopdf.exe")]
+        public void FooterHtml_WithUrl_SetsTheFooterWithContentsOfUrl(string exeFileName)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>

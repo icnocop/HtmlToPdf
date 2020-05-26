@@ -29,17 +29,21 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing a background value determines whether or not to print the background.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         /// <param name="commandLineParameter">The command line parameter.</param>
         /// <param name="expectedBackground">if set to <c>true</c> a background is expected.</param>
         [TestMethod]
-        [DataRow(null, true, DisplayName = "Default")]
-        [DataRow("--background", true, DisplayName = "Background")]
-        [DataRow("--no-background", false, DisplayName = "No Background")]
-        public void BackgroundTest(string commandLineParameter, bool expectedBackground)
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, null, true, DisplayName = "HtmlToPdf.exe Default")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, null, true, DisplayName = "wkhtmltopdf.exe Default")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--background", true, DisplayName = "HtmlToPdf.exe Background")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--background", true, DisplayName = "wkhtmltopdf.exe Background")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--no-background", false, DisplayName = "HtmlToPdf.exe No Background")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--no-background", false, DisplayName = "wkhtmltopdf.exe No Background")]
+        public void BackgroundTest(string exeFileName, string commandLineParameter, bool expectedBackground)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>

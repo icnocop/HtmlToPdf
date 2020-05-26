@@ -187,7 +187,9 @@
   <ItemGroup>
     <Compile Include="BrowserDownloader.cs" />
     <Compile Include="CommandLineOptions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="FooterTemplateBuilder.cs" />
+    <Compile Include="HtmlFileParser.cs" />
     <Compile Include="HtmlToPdfFile.cs" />
     <Compile Include="HtmlToPdfOptions.cs" />
     <Compile Include="Logger.cs" />
@@ -198,6 +200,7 @@
     <Compile Include="PdfPrinter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TempCopyHtmlFile.cs" />
     <Compile Include="TempPdfFile.cs" />
   </ItemGroup>
   <ItemGroup>

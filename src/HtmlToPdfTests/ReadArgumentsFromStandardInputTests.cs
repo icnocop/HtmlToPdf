@@ -21,12 +21,15 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing inputs into standard input reads arguments from standard input.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         [TestMethod]
-        public void PassInputsToStandardInput_ReadsArgumentsFromStandardInput()
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, DisplayName = "wkhtmltopdf.exe")]
+        public void PassInputsToStandardInput_ReadsArgumentsFromStandardInput(string exeFileName)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -40,7 +43,7 @@ namespace HtmlToPdfTests
                 using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                 {
                     string commandLine = $"--read-args-from-stdin";
-                    string stdIn = $"\"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                    string stdIn = $"\"{htmlFile.FilePath.Replace("\\", "\\\\")}\" \"{pdfFile.FilePath.Replace("\\", "\\\\")}\"";
                     HtmlToPdfRunResult result = runner.Run(commandLine, stdIn);
                     Assert.AreEqual(0, result.ExitCode, result.Output);
 

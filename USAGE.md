@@ -67,6 +67,13 @@
   --page-offset=<offset>                                    (Default: 0) The
                                                             starting page number
 
+  --title=<title>                                           The title of the
+                                                            generated pdf file.
+                                                            The title of the
+                                                            first document is
+                                                            used if not
+                                                            specified.
+
   --help                                                    Display this help
                                                             screen.
 

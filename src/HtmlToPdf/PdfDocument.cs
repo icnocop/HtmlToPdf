@@ -5,7 +5,6 @@
 namespace HtmlToPdf
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -33,6 +32,36 @@ namespace HtmlToPdf
                     return pdfDocument.GetNumberOfPages();
                 }
             }
+        }
+
+        /// <summary>
+        /// Sets the title.
+        /// </summary>
+        /// <param name="pdfFilePath">The PDF file path.</param>
+        /// <param name="title">The title.</param>
+        internal static void SetTitle(string pdfFilePath, string title)
+        {
+            if (string.IsNullOrEmpty(title))
+            {
+                return;
+            }
+
+            string tempFilePath = Path.GetTempFileName();
+
+            using (PdfReader pdfReader = new PdfReader(pdfFilePath))
+            {
+                using (PdfWriter pdfWriter = new PdfWriter(tempFilePath))
+                {
+                    using (iText.Kernel.Pdf.PdfDocument pdfDocument = new iText.Kernel.Pdf.PdfDocument(pdfReader, pdfWriter))
+                    {
+                        PdfDocumentInfo pdfDocumentInfo = pdfDocument.GetDocumentInfo();
+                        pdfDocumentInfo.SetTitle(title);
+                    }
+                }
+            }
+
+            File.Delete(pdfFilePath);
+            File.Move(tempFilePath, pdfFilePath);
         }
 
         /// <summary>
@@ -99,7 +128,7 @@ namespace HtmlToPdf
                                 HtmlToPdfFile linkedHtmlToPdfFile = htmlToPdfFiles.Single(x => x.Input == htmlFilePath);
                                 int linkedPageNumber = linkedHtmlToPdfFile.OutputPdfFilePageNumber;
 
-                                // please go to http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html to find the detail.
+                                // http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html
                                 PdfPage linkedPage = pdfDocument.GetPage(linkedPageNumber);
                                 float top = linkedPage.GetPageSize().GetTop();
                                 PdfExplicitDestination destination = PdfExplicitDestination.CreateFitH(linkedPage, top);

@@ -4,7 +4,6 @@
 
 namespace HtmlToPdfTests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using DotLiquid;
@@ -26,18 +25,36 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing footer-right with a variable placeholder replaces the variable in the footer.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         /// <param name="footerCommandLineArgument">The footer command line argument.</param>
         /// <param name="expectedFooterTextTemplate">The expected footer text template.</param>
         [TestMethod]
-        [DataRow("[page]", "1")]
-        [DataRow("[date]", "{{ 'today' | as_date | date:'M/dd/yyyy' }}")]
-        [DataRow("[title]", "The title of the test page")]
-        [DataRow("[webpage]", "{{url}}")]
-        public void FooterRight_WithVariable_ReplacesVariableInFooter(string footerCommandLineArgument, string expectedFooterTextTemplate)
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[page]", "1", DisplayName = "HtmlToPdf.exe [page]")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[page]", "1", DisplayName = "wkhtmltopdf.exe [page]")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[date]", "{{ 'today' | as_date | date:'M/dd/yyyy' }}", DisplayName = "HtmlToPdf.exe [date]")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[date]", "{{ 'today' | as_date | date:'M/dd/yyyy' }}", DisplayName = "wkhtmltopdf.exe [date]")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[title]", "The title of the test page", DisplayName = "HtmlToPdf.exe [title]")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[title]", "The title of the test page", DisplayName = "wkhtmltopdf.exe [title]")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[webpage]", "{{url}}", DisplayName = "HtmlToPdf.exe [webpage]")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[webpage]", "{{url}}", DisplayName = "wkhtmltopdf.exe [webpage]")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[frompage]", "1", DisplayName = "HtmlToPdf.exe [frompage]")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[frompage]", "1", DisplayName = "wkhtmltopdf.exe [frompage]")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[topage]", "1", DisplayName = "HtmlToPdf.exe [topage]")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[topage]", "1", DisplayName = "wkhtmltopdf.exe [topage]")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[isodate]", "{{ 'today' | as_date | date:'yyyy-MM-dd' }}", DisplayName = "HtmlToPdf.exe [isodate]")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[isodate]", "{{ 'today' | as_date | date:'yyyy-MM-dd' }}", DisplayName = "wkhtmltopdf.exe [isodate]")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[time]", "{{ 'now' | as_date | date:'h:mm:ss tt' }}", DisplayName = "HtmlToPdf.exe [time]")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[time]", "{{ 'now' | as_date | date:'h:mm:ss tt' }}", DisplayName = "wkhtmltopdf.exe [time]")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[doctitle]", "The title of the test page", DisplayName = "HtmlToPdf.exe [doctitle]")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[doctitle]", "The title of the test page", DisplayName = "wkhtmltopdf.exe [doctitle]")]
+        public void FooterRight_WithVariable_ReplacesVariableInFooter(
+            string exeFileName,
+            string footerCommandLineArgument,
+            string expectedFooterTextTemplate)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
     <title>The title of the test page</title>
@@ -49,11 +66,9 @@ namespace HtmlToPdfTests
 
             using (TempHtmlFile htmlFile = new TempHtmlFile(html))
             {
-                var uri = new Uri(htmlFile.FilePath);
-
                 Dictionary<string, object> dictionary = new Dictionary<string, object>
                 {
-                    { "url", uri.AbsoluteUri }
+                    { "url", htmlFile.FilePath }
                 };
                 Hash hash = Hash.FromDictionary(dictionary);
                 Template.RegisterFilter(typeof(NaturalDateFilter));
@@ -82,16 +97,20 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing footer with a page placeholder inserts a page number in the footer in multiple pages.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         /// <param name="footerCommandLineArgument">The footer command line argument.</param>
         [TestMethod]
-        [DataRow("--footer-left")]
-        [DataRow("--footer-center")]
-        [DataRow("--footer-right")]
-        public void Footer_WithPage_InsertsPageNumberInFooterInMultiplePages(string footerCommandLineArgument)
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--footer-left", DisplayName = "HtmlToPdf.exe --footer-left")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--footer-left", DisplayName = "wkhtmltopdf.exe --footer-left")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--footer-center", DisplayName = "HtmlToPdf.exe --footer-center")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--footer-center", DisplayName = "wkhtmltopdf.exe --footer-center")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--footer-right", DisplayName = "HtmlToPdf.exe --footer-right")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--footer-right", DisplayName = "wkhtmltopdf.exe --footer-right")]
+        public void Footer_WithPage_InsertsPageNumberInFooterInMultiplePages(string exeFileName, string footerCommandLineArgument)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html1 = @"
+            string html1 = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -100,7 +119,7 @@ namespace HtmlToPdfTests
   </body>
 </html>";
 
-            string html2 = @"
+            string html2 = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -126,13 +145,13 @@ namespace HtmlToPdfTests
                             IEnumerable<Word> words = page1.GetWords();
                             Assert.AreEqual(3, words.Count());
                             Assert.AreEqual("Page 1", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-                            Assert.AreEqual("1", words.Last().Text); // the page number
+                            Assert.AreEqual("1", words.Last().Text, "Page number");
 
                             Page page2 = pdfDocument.GetPage(2);
                             words = page2.GetWords();
                             Assert.AreEqual(3, words.Count());
                             Assert.AreEqual("Page 2", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-                            Assert.AreEqual("2", words.Last().Text); // the page number
+                            Assert.AreEqual("2", words.Last().Text, "Page number");
                         }
                     }
                 }
@@ -145,9 +164,9 @@ namespace HtmlToPdfTests
         [TestMethod]
         public void FooterRight_WithCssToHideFooterOnFirstPage_DoesNotShowFooterOnFirstPage()
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(HtmlToPdfRunner.HtmlToPdfExe);
 
-            string html1 = @"
+            string html1 = @"<!DOCTYPE html>
 <html>
   <head>
     <style>
@@ -159,7 +178,7 @@ namespace HtmlToPdfTests
   </body>
 </html>";
 
-            string html2 = @"
+            string html2 = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -190,7 +209,7 @@ namespace HtmlToPdfTests
                             words = page2.GetWords();
                             Assert.AreEqual(3, words.Count());
                             Assert.AreEqual("Page 2", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-                            Assert.AreEqual("2", words.Last().Text); // the page number
+                            Assert.AreEqual("2", words.Last().Text, "Page number");
                         }
                     }
                 }
@@ -203,9 +222,9 @@ namespace HtmlToPdfTests
         [TestMethod]
         public void FooterRight_WithCssToHideFooterOnFirstPageOfMultiplePages_DoesNotShowFooterOnFirstPage()
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(HtmlToPdfRunner.HtmlToPdfExe);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
     <style>
@@ -239,7 +258,7 @@ namespace HtmlToPdfTests
                         words = page2.GetWords();
                         Assert.AreEqual(3, words.Count());
                         Assert.AreEqual("Page 2", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-                        Assert.AreEqual("2", words.Last().Text); // the page number
+                        Assert.AreEqual("2", words.Last().Text, "Page number");
                     }
                 }
             }

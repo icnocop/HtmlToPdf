@@ -165,6 +165,12 @@ namespace HtmlToPdf
         public int PageOffset { get; set; }
 
         /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
+        [Option("title", MetaValue = "<title>", HelpText = "The title of the generated pdf file. The title of the first document is used if not specified.")]
+        public string Title { get; set; }
+
+        /// <summary>
         /// Gets the logger level.
         /// </summary>
         internal LogLevel LoggerLevel

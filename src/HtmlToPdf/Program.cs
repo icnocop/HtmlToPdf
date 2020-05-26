@@ -13,6 +13,7 @@ namespace HtmlToPdf
     using System.Threading.Tasks;
     using CommandLine;
     using CommandLine.Text;
+    using HtmlToPdf.Extensions;
     using PuppeteerSharp;
     using PuppeteerSharp.Media;
 
@@ -137,6 +138,8 @@ namespace HtmlToPdf
                 return await ParseAndRunOptions(parser, newArgs, logger);
             }
 
+            DateTime dtNow = DateTime.Now; // local time
+
             Encoding encoding = Encoding.Default;
             if (!string.IsNullOrEmpty(commandLineOptions.Encoding))
             {
@@ -180,6 +183,8 @@ namespace HtmlToPdf
 
             commandLineOptions.UserStyleSheet = commandLineOptions.UserStyleSheet?.Trim('"');
 
+            string title = commandLineOptions.Title;
+
             BrowserDownloader.DownloadBrowser(logger);
 
             using (Browser browser = await Puppeteer.LaunchAsync(new LaunchOptions
@@ -202,7 +207,7 @@ namespace HtmlToPdf
 
                 try
                 {
-                    PdfPrinter pdfPrinter = new PdfPrinter(browser);
+                    PdfPrinter pdfPrinter = new PdfPrinter(browser, logger);
 
                     // cover options
                     HtmlToPdfOptions htmlToPdfOptions = new HtmlToPdfOptions
@@ -225,7 +230,7 @@ namespace HtmlToPdf
                         string pdfFile = await pdfPrinter.PrintAsPdfAsync(
                             cover,
                             htmlToPdfOptions,
-                            logger);
+                            null);
 
                         int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
 
@@ -251,15 +256,24 @@ namespace HtmlToPdf
                     htmlToPdfOptions.FooterTemplateBuilder.FooterCenter = commandLineOptions.FooterCenter;
                     htmlToPdfOptions.FooterTemplateBuilder.FooterRight = commandLineOptions.FooterRight;
 
-                    string footerFontSize = commandLineOptions.FooterFontSize;
-                    if (char.IsDigit(footerFontSize.Last()))
-                    {
-                        footerFontSize += "px";
-                    }
+                    string footerFontSize = commandLineOptions.FooterFontSize.AppendUnits("px");
 
                     htmlToPdfOptions.FooterTemplateBuilder.FooterFontSize = footerFontSize;
                     htmlToPdfOptions.FooterTemplateBuilder.FooterFontName = commandLineOptions.FooterFontName;
                     htmlToPdfOptions.FooterTemplateBuilder.FooterHtml = commandLineOptions.FooterHtml;
+
+                    // global header/footer variables
+                    // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
+                    Dictionary<string, string> variables = new Dictionary<string, string>
+                    {
+                        { "page", "<span class=\"pageNumber\"></span>" },
+                        { "date", "<span class=\"date\"></span>" }, // M/dd/yyyy
+                        { "title", "<span class=\"title\"></span>" },
+                        { "frompage",  (commandLineOptions.PageOffset + 1).ToString() },
+                        { "isodate", dtNow.ToString("yyyy-MM-dd") }, // ISO 8601 extended format
+                        { "time", dtNow.ToString("h:mm:ss tt") }, // ex. 3:58:45 PM
+                        { "doctitle", title }
+                    };
 
                     // count the number of PDF pages each HTML file will be printed as
                     var tasks = inputs.Where(x => !htmlToPdfFiles.Any(y => y.Input == x)).Select(async input =>
@@ -268,7 +282,7 @@ namespace HtmlToPdf
                         string pdfFile = await pdfPrinter.PrintAsPdfAsync(
                             input,
                             htmlToPdfOptions,
-                            logger);
+                            variables);
 
                         // count the number of pages
                         int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
@@ -289,9 +303,19 @@ namespace HtmlToPdf
 
                     await Task.WhenAll(tasks);
 
+                    variables.Add("topage", htmlToPdfFiles.Sum(x => x.NumberOfPages).ToString());
+
                     // update models and optionally re-print HTML files to include footers with page numbers
                     tasks = htmlToPdfFiles.Select(async htmlToPdfFile =>
                     {
+                        if (string.IsNullOrEmpty(title)
+                            && (htmlToPdfFile.Index == 0))
+                        {
+                            HtmlFileParser htmlFileParser = new HtmlFileParser(htmlToPdfFile.Input);
+                            title = htmlFileParser.GetTitle();
+                            variables["doctitle"] = title;
+                        }
+
                         // sum the number of pages in previous documents to get the current page number offset
                         int currentPageNumber = htmlToPdfFiles
                             .Where(x => x.Index < htmlToPdfFile.Index)
@@ -299,13 +323,15 @@ namespace HtmlToPdf
 
                         if ((currentPageNumber + htmlToPdfFile.NumberOfPages) <= (commandLineOptions.PageOffset + 1))
                         {
+                            logger.LogDebug($"Skipping printing {htmlToPdfFile.Input}");
                             htmlToPdfFile.Skip = true;
                             return;
                         }
 
                         // print as pdf with page number offset
                         htmlToPdfFile.OutputPdfFilePageNumber = currentPageNumber;
-                        htmlToPdfOptions.PageOffset = currentPageNumber - commandLineOptions.PageOffset;
+                        htmlToPdfOptions.PageOffset = currentPageNumber - 1;
+                        htmlToPdfOptions.PageNumberOffset = commandLineOptions.PageOffset;
                         htmlToPdfOptions.NumberOfPages = htmlToPdfFile.NumberOfPages;
 
                         if (htmlToPdfFile.PrintFooter)
@@ -317,7 +343,7 @@ namespace HtmlToPdf
                             string pdfFile = await pdfPrinter.PrintAsPdfAsync(
                                 htmlToPdfFile.Input,
                                 htmlToPdfOptions,
-                                logger);
+                                variables);
 
                             htmlToPdfFile.PdfFilePath = pdfFile;
                         }
@@ -347,6 +373,8 @@ namespace HtmlToPdf
 
             // update external file links to internal document links
             PdfDocument.UpdateLinks(tempOutputFilePath, htmlToPdfFiles, logger);
+
+            PdfDocument.SetTitle(tempOutputFilePath, title);
 
             if (stdout)
             {

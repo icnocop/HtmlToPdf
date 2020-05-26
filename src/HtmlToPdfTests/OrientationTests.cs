@@ -21,19 +21,28 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Asserts that passing a orientation value sets the page orientation.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
         /// <param name="orientation">The orientation.</param>
         /// <param name="pageSize">Size of the page.</param>
         /// <param name="width">The width.</param>
         /// <param name="height">The height.</param>
         [TestMethod]
-        [DataRow(null, PageSize.Custom, 594, 841, DisplayName = "Default")]
-        [DataRow("Portrait", PageSize.Custom, 594, 841, DisplayName = "Portrait")]
-        [DataRow("Landscape", PageSize.Custom, 841, 594, DisplayName = "Landscape")]
-        public void OrientationTest(string orientation, PageSize pageSize, int width, int height)
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, null, PageSize.Custom, 594, 841, DisplayName = "HtmlToPdf.exe Default")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, null, PageSize.A4, 595, 842, DisplayName = "wkhtmltopdf.exe Default")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "Portrait", PageSize.Custom, 594, 841, DisplayName = "HtmlToPdf.exe Portrait")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "Portrait", PageSize.A4, 595, 842, DisplayName = "wkhtmltopdf.exe Portrait")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "Landscape", PageSize.Custom, 841, 594, DisplayName = "HtmlToPdf.exe Landscape")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "Landscape", PageSize.Custom, 842, 595, DisplayName = "wkhtmltopdf.exe Landscape")]
+        public void OrientationTest(
+            string exeFileName,
+            string orientation,
+            PageSize pageSize,
+            int width,
+            int height)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>

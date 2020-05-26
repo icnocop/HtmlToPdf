@@ -71,6 +71,11 @@ namespace HtmlToPdf
         public int PageOffset { get; set; }
 
         /// <summary>
+        /// Gets or sets the page number offset.
+        /// </summary>
+        public int PageNumberOffset { get; set; }
+
+        /// <summary>
         /// Gets or sets the number of pages.
         /// </summary>
         public int NumberOfPages { get; set; }

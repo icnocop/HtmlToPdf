@@ -15,6 +15,27 @@ namespace HtmlToPdfTests
     public class HtmlToPdfRunner
     {
         /// <summary>
+        /// The wkhtmltopdf executable
+        /// </summary>
+        public const string WkhtmltopdfExe = "wkhtmltopdf.exe";
+
+        /// <summary>
+        /// The HTML to PDF executable
+        /// </summary>
+        public const string HtmlToPdfExe = "HtmlToPdf.exe";
+
+        private readonly string exeFileName;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HtmlToPdfRunner"/> class.
+        /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
+        public HtmlToPdfRunner(string exeFileName)
+        {
+            this.exeFileName = exeFileName;
+        }
+
+        /// <summary>
         /// Runs the specified command line.
         /// </summary>
         /// <param name="commandLine">The command line.</param>
@@ -35,7 +56,7 @@ namespace HtmlToPdfTests
                     RedirectStandardError = true,
                     StandardErrorEncoding = Encoding.Default,
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    FileName = "HtmlToPdf.exe",
+                    FileName = this.exeFileName,
                     Arguments = commandLine
                 }
             })

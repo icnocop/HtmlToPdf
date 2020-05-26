@@ -5,6 +5,7 @@
 namespace HtmlToPdf
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Net;
 
@@ -13,6 +14,9 @@ namespace HtmlToPdf
     /// </summary>
     public class FooterTemplateBuilder
     {
+        private bool loadedExternalFooterHtml;
+        private string externalFooterHtml;
+
         /// <summary>
         /// Gets a value indicating whether to display the header and footer.
         /// </summary>
@@ -60,8 +64,47 @@ namespace HtmlToPdf
         /// <summary>
         /// Builds the footer template with the specified CSS.
         /// </summary>
-        /// <returns>The footer template.</returns>
-        internal string Build()
+        /// <param name="variables">The variables.</param>
+        /// <returns>
+        /// The footer template.
+        /// </returns>
+        internal string Build(Dictionary<string, string> variables)
+        {
+            string footerHtml = this.BuildFooterHtml();
+            if (string.IsNullOrEmpty(footerHtml))
+            {
+                return footerHtml;
+            }
+
+            foreach (KeyValuePair<string, string> variable in variables)
+            {
+                footerHtml = footerHtml.Replace($"[{variable.Key}]", variable.Value);
+            }
+
+            return footerHtml;
+        }
+
+        /// <summary>
+        /// Determines whether the footer HTML contains the specified variable.
+        /// </summary>
+        /// <param name="variable">The variable.</param>
+        /// <returns>
+        ///   <c>true</c> if the footer HTML contains the specified variable; otherwise, <c>false</c>.
+        /// </returns>
+        internal bool ContainsVariable(string variable)
+        {
+            if (!this.DisplayHeaderFooter)
+            {
+                return false;
+            }
+
+            return ((this.FooterLeft != null) && this.FooterLeft.Contains($"[{variable}]"))
+                || ((this.FooterCenter != null) && this.FooterCenter.Contains($"[{variable}]"))
+                || ((this.FooterRight != null) && this.FooterRight.Contains($"[{variable}]"))
+                || this.BuildFooterHtml().Contains($"[{variable}]");
+        }
+
+        private string BuildFooterHtml()
         {
             if (!this.DisplayHeaderFooter)
             {
@@ -90,41 +133,46 @@ namespace HtmlToPdf
             }
             else
             {
-                bool isFile;
-                try
+                if (this.loadedExternalFooterHtml)
                 {
-                    Uri uri = new Uri(this.FooterHtml);
-                    isFile = uri.IsFile;
-                }
-                catch
-                {
-                    isFile = true;
-                }
-
-                if (isFile)
-                {
-                    if (!Path.IsPathRooted(this.FooterHtml))
-                    {
-                        this.FooterHtml = Path.GetFullPath(this.FooterHtml);
-                    }
-
-                    footerHtml = File.ReadAllText(this.FooterHtml);
+                    footerHtml = this.externalFooterHtml;
                 }
                 else
                 {
-                    using (var webClient = new WebClient())
+                    bool isFile;
+                    try
                     {
-                        footerHtml = webClient.DownloadString(this.FooterHtml);
+                        Uri uri = new Uri(this.FooterHtml);
+                        isFile = uri.IsFile;
                     }
+                    catch
+                    {
+                        isFile = true;
+                    }
+
+                    if (isFile)
+                    {
+                        if (!Path.IsPathRooted(this.FooterHtml))
+                        {
+                            this.FooterHtml = Path.GetFullPath(this.FooterHtml);
+                        }
+
+                        footerHtml = File.ReadAllText(this.FooterHtml);
+                    }
+                    else
+                    {
+                        using (var webClient = new WebClient())
+                        {
+                            footerHtml = webClient.DownloadString(this.FooterHtml);
+                        }
+                    }
+
+                    this.externalFooterHtml = footerHtml;
+                    this.loadedExternalFooterHtml = true;
                 }
             }
 
-            // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
-            return footerHtml
-                .Replace("[page]", "<span class=\"pageNumber\"></span>")
-                .Replace("[date]", "<span class=\"date\"></span>")
-                .Replace("[title]", "<span class=\"title\"></span>")
-                .Replace("[webpage]", "<span class=\"url\"></span>");
+            return footerHtml;
         }
     }
 }

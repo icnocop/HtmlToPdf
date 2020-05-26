@@ -1,16 +1,21 @@
 # Change Log
 
+__v0.0.526.1__ (2020-05-26)
+
+ - Added support for the `--title` command line option
+ - Added support for `frompage`, `topage`, `isodate`, `time`, and `doctitle` header/footer variables
+
 __v0.0.524.5__ (2020-05-24)
 
- - Added support for --page-offset command line option
+ - Added support for the `--page-offset` command line option
  
 __v0.0.524.4__ (2020-05-24)
 
- - Added support for --footer-font-size, --footer-font-name, and --footer-html command line options
+ - Added support for `--footer-font-size`, `--footer-font-name`, and `--footer-html` command line options
 
 __v0.0.524.2__ (2020-05-24)
 
- - Added support for --footer-left and --footer-right command line options
+ - Added support for `--footer-left` and `--footer-right` command line options
 
 __v0.0.518.3__ (2020-05-18)
 
@@ -27,7 +32,7 @@ __v0.0.516.0__ (2020-05-16)
 
 __v0.0.515.0__ (2020-05-15)
 
- - Added support for the "log-level" command line option
+ - Added support for the `--log-level` command line option
 
 __v0.0.503.0__ (2020-05-03)
 

@@ -21,14 +21,18 @@ namespace HtmlToPdfTests
         public TestContext TestContext { get; set; }
 
         /// <summary>
-        /// Asserts that the default footer-font-size is 12.
+        /// Asserts the default footer-font-size.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
+        /// <param name="expectedFontSize">Expected size of the font.</param>
         [TestMethod]
-        public void FooterFontSize_DefaultValue_Is12()
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "12", DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "18", DisplayName = "wkhtmltopdf.exe")]
+        public void FooterFontSize_DefaultValue(string exeFileName, string expectedFontSize)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -53,21 +57,26 @@ namespace HtmlToPdfTests
                         Assert.AreEqual(3, words.Count());
                         Assert.AreEqual("Page 1", $"{words.ElementAt(0)} {words.ElementAt(1)}");
 
-                        Assert.AreEqual("12", $"{words.ElementAt(2).Letters[0].FontSize}");
+                        Assert.AreEqual(expectedFontSize, $"{words.ElementAt(2).Letters[0].FontSize}");
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Asserts that passing footer-font-size 10 sets the footer font size to 10px.
+        /// Asserts that passing footer-font-size sets the footer font size.
         /// </summary>
+        /// <param name="exeFileName">Name of the executable file.</param>
+        /// <param name="fontSize">Size of the font.</param>
+        /// <param name="expectedFontSize">Expected size of the font.</param>
         [TestMethod]
-        public void FooterFontSize_With10_SetsTheFooterFontSizeTo10Pixels()
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "10", "10", DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "10", "16", DisplayName = "wkhtmltopdf.exe")]
+        public void FooterFontSize_SetsTheFooterFontSize(string exeFileName, string fontSize, string expectedFontSize)
         {
-            HtmlToPdfRunner runner = new HtmlToPdfRunner();
+            HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string html = @"
+            string html = @"<!DOCTYPE html>
 <html>
   <head>
   </head>
@@ -80,7 +89,7 @@ namespace HtmlToPdfTests
             {
                 using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                 {
-                    string commandLine = $"--footer-font-size 10 --footer-right [page] \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                    string commandLine = $"--footer-font-size {fontSize} --footer-right [page] \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
                     HtmlToPdfRunResult result = runner.Run(commandLine);
                     Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -92,7 +101,7 @@ namespace HtmlToPdfTests
                         Assert.AreEqual(3, words.Count());
                         Assert.AreEqual("Page 1", $"{words.ElementAt(0)} {words.ElementAt(1)}");
 
-                        Assert.AreEqual("10", $"{words.ElementAt(2).Letters[0].FontSize}");
+                        Assert.AreEqual(expectedFontSize, $"{words.ElementAt(2).Letters[0].FontSize}");
                     }
                 }
             }
