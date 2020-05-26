@@ -50,7 +50,7 @@ namespace HtmlToPdfTests
                     HtmlToPdfRunResult result = runner.Run(string.Join(" ", commandLine));
                     Assert.AreEqual(1, result.ExitCode);
 
-                    string expectedOutput = HelpTextGenerator.Generate(
+                    string expectedOutput = HelpTextGenerator.GenerateParserError(
                         "Option 'javascript-delay' is defined with a bad format.");
                     Assert.IsTrue(string.IsNullOrEmpty(result.StandardOutput), result.StandardOutput);
                     Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput.Trim()), result.StandardError);
@@ -66,9 +66,9 @@ namespace HtmlToPdfTests
         /// <param name="expectedMinJavascriptDelayInMilliseconds">The expected minimum javascript delay in milliseconds.</param>
         [TestMethod]
         [DataRow(HtmlToPdfRunner.HtmlToPdfExe, null, 100, DisplayName = "HtmlToPdf.exe Default")]
-        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, null, 21, DisplayName = "wkhtmltopdf.exe Default")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, null, 20, DisplayName = "wkhtmltopdf.exe Default")]
         [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "3000", 500, DisplayName = "HtmlToPdf.exe 3000")]
-        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "3000", 298, DisplayName = "wkhtmltopdf.exe 3000")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "3000", 297, DisplayName = "wkhtmltopdf.exe 3000")]
         public void JavascriptDelayTest(
             string exeFileName,
             string javascriptDelayInMilliseconds,

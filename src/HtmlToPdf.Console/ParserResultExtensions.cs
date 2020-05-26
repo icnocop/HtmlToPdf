@@ -33,7 +33,14 @@ namespace HtmlToPdf.Console
                 var notParsed = GetNotParsedInstanceAs<T>(typeInfo, new[] { missingRequiredOptionError });
                 if (notParsed != null)
                 {
-                    return HelpText.AutoBuild(notParsed/*, onError*/).ToString();
+                    return HelpText.AutoBuild(
+                        notParsed,
+                        h =>
+                        {
+                            h.AutoHelp = false;
+                            h.AutoVersion = false;
+                            return h;
+                        }).ToString();
                 }
             }
 

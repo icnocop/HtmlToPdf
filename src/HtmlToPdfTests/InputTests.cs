@@ -36,7 +36,7 @@ namespace HtmlToPdfTests
                     HtmlToPdfRunResult result = runner.Run(commandLine);
                     Assert.AreEqual(1, result.ExitCode);
 
-                    string expectedOutput = HelpTextGenerator.Generate(
+                    string expectedOutput = HelpTextGenerator.GenerateParserError(
                         "A required value not bound to option name is missing.",
                         "System.IO.FileNotFoundException: File not found: ");
                     Assert.IsTrue(string.IsNullOrEmpty(result.StandardOutput), result.StandardOutput);

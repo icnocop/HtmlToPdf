@@ -1,5 +1,13 @@
 # Change Log
 
+__v0.0.526.5__ (2020-05-26)
+
+ - Added support for `-h` and `v` command line options
+
+__v0.0.526.2__ (2020-05-26)
+
+ - Separated HTML to PDF processing logic to HtmlToPdf.dll and created HtmlToPdf.Console.exe
+
 __v0.0.526.1__ (2020-05-26)
 
  - Added support for the `--title` command line option

@@ -4,9 +4,6 @@
 
 namespace HtmlToPdfTests
 {
-    using System.Diagnostics;
-    using System.IO;
-    using System.Reflection;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
@@ -21,7 +18,7 @@ namespace HtmlToPdfTests
         [TestMethod]
         public void NoArguments_DisplaysErrorAndHelpText()
         {
-            string expectedOutput = HelpTextGenerator.Generate(
+            string expectedOutput = HelpTextGenerator.GenerateParserError(
                 "A required value not bound to option name is missing.",
                 "System.ApplicationException: At least one input must be specified.");
 
@@ -34,16 +31,19 @@ namespace HtmlToPdfTests
         }
 
         /// <summary>
-        /// Asserts that passing the "--help" argument displays the help text.
+        /// Asserts that passing the help command line option displays the help text.
         /// </summary>
+        /// <param name="commandLine">The command line.</param>
         [TestMethod]
-        public void HelpArgument_DisplaysHelpText()
+        [DataRow("-h", DisplayName = "-h")]
+        [DataRow("--help", DisplayName = "--help")]
+        public void HelpArgument_DisplaysHelpText(string commandLine)
         {
             string expectedOutput = HelpTextGenerator.Generate();
 
             HtmlToPdfRunner runner = new HtmlToPdfRunner(HtmlToPdfRunner.HtmlToPdfExe);
 
-            HtmlToPdfRunResult result = runner.Run("--help");
+            HtmlToPdfRunResult result = runner.Run(commandLine);
             Assert.AreEqual(1, result.ExitCode, result.Output);
             Assert.IsTrue(string.IsNullOrEmpty(result.StandardOutput), result.StandardOutput);
             Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput.Trim()), result.StandardError);

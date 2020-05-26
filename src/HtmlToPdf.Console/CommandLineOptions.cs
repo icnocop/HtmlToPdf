@@ -169,6 +169,18 @@ namespace HtmlToPdf.Console
         public string Title { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to display the help screen.
+        /// </summary>
+        [Option('h', "help", HelpText = "Display this help screen.")]
+        public bool DisplayHelp { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to display version information.
+        /// </summary>
+        [Option('V', "version", HelpText = "Display version information.")]
+        public bool DisplayVersion { get; set; }
+
+        /// <summary>
         /// Gets the logger level.
         /// </summary>
         internal LogLevel LoggerLevel

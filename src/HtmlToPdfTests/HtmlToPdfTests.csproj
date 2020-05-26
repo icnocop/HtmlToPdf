@@ -129,6 +129,7 @@
     <Compile Include="FooterHtmlTests.cs" />
     <Compile Include="FooterFontNameTests.cs" />
     <Compile Include="FooterFontSizeTests.cs" />
+    <Compile Include="VersionTextTests.cs" />
     <Compile Include="InputTests.cs" />
     <Compile Include="HelpTextGenerator.cs" />
     <Compile Include="PageOffsetTests.cs" />

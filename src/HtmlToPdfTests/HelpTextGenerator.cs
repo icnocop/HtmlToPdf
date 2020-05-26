@@ -17,18 +17,39 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Generates the help text.
         /// </summary>
+        /// <param name="detailedErrorMessage">The detailed error message.</param>
+        /// <returns>
+        /// The help text.
+        /// </returns>
+        public static string Generate(string detailedErrorMessage = null)
+        {
+            return GenerateParserError(null, detailedErrorMessage);
+        }
+
+        /// <summary>
+        /// Gets the version information.
+        /// </summary>
+        /// <returns>The version information.</returns>
+        public static string GetVersionInformation()
+        {
+            Assembly currentAssembly = Assembly.GetExecutingAssembly();
+            string version = FileVersionInfo.GetVersionInfo(currentAssembly.Location).FileVersion;
+            return $@"HtmlToPdf.Console {version}";
+        }
+
+        /// <summary>
+        /// Generates the help text.
+        /// </summary>
         /// <param name="errorMessage">The error message.</param>
         /// <param name="detailedErrorMessage">The detailed error message.</param>
         /// <returns>
         /// The help text.
         /// </returns>
-        public static string Generate(string errorMessage = null, string detailedErrorMessage = null)
+        public static string GenerateParserError(string errorMessage = null, string detailedErrorMessage = null)
         {
-            Assembly currentAssembly = Assembly.GetExecutingAssembly();
-            string version = FileVersionInfo.GetVersionInfo(currentAssembly.Location).FileVersion;
             string usage = File.ReadAllText(@"..\..\..\..\USAGE.md");
 
-            string output = $@"HtmlToPdf.Console {version}
+            string output = $@"{GetVersionInformation()}
 Copyright © 2020
 {(errorMessage == null ? string.Empty : $"{Environment.NewLine}ERROR(S):{Environment.NewLine}  {errorMessage}{Environment.NewLine}")}
 {usage}{(detailedErrorMessage == null ? string.Empty : $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{detailedErrorMessage}")}";

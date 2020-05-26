@@ -6,8 +6,11 @@ namespace HtmlToPdf.Console
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Net;
+    using System.Reflection;
     using System.Text;
     using System.Threading.Tasks;
     using CommandLine;
@@ -31,11 +34,13 @@ namespace HtmlToPdf.Console
 
             try
             {
-                // System.Diagnostics.Debugger.Launch();
+                // Debugger.Launch();
                 Console.OutputEncoding = Encoding.Default;
 
                 var parser = new Parser(config =>
                 {
+                    config.AutoHelp = false;
+                    config.AutoVersion = false;
                     config.HelpWriter = null;
                     config.CaseInsensitiveEnumValues = true;
                 });
@@ -71,6 +76,18 @@ namespace HtmlToPdf.Console
             var task = parserResult.MapResult(
                 (CommandLineOptions options) =>
                 {
+                    if (options.DisplayHelp)
+                    {
+                        DisplayHelpText(logger);
+                        return Error();
+                    }
+
+                    if (options.DisplayVersion)
+                    {
+                        DisplayVersionText(logger);
+                        return Error();
+                    }
+
                     try
                     {
                         Task<int> runTask = RunAsync(parser, args, options, logger);
@@ -100,9 +117,42 @@ namespace HtmlToPdf.Console
             return await task;
         }
 
+        private static void DisplayHelpText(Logger logger)
+        {
+            DisplayText(logger, "--help");
+        }
+
+        private static void DisplayVersionText(Logger logger)
+        {
+            DisplayText(logger, "--version");
+        }
+
+        private static void DisplayText(Logger logger, string commandLine)
+        {
+            var parser = new Parser(config =>
+            {
+                config.HelpWriter = null;
+            });
+            var parserResult = parser.ParseArguments<CommandLineOptions>(new[] { commandLine });
+            var helpText = HelpText.AutoBuild(parserResult, h =>
+            {
+                h.AutoHelp = false;
+                h.AutoVersion = false;
+                return h;
+            });
+            logger.LogError(helpText.ToString());
+        }
+
         private static void DisplayHelpText<T>(ParserResult<T> parserResult, Logger logger)
         {
-            HelpText helpText = HelpText.AutoBuild(parserResult);
+            HelpText helpText = HelpText.AutoBuild(
+                parserResult,
+                h =>
+                {
+                    h.AutoHelp = false;
+                    h.AutoVersion = false;
+                    return h;
+                });
             helpText.AddOptions(parserResult);
             logger.LogError(helpText);
         }

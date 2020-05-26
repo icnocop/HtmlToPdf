@@ -74,10 +74,10 @@
                                                             used if not
                                                             specified.
 
-  --help                                                    Display this help
+  -h, --help                                                Display this help
                                                             screen.
 
-  --version                                                 Display version
+  -V, --version                                             Display version
                                                             information.
 
   <input file> [<input file> ...] <output file> (pos. 0)    

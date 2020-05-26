@@ -11,12 +11,12 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | -d, --dpi                      | :x:                 |                                                                                                         |
 | -H, --extended-help            | :x:                 |                                                                                                         |
 | -g, --grayscale                | :x:                 |                                                                                                         |
-| -h, --help                     | :heavy_check_mark:* | Only `--help` is supported.                                                                             |
+| -h, --help                     | :heavy_check_mark:  |                                                                                                         |
 | --htmldoc                      | :x:                 |                                                                                                         |
 | --image-dpi                    | :x:                 |                                                                                                         |
 | --image-quality                | :x:                 |                                                                                                         |
 | --license                      | :x:                 |                                                                                                         |
-| --log-level                    | :heavy_check_mark:  | Added an additional `Debug` log level.                                                                  |
+| --log-level                    | :heavy_check_mark:  |                                                                                                         |
 | -l, --lowquality               | :x:                 |                                                                                                         |
 | --manpage                      | :x:                 |                                                                                                         |
 | -B, --margin-bottom            | :heavy_check_mark:  |                                                                                                         |
@@ -33,7 +33,7 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | --readme                       | :x:                 |                                                                                                         |
 | --title                        | :heavy_check_mark:  |                                                                                                         |
 | --use-xserver                  | :x:                 |                                                                                                         |
-| -V, --version                  | :heavy_check_mark:* | Only `--version` is supported.                                                                          |
+| -V, --version                  | :heavy_check_mark:  |                                                                                                         |
 | --dump-default-toc-xsl         | :x:                 |                                                                                                         |
 | --dump-outline                 | :x:                 |                                                                                                         |
 | --outline                      | :x:                 |                                                                                                         |
