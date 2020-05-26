@@ -1,6 +1,6 @@
 # Change Log
 
-__v0.0.526.5__ (2020-05-26)
+__v0.0.526.4__ (2020-05-26)
 
  - Added support for `-h` and `v` command line options
 
