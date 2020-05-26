@@ -6,11 +6,8 @@ namespace HtmlToPdf.Console
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Net;
-    using System.Reflection;
     using System.Text;
     using System.Threading.Tasks;
     using CommandLine;
@@ -21,8 +18,6 @@ namespace HtmlToPdf.Console
     /// </summary>
     public class Program
     {
-        private static bool coverAdded = false;
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -34,7 +29,7 @@ namespace HtmlToPdf.Console
 
             try
             {
-                // Debugger.Launch();
+                // System.Diagnostics.Debugger.Launch();
                 Console.OutputEncoding = Encoding.Default;
 
                 var parser = new Parser(config =>
@@ -189,7 +184,7 @@ namespace HtmlToPdf.Console
                 .ToList();
 
             string cover = null;
-            if (inputs.Contains("cover") && (!coverAdded))
+            if (inputs.Contains("cover"))
             {
                 int index = inputs.IndexOf("cover");
                 cover = inputs[index + 1];

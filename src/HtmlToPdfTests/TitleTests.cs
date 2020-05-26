@@ -4,10 +4,8 @@
 
 namespace HtmlToPdfTests
 {
-    using System.Linq;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using UglyToad.PdfPig.Content;
-    using UglyToad.PdfPig.Graphics.Colors;
 
     /// <summary>
     /// Title Tests

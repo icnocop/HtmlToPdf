@@ -96,8 +96,8 @@ namespace HtmlToPdfTests
         /// <seealso cref="iText.Kernel.Pdf.Canvas.Parser.Listener.IEventListener" />
         public class RectangleFinder : IEventListener
         {
-            private Dictionary<Line, int> knownLines = new Dictionary<Line, int>();
-            private Dictionary<int, int> clusters = new Dictionary<int, int>();
+            private readonly Dictionary<Line, int> knownLines = new Dictionary<Line, int>();
+            private readonly Dictionary<int, int> clusters = new Dictionary<int, int>();
 
             /// <summary>
             /// Called when some event occurs during parsing a content stream.
@@ -106,9 +106,8 @@ namespace HtmlToPdfTests
             /// <param name="type">Event type.</param>
             public void EventOccurred(IEventData data, EventType type)
             {
-                if (data is PathRenderInfo)
+                if (data is PathRenderInfo pathRenderInfo)
                 {
-                    PathRenderInfo pathRenderInfo = (PathRenderInfo)data;
                     pathRenderInfo.PreserveGraphicsState();
 
                     if (pathRenderInfo.GetOperation() == PathRenderInfo.NO_OP)
@@ -223,9 +222,8 @@ namespace HtmlToPdfTests
 
             private bool IsBlue(Color c)
             {
-                if (c is DeviceRgb)
+                if (c is DeviceRgb col02)
                 {
-                    DeviceRgb col02 = (DeviceRgb)c;
                     return col02.GetNumberOfComponents() == 3
                         && col02.GetColorValue()[0] == 0.0f
                         && col02.GetColorValue()[1] == 0.0f
@@ -237,7 +235,7 @@ namespace HtmlToPdfTests
 
             private void LineOccurred(Line line)
             {
-                int id = 0;
+                int id;
                 if (!this.knownLines.ContainsKey(line))
                 {
                     id = this.knownLines.Count();

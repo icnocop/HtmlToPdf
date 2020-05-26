@@ -20,7 +20,7 @@ namespace HtmlToPdfTests
     [TestClass]
     public class FooterHtmlTests
     {
-        private static Random random = new Random();
+        private static readonly Random Random = new Random();
 
         /// <summary>
         /// Gets or sets the test context.
@@ -139,10 +139,10 @@ namespace HtmlToPdfTests
 
         private static int GetAvailablePort(int minPort, int maxPort)
         {
-            int port = random.Next(minPort, maxPort + 1);
+            int port = Random.Next(minPort, maxPort + 1);
             while (!IsPortAvailable(port))
             {
-                port = random.Next(minPort, maxPort + 1);
+                port = Random.Next(minPort, maxPort + 1);
             }
 
             return port;
