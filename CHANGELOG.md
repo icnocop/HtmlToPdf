@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.609.0__ (2020-06-09)
+
+ - Added support for `--dump-default-toc-xsl` command line options
+
 __v0.0.526.4__ (2020-05-26)
 
  - Added support for `-h` and `v` command line options

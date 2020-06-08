@@ -134,6 +134,11 @@ namespace HtmlToPdf
         public string OutputFilePath { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to dump the default TOC XSL style sheet to the standard output (STDOUT) stream.
+        /// </summary>
+        public bool DumpDefaultTocXsl { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether to print in landscape orientation.
         /// </summary>
         internal bool Landscape

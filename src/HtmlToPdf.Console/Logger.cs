@@ -23,6 +23,15 @@ namespace HtmlToPdf.Console
         }
 
         /// <summary>
+        /// Logs the message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        public void LogOutput(string message)
+        {
+            Console.Out.WriteLine(message);
+        }
+
+        /// <summary>
         /// Logs the exception.
         /// </summary>
         /// <param name="ex">The exception.</param>

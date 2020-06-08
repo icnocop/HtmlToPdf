@@ -12,6 +12,12 @@ namespace HtmlToPdf
     public interface ILogger
     {
         /// <summary>
+        /// Logs the message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        void LogOutput(string message);
+
+        /// <summary>
         /// Logs the exception.
         /// </summary>
         /// <param name="ex">The exception.</param>

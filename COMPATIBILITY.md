@@ -34,7 +34,7 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | --title                        | :heavy_check_mark:  |                                                                                                         |
 | --use-xserver                  | :x:                 |                                                                                                         |
 | -V, --version                  | :heavy_check_mark:  |                                                                                                         |
-| --dump-default-toc-xsl         | :x:                 |                                                                                                         |
+| --dump-default-toc-xsl         | :heavy_check_mark:  |                                                                                                         |
 | --dump-outline                 | :x:                 |                                                                                                         |
 | --outline                      | :x:                 |                                                                                                         |
 | --no-outline                   | :heavy_check_mark:  |                                                                                                         |

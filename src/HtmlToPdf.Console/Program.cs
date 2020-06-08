@@ -240,7 +240,8 @@ namespace HtmlToPdf.Console
                     RightMargin = commandLineOptions.RightMargin,
                     Title = commandLineOptions.Title,
                     TopMargin = commandLineOptions.TopMargin,
-                    UserStyleSheet = commandLineOptions.UserStyleSheet
+                    UserStyleSheet = commandLineOptions.UserStyleSheet,
+                    DumpDefaultTocXsl = commandLineOptions.DumpDefaultTocXsl
                 },
                 logger);
 

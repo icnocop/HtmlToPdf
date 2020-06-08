@@ -4,7 +4,9 @@
 
 namespace HtmlToPdfTests
 {
+    using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using DotLiquid;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,8 +33,8 @@ namespace HtmlToPdfTests
         [TestMethod]
         [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[page]", "1", DisplayName = "HtmlToPdf.exe [page]")]
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[page]", "1", DisplayName = "wkhtmltopdf.exe [page]")]
-        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[date]", "{{ 'today' | as_date | date:'M/dd/yyyy' }}", DisplayName = "HtmlToPdf.exe [date]")]
-        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[date]", "{{ 'today' | as_date | date:'M/dd/yyyy' }}", DisplayName = "wkhtmltopdf.exe [date]")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[date]", "{{ 'today' | as_date | date:'M/d/yyyy' }}", DisplayName = "HtmlToPdf.exe [date]")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[date]", "{{ 'today' | as_date | date:'M/d/yyyy' }}", DisplayName = "wkhtmltopdf.exe [date]")]
         [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[title]", "The title of the test page", DisplayName = "HtmlToPdf.exe [title]")]
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[title]", "The title of the test page", DisplayName = "wkhtmltopdf.exe [title]")]
         [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[webpage]", "{{url}}", DisplayName = "HtmlToPdf.exe [webpage]")]
@@ -88,7 +90,19 @@ namespace HtmlToPdfTests
                         IEnumerable<Word> words = page.GetWords();
                         Assert.IsTrue(words.Count() >= 3, $"{words.Count()}");
                         Assert.AreEqual("Test Page", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-                        Assert.AreEqual(expectedFooterText.ToLower(), string.Join(" ", words.Skip(2).Select(x => x.Text.ToLower())));
+                        string footerText = string.Join(" ", words.Skip(2).Select(x => x.Text.ToLower()));
+
+                        if (footerCommandLineArgument == "[time]")
+                        {
+                            // assert times are within 5 seconds
+                            DateTime expectedDateTime = DateTime.ParseExact(expectedFooterText, "h:mm:ss tt", CultureInfo.InvariantCulture);
+                            DateTime actualDateTime = DateTime.ParseExact(footerText, "h:mm:ss tt", CultureInfo.InvariantCulture);
+                            DateAssert.AreWithinFiveSeconds(expectedDateTime, actualDateTime);
+                        }
+                        else
+                        {
+                            Assert.AreEqual(expectedFooterText.ToLower(), footerText);
+                        }
                     }
                 }
             }

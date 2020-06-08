@@ -181,6 +181,12 @@ namespace HtmlToPdf.Console
         public bool DisplayVersion { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to dump the default TOC XSL style sheet to the standard output (STDOUT) stream.
+        /// </summary>
+        [Option("dump-default-toc-xsl", HelpText = "Dumps the default TOC XSL style sheet to the standard output (STDOUT) stream.")]
+        public bool DumpDefaultTocXsl { get; set; }
+
+        /// <summary>
         /// Gets the logger level.
         /// </summary>
         internal LogLevel LoggerLevel

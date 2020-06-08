@@ -38,14 +38,22 @@ namespace HtmlToPdf
                 encoding = Encoding.GetEncoding(options.Encoding);
             }
 
-            if (options.Inputs.Count() < 1)
+            if (!options.Inputs.Any()
+                && !options.DumpDefaultTocXsl)
             {
                 throw new ApplicationException($"At least one input must be specified.");
             }
 
-            if (string.IsNullOrEmpty(options.OutputFilePath))
+            if (string.IsNullOrEmpty(options.OutputFilePath)
+                && !options.DumpDefaultTocXsl)
             {
                 throw new ApplicationException($"An output must be specified.");
+            }
+
+            if (options.DumpDefaultTocXsl)
+            {
+                string defaultTocXsl = EmbeddedResource.GetDefaultTableOfContentsXsl();
+                logger.LogOutput(defaultTocXsl);
             }
 
             ConcurrentBag<HtmlToPdfFile> htmlToPdfFiles = new ConcurrentBag<HtmlToPdfFile>();
@@ -148,30 +156,32 @@ namespace HtmlToPdf
                     };
 
                     // count the number of PDF pages each HTML file will be printed as
-                    var tasks = options.Inputs.Where(x => !htmlToPdfFiles.Any(y => y.Input == x)).Select(async input =>
-                    {
-                        // print as pdf
-                        string pdfFile = await pdfPrinter.PrintAsPdfAsync(
-                            input,
-                            htmlToPdfOptions,
-                            variables);
-
-                        // count the number of pages
-                        int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
-
-                        logger.LogDebug($"\"{input}\" contains number of PDF pages: {numberOfPages}.");
-
-                        HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
+                    var tasks = options.Inputs
+                        .Where(x => htmlToPdfFiles.All(y => y.Input != x))
+                        .Select(async input =>
                         {
-                            Input = input,
-                            Index = options.Inputs.IndexOf(input),
-                            PdfFilePath = pdfFile,
-                            PrintFooter = true,
-                            NumberOfPages = numberOfPages
-                        };
+                            // print as pdf
+                            string pdfFile = await pdfPrinter.PrintAsPdfAsync(
+                                input,
+                                htmlToPdfOptions,
+                                variables);
 
-                        htmlToPdfFiles.Add(htmlToPdfFile);
-                    });
+                            // count the number of pages
+                            int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
+
+                            logger.LogDebug($"\"{input}\" contains number of PDF pages: {numberOfPages}.");
+
+                            HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
+                            {
+                                Input = input,
+                                Index = options.Inputs.IndexOf(input),
+                                PdfFilePath = pdfFile,
+                                PrintFooter = true,
+                                NumberOfPages = numberOfPages
+                            };
+
+                            htmlToPdfFiles.Add(htmlToPdfFile);
+                        });
 
                     await Task.WhenAll(tasks);
 
@@ -230,29 +240,37 @@ namespace HtmlToPdf
             }
 
             // merge pdf files
-            byte[] mergedBytes = PdfMerger.Merge(htmlToPdfFiles
+            List<string> pdfFilesToMerge = htmlToPdfFiles
                 .Where(x => !x.Skip)
                 .OrderBy(x => x.OutputPdfFilePageNumber)
-                .Select(x => x.PdfFilePath));
+                .Select(x => x.PdfFilePath)
+                .ToList();
 
-            File.WriteAllBytes(outputFilePath, mergedBytes);
+            if (!string.IsNullOrEmpty(outputFilePath))
+            {
+                byte[] mergedBytes = PdfMerger.Merge(pdfFilesToMerge);
 
-            // update external file links to internal document links
-            PdfDocument.UpdateLinks(outputFilePath, htmlToPdfFiles, logger);
+                File.WriteAllBytes(outputFilePath, mergedBytes);
 
-            PdfDocument.SetTitle(outputFilePath, title);
+                // update external file links to internal document links
+                PdfDocument.UpdateLinks(outputFilePath, htmlToPdfFiles, logger);
+
+                PdfDocument.SetTitle(outputFilePath, title);
+            }
 
             // delete temporary PDF files
-            var deleteTempFileTasks = htmlToPdfFiles.Where(x => !string.IsNullOrEmpty(x.PdfFilePath)).Select(async input =>
-            {
-                await Task.Factory.StartNew(() =>
+            var deleteTempFileTasks = htmlToPdfFiles
+                .Where(x => !string.IsNullOrEmpty(x.PdfFilePath))
+                .Select(async input =>
                 {
-                    if (File.Exists(input.PdfFilePath))
+                    await Task.Factory.StartNew(() =>
                     {
-                        File.Delete(input.PdfFilePath);
-                    }
+                        if (File.Exists(input.PdfFilePath))
+                        {
+                            File.Delete(input.PdfFilePath);
+                        }
+                    });
                 });
-            });
 
             await Task.WhenAll(deleteTempFileTasks);
         }

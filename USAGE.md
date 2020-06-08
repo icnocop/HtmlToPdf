@@ -80,4 +80,10 @@
   -V, --version                                             Display version
                                                             information.
 
+  --dump-default-toc-xsl                                    Dumps the default
+                                                            TOC XSL style sheet
+                                                            to the standard
+                                                            output (STDOUT)
+                                                            stream.
+
   <input file> [<input file> ...] <output file> (pos. 0)    

@@ -126,9 +126,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackgroundTests.cs" />
+    <Compile Include="DateAssert.cs" />
     <Compile Include="FooterHtmlTests.cs" />
     <Compile Include="FooterFontNameTests.cs" />
     <Compile Include="FooterFontSizeTests.cs" />
+    <Compile Include="DumpDefaultTocXslTests.cs" />
+    <Compile Include="StringAssertWithDiff.cs" />
     <Compile Include="VersionTextTests.cs" />
     <Compile Include="InputTests.cs" />
     <Compile Include="HelpTextGenerator.cs" />
@@ -185,6 +188,10 @@
     <ProjectReference Include="..\HtmlToPdf.Console\HtmlToPdf.Console.csproj">
       <Project>{15c187e3-a1d7-4756-a393-7df307f0f0e6}</Project>
       <Name>HtmlToPdf.Console</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HtmlToPdf\HtmlToPdf.csproj">
+      <Project>{8A928052-04B2-460A-8A2A-5244ED2725D7}</Project>
+      <Name>HtmlToPdf</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
