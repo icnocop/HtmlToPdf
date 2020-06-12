@@ -21,7 +21,7 @@ namespace HtmlToPdfTests
         /// </summary>
         /// <param name="fileExtension">The file extension.</param>
         /// <param name="testContext">The test context.</param>
-        public TempFile(string fileExtension, TestContext testContext)
+        internal TempFile(string fileExtension, TestContext testContext = null)
         {
             this.testContext = testContext;
 
@@ -46,7 +46,15 @@ namespace HtmlToPdfTests
         /// <value>
         /// The file path.
         /// </value>
-        public string FilePath { get; }
+        public string FilePath { get; private set; }
+
+        /// <summary>
+        /// Gets the name of the file.
+        /// </summary>
+        /// <value>
+        /// The name of the file.
+        /// </value>
+        internal string FileName => Path.GetFileName(this.FilePath);
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -55,7 +63,7 @@ namespace HtmlToPdfTests
         {
             if (this.testContext != null)
             {
-                string pdfFilePath = Path.Combine(Directory.GetCurrentDirectory(), Path.GetFileName(this.FilePath));
+                string pdfFilePath = Path.Combine(this.testContext.TestResultsDirectory, this.FileName);
                 File.Copy(this.FilePath, pdfFilePath, true);
                 this.testContext.AddResultFile(pdfFilePath);
             }
@@ -64,6 +72,18 @@ namespace HtmlToPdfTests
             {
                 File.Delete(this.FilePath);
             }
+        }
+
+        /// <summary>
+        /// Moves the file to the specified path.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        public void MoveToDirectory(string path)
+        {
+            string newFilePath = Path.Combine(path, this.FileName);
+
+            File.Move(this.FilePath, newFilePath);
+            this.FilePath = newFilePath;
         }
     }
 }

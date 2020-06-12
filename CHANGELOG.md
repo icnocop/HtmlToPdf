@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.612.2__ (2020-06-12)
+
+ - Fixed issue when referencing relative file paths in HTML files
+
 __v0.0.609.0__ (2020-06-09)
 
  - Added support for `--dump-default-toc-xsl` command line options

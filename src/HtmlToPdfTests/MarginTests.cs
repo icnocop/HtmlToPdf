@@ -33,9 +33,9 @@ namespace HtmlToPdfTests
         /// <param name="expectedMinY">The expected minimum y.</param>
         /// <param name="expectedMaxY">The expected maximum y.</param>
         [TestMethod]
-        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, null, null, null, null, 28, 568, 28, 841.92, DisplayName = "HtmlToPdf.exe Default")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, null, null, null, null, 28, 568, 28, 841, DisplayName = "HtmlToPdf.exe Default")]
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, null, null, null, null, 33.61, 69.39, 33.61, 811.31, DisplayName = "wkhtmltopdf.exe Default")]
-        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "0mm", "0mm", "0mm", "0mm", 0, 595, 0, 841.92, DisplayName = "HtmlToPdf.exe 0mm")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "0mm", "0mm", "0mm", "0mm", 0, 594, 0, 841, DisplayName = "HtmlToPdf.exe 0mm")]
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "0mm", "0mm", "0mm", "0mm", 5.11, 40.89, 5.11, 839.81, DisplayName = "wkhtmltopdf.exe 0mm")]
         [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "5mm", "10mm", "15mm", "20mm", 14, 567, 14, 799.92, DisplayName = "HtmlToPdf.exe")]
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "5mm", "10mm", "15mm", "20mm", 19.36, 55.13, 19.36, 797.06, DisplayName = "wkhtmltopdf.exe")]

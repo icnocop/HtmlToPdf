@@ -19,15 +19,22 @@ namespace HtmlToPdf
         /// <param name="originalFilePath">The original file path.</param>
         public TempCopyHtmlFile(string originalFilePath)
         {
+            // create temporary file in the same path as the original file so relative paths are resolved correctly
+            string originalPath = Path.GetDirectoryName(originalFilePath);
+            if (string.IsNullOrEmpty(originalPath))
+            {
+                throw new Exception($"Failed to get directory name for path '{originalFilePath}'.");
+            }
+
             string tempFilePath = Path.GetTempFileName();
-            string newFilePath = tempFilePath.Replace(".tmp", ".html");
+            string newFilePath = Path.Combine(originalPath, $"{Path.GetFileNameWithoutExtension(tempFilePath)}.html");
 
             // make sure file is unique
             while (File.Exists(newFilePath))
             {
                 File.Delete(tempFilePath);
                 tempFilePath = Path.GetTempFileName();
-                newFilePath = tempFilePath.Replace(".tmp", ".html");
+                newFilePath = Path.Combine(originalPath, $"{Path.GetFileNameWithoutExtension(tempFilePath)}.html");
             }
 
             File.Move(tempFilePath, newFilePath);

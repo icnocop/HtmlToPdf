@@ -98,30 +98,34 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
-    <Reference Include="UglyToad.PdfPig, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.1\lib\net47\UglyToad.PdfPig.dll</HintPath>
+    <Reference Include="Tesseract, Version=3.0.2.0, Culture=neutral, PublicKeyToken=ebeb3d86bef60cbe, processorArchitecture=MSIL">
+      <HintPath>..\packages\Tesseract.3.0.2.0\lib\net451\Tesseract.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Core, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.1\lib\net47\UglyToad.PdfPig.Core.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.DocumentLayoutAnalysis, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.1\lib\net47\UglyToad.PdfPig.DocumentLayoutAnalysis.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Core, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.Core.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Fonts, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.1\lib\net47\UglyToad.PdfPig.Fonts.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.DocumentLayoutAnalysis, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.DocumentLayoutAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.Fonts, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.Fonts.dll</HintPath>
     </Reference>
     <Reference Include="UglyToad.PdfPig.Package, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.1\lib\net47\UglyToad.PdfPig.Package.dll</HintPath>
+      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.Package.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Tokenization, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.1\lib\net47\UglyToad.PdfPig.Tokenization.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Tokenization, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.Tokenization.dll</HintPath>
     </Reference>
-    <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.1\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
+    <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +136,8 @@
     <Compile Include="FooterFontSizeTests.cs" />
     <Compile Include="DumpDefaultTocXslTests.cs" />
     <Compile Include="StringAssertWithDiff.cs" />
+    <Compile Include="ImageTests.cs" />
+    <Compile Include="TempImageFile.cs" />
     <Compile Include="VersionTextTests.cs" />
     <Compile Include="InputTests.cs" />
     <Compile Include="HelpTextGenerator.cs" />
@@ -167,6 +173,9 @@
     </AdditionalFiles>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="tessdata\eng.traineddata">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.0\analyzers\dotnet\cs\Newtonsoft.Json.dll" />
@@ -193,6 +202,25 @@
       <Project>{8A928052-04B2-460A-8A2A-5244ED2725D7}</Project>
       <Name>HtmlToPdf</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="..\packages\Tesseract.3.0.2.0\content\x64\liblept172.dll">
+      <Link>x64\liblept172.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\packages\Tesseract.3.0.2.0\content\x64\libtesseract304.dll">
+      <Link>x64\libtesseract304.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\packages\Tesseract.3.0.2.0\content\x86\liblept172.dll">
+      <Link>x86\liblept172.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\packages\Tesseract.3.0.2.0\content\x86\libtesseract304.dll">
+      <Link>x86\libtesseract304.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
