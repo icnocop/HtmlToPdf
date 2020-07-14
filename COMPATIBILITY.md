@@ -68,8 +68,8 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | --keep-relative-links          | :x:                 |                                                                                                         |
 | --load-error-handling          | :x:                 |                                                                                                         |
 | --load-media-error-handling    | :x:                 |                                                                                                         |
-| --disable-local-file-access    | :x:                 |                                                                                                         |
-| --enable-local-file-access     | :x:                 |                                                                                                         |
+| --disable-local-file-access    | :heavy_check_mark:  |                                                                                                         |
+| --enable-local-file-access     | :heavy_check_mark:  |                                                                                                         |
 | --minimum-font-size            | :x:                 |                                                                                                         |
 | --exclude-from-outline         | :x:                 |                                                                                                         |
 | --include-in-outline           | :x:                 |                                                                                                         |

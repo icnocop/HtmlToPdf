@@ -86,4 +86,18 @@
                                                             output (STDOUT)
                                                             stream.
 
+  --enable-local-file-access                                Allowed conversion
+                                                            of a local file to
+                                                            read in other local
+                                                            files.
+
+  --disable-local-file-access                               Do not allowed
+                                                            conversion of a
+                                                            local file to read
+                                                            in other local
+                                                            files, unless
+                                                            explicitly allowed
+                                                            with --allow
+                                                            (default)
+
   <input file> [<input file> ...] <output file> (pos. 0)    

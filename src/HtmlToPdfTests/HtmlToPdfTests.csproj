@@ -131,6 +131,8 @@
   <ItemGroup>
     <Compile Include="BackgroundTests.cs" />
     <Compile Include="DateAssert.cs" />
+    <Compile Include="DisableLocalFileAccessTests.cs" />
+    <Compile Include="EnableLocalFileAccessTests.cs" />
     <Compile Include="FooterHtmlTests.cs" />
     <Compile Include="FooterFontNameTests.cs" />
     <Compile Include="FooterFontSizeTests.cs" />
@@ -188,12 +190,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\packages\wkhtmltopdf.x64.0.12.5\tools\wkhtmltopdf.exe">
-      <Link>wkhtmltopdf.exe</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\HtmlToPdf.Console\HtmlToPdf.Console.csproj">
       <Project>{15c187e3-a1d7-4756-a393-7df307f0f0e6}</Project>
       <Name>HtmlToPdf.Console</Name>
@@ -203,7 +199,12 @@
       <Name>HtmlToPdf</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="..\..\lib\wkhtmltox-0.12.6-1.mxe-cross-win64\wkhtmltopdf.exe">
+      <Link>wkhtmltopdf.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <ItemGroup>
     <None Include="..\packages\Tesseract.3.0.2.0\content\x64\liblept172.dll">
       <Link>x64\liblept172.dll</Link>

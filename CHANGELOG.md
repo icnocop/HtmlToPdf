@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.713.1__ (2020-07-13)
+
+ - Added support for `--enable-local-file-access` and `--disable-local-file-access` command line options
+
 __v0.0.612.2__ (2020-06-12)
 
  - Fixed issue when referencing relative file paths in HTML files

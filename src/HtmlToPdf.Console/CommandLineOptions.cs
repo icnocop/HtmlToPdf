@@ -187,6 +187,18 @@ namespace HtmlToPdf.Console
         public bool DumpDefaultTocXsl { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether to enable local file access.
+        /// </summary>
+        [Option("enable-local-file-access", HelpText = "Allowed conversion of a local file to read in other local files.")]
+        public bool EnableLocalFileAccess { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to disable local file access.
+        /// </summary>
+        [Option("disable-local-file-access", HelpText = "Do not allowed conversion of a local file to read in other local files, unless explicitly allowed with --allow (default)")]
+        public bool DisableLocalFileAccess { get; set; }
+
+        /// <summary>
         /// Gets the logger level.
         /// </summary>
         internal LogLevel LoggerLevel
