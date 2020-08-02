@@ -86,6 +86,9 @@
                                                             output (STDOUT)
                                                             stream.
 
+  --dump-outline                                            Dump the outline to
+                                                            a file.
+
   --enable-local-file-access                                Allowed conversion
                                                             of a local file to
                                                             read in other local

@@ -35,7 +35,7 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | --use-xserver                  | :x:                 |                                                                                                         |
 | -V, --version                  | :heavy_check_mark:  |                                                                                                         |
 | --dump-default-toc-xsl         | :heavy_check_mark:  |                                                                                                         |
-| --dump-outline                 | :x:                 |                                                                                                         |
+| --dump-outline                 | :heavy_check_mark:  |                                                                                                         |
 | --outline                      | :x:                 |                                                                                                         |
 | --no-outline                   | :heavy_check_mark:  |                                                                                                         |
 | --outline-depth                | :x:                 |                                                                                                         |
@@ -101,14 +101,14 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | --viewport-size                | :x:                 |                                                                                                         |
 | --window-status                | :x:                 |                                                                                                         |
 | --zoom                         | :x:                 |                                                                                                         |
-| --footer-center                | :heavy_check_mark:* | The `[section]`, `[subsection]`, `[sitepage]`, and `[sitepages]` variables are not yet supported.       |
+| --footer-center                | :heavy_check_mark:* | The `[section]`, `[subsection]`, `[sitepage]`, and `[sitepages]` variables are not yet supported.|
 | --footer-font-name             | :heavy_check_mark:  |                                                                                                         |
 | --footer-font-size             | :heavy_check_mark:  |                                                                                                         |
-| --footer-html                  | :heavy_check_mark:* | The `[section]`, `[subsection]`, `[sitepage]`, and `[sitepages]` variables are not yet supported.       |
-| --footer-left                  | :heavy_check_mark:* | The `[section]`, `[subsection]`, `[sitepage]`, and `[sitepages]` variables are not yet supported.       |
+| --footer-html                  | :heavy_check_mark:* | The `[section]`, `[subsection]`, `[sitepage]`, and `[sitepages]` variables are not yet supported.|
+| --footer-left                  | :heavy_check_mark:* | The `[section]`, `[subsection]`, `[sitepage]`, and `[sitepages]` variables are not yet supported.|
 | --footer-line                  | :x:                 |                                                                                                         |
 | --no-footer-line               | :x:                 |                                                                                                         |
-| --footer-right                 | :heavy_check_mark:* | The `[section]`, `[subsection]`, `[sitepage]`, and `[sitepages]` variables are not yet supported.       |
+| --footer-right                 | :heavy_check_mark:* | The `[section]`, `[subsection]`, `[sitepage]`, and `[sitepages]` variables are not yet supported.|
 | --footer-spacing               | :x:                 |                                                                                                         |
 | --header-center                | :x:                 |                                                                                                         |
 | --header-font-name             | :x:                 |                                                                                                         |

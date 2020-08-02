@@ -28,7 +28,7 @@ namespace HtmlToPdf
         /// <param name="options">The options.</param>
         /// <param name="logger">The logger.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public static async Task ProcessAsync(Options options, ILogger logger)
+        public static async Task<ConcurrentBag<HtmlToPdfFile>> ProcessAsync(Options options, ILogger logger)
         {
             DateTime dtNow = DateTime.Now; // local time
 
@@ -107,6 +107,7 @@ namespace HtmlToPdf
 
                     if (!string.IsNullOrEmpty(options.Cover) && (!coverAdded))
                     {
+                        // print cover
                         string pdfFile = await pdfPrinter.PrintAsPdfAsync(
                             options.Cover,
                             htmlToPdfOptions,
@@ -190,11 +191,16 @@ namespace HtmlToPdf
                     // update models and optionally re-print HTML files to include footers with page numbers
                     tasks = htmlToPdfFiles.Select(async htmlToPdfFile =>
                     {
+                        // get the title
+                        HtmlFileParser htmlFileParser = new HtmlFileParser(htmlToPdfFile.Input);
+                        htmlToPdfFile.TitleAndHeadings = htmlFileParser.GetTitleAndHeadings();
+                        htmlToPdfFile.Title = htmlToPdfFile.TitleAndHeadings.First().Text;
+
                         if (string.IsNullOrEmpty(title)
                             && (htmlToPdfFile.Index == 0))
                         {
-                            HtmlFileParser htmlFileParser = new HtmlFileParser(htmlToPdfFile.Input);
-                            title = htmlFileParser.GetTitle();
+                            // set the PDF title
+                            title = htmlToPdfFile.Title;
                             variables["doctitle"] = title;
                         }
 
@@ -216,6 +222,7 @@ namespace HtmlToPdf
                         htmlToPdfOptions.PageNumberOffset = options.PageOffset;
                         htmlToPdfOptions.NumberOfPages = htmlToPdfFile.NumberOfPages;
 
+                        // TODO: only print as PDF again if topage variable is actually used in the header/footer
                         if (htmlToPdfFile.PrintFooter)
                         {
                             // delete previously created PDF file
@@ -229,6 +236,9 @@ namespace HtmlToPdf
 
                             htmlToPdfFile.PdfFilePath = pdfFile;
                         }
+
+                        // parse PDF to get heading page numbers
+                        PdfDocument.SetHeadingPageNumbers(htmlToPdfFile);
                     });
 
                     await Task.WhenAll(tasks);
@@ -273,6 +283,8 @@ namespace HtmlToPdf
                 });
 
             await Task.WhenAll(deleteTempFileTasks);
+
+            return htmlToPdfFiles;
         }
     }
 }

@@ -49,8 +49,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandLineOptions.cs" />
+    <Compile Include="CustomUTF8Encoding.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="LogLevel.cs" />
+    <Compile Include="Outline.cs">
+      <DependentUpon>Outline.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Outline.custom.cs" />
     <Compile Include="ParserResultExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,7 +65,11 @@
       <Link>stylecop.json</Link>
     </AdditionalFiles>
     <None Include="App.config" />
+    <None Include="Outline.xsd" />
     <None Include="packages.config" />
+    <None Include="Create xsd from Outline.xml.cmd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="rename.cmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -78,6 +87,9 @@
       <Project>{8a928052-04b2-460a-8a2a-5244ed2725d7}</Project>
       <Name>HtmlToPdf</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Outline.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

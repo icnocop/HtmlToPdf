@@ -92,6 +92,9 @@ namespace HtmlToPdf
             {
                 this.PrependEmptyPages(tempHtmlFile.FilePath, options.PageOffset + options.PageNumberOffset);
 
+                // TODO: do not create links for headings if not generating an outline
+                this.CreateLinksForHeadings(tempHtmlFile.FilePath);
+
                 string pageRanges = string.Empty;
                 if ((options.PageOffset + options.PageNumberOffset) > 0)
                 {
@@ -147,6 +150,41 @@ namespace HtmlToPdf
             }
 
             return tempPdfFilePath;
+        }
+
+        private void CreateLinksForHeadings(string filePath)
+        {
+            HtmlDocument doc = new HtmlDocument();
+            doc.Load(filePath);
+
+            // get headings
+            string xpathQuery = "//*[starts-with(name(),'h') and string-length(name()) = 2 and number(substring(name(), 2)) <= 6]";
+            var nodes = doc.DocumentNode.SelectNodes(xpathQuery);
+
+            if (nodes == null)
+            {
+                return;
+            }
+
+            // create hyperlinks
+            foreach (var node in nodes)
+            {
+                int headingLevel = int.Parse(node.Name.Substring(1));
+
+                // create anchor
+                var hiddenAnchor = doc.CreateElement("a");
+
+                // trying to use an 'href' with fragments (ex. '#fragment-name') generates the PDF without a hyperlink
+                hiddenAnchor.Attributes.Add("href", $"{filePath}?headingLevel={headingLevel}&headingText={node.InnerText}");
+
+                // trying to use the style 'visibility:hidden;' generates the PDF without a hyperlink
+                // trying to use the style 'font-size:0;' generates the PDF without a hyperlink
+                hiddenAnchor.Attributes.Add("style", "line-height:0;color:transparent;");
+                hiddenAnchor.InnerHtml = node.InnerHtml;
+                node.AppendChild(hiddenAnchor);
+            }
+
+            doc.Save(filePath);
         }
 
         private void PrependEmptyPages(string htmlFilePath, int pages)

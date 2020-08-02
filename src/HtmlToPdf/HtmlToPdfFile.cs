@@ -4,10 +4,12 @@
 
 namespace HtmlToPdf
 {
+    using System.Collections.Generic;
+
     /// <summary>
     /// HTML to PDF file
     /// </summary>
-    internal class HtmlToPdfFile
+    public class HtmlToPdfFile
     {
         /// <summary>
         /// Gets or sets the input.
@@ -43,5 +45,15 @@ namespace HtmlToPdf
         /// Gets or sets a value indicating whether to skip printing this file.
         /// </summary>
         public bool Skip { get; set; }
+
+        /// <summary>
+        /// Gets or sets the title.
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// Gets or sets the title and headings.
+        /// </summary>
+        public List<HtmlHeading> TitleAndHeadings { get; set; }
     }
 }

@@ -5,13 +5,17 @@
 namespace HtmlToPdf.Console
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Xml;
+    using System.Xml.Serialization;
     using CommandLine;
     using CommandLine.Text;
+    using HtmlToPdf.Console.Outline.Xml;
 
     /// <summary>
     /// The main program
@@ -29,7 +33,7 @@ namespace HtmlToPdf.Console
 
             try
             {
-                // System.Diagnostics.Debugger.Launch();
+                System.Diagnostics.Debugger.Launch();
                 Console.OutputEncoding = Encoding.Default;
 
                 var parser = new Parser(config =>
@@ -214,7 +218,7 @@ namespace HtmlToPdf.Console
                 }
             }
 
-            await HtmlToPdfProcessor.ProcessAsync(
+            ConcurrentBag<HtmlToPdfFile> htmlToPdfFiles = await HtmlToPdfProcessor.ProcessAsync(
                 new Options
                 {
                     BottomMargin = commandLineOptions.BottomMargin,
@@ -252,7 +256,97 @@ namespace HtmlToPdf.Console
                 File.Delete(outputFilePath);
             }
 
+            if (!string.IsNullOrEmpty(commandLineOptions.DumpOutline))
+            {
+                // dump outline
+                using (XmlTextWriter xmlWriter = new XmlTextWriter(commandLineOptions.DumpOutline, new CustomUTF8Encoding()))
+                {
+                    xmlWriter.Formatting = Formatting.Indented;
+
+                    outline outline = new outline
+                    {
+                        Items = BuildOutline(htmlToPdfFiles.SelectMany(x => x.TitleAndHeadings))
+                    };
+
+                    var serializer = new XmlSerializer(typeof(outline));
+
+                    XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+                    namespaces.Add(string.Empty, "http://wkhtmltopdf.org/outline");
+
+                    serializer.Serialize(xmlWriter, outline, namespaces);
+                }
+            }
+
             return 0;
+        }
+
+        private static List<item> BuildOutline(IEnumerable<HtmlHeading> headings)
+        {
+            int counter = 0;
+
+            var items = new List<item>();
+            var allItems = new List<item>();
+            item parentNode = null;
+            item currentItem = null;
+
+            foreach (var heading in headings)
+            {
+                // if there is no previous item, add it to the current list
+                // if previously added item is the same level, add it to current list
+                // if previously added item is a smaller level, add it to the previous item's children
+                // if previously added item is a larger level, add it to the previously added item's parent
+                currentItem = new item
+                {
+                    title = heading.Text,
+                    level = heading.Level,
+                    link = $"__WKANCHOR_{IntToBase(counter++, 36)}",
+                    backLink = $"__WKANCHOR_{IntToBase(counter++, 36)}",
+                    page = heading.Page.ToString(),
+                    children = new List<item>()
+                };
+
+                allItems.Add(currentItem);
+
+                if (!allItems.Any(n => n.level < currentItem.level))
+                {
+                    items.Add(currentItem);
+                    parentNode = null;
+                }
+
+                if (parentNode != null)
+                {
+                    if (parentNode.level >= currentItem.level)
+                    {
+                        parentNode = allItems.Last(n => n.level < currentItem.level);
+                    }
+
+                    // add item as child of parent
+                    parentNode.children.Add(currentItem);
+                }
+
+                parentNode = currentItem;
+            }
+
+            return items;
+        }
+
+        private static string IntToBase(int input, int @base)
+        {
+            var digits = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+            if (@base < 2 || @base > 36)
+            {
+                throw new ArgumentOutOfRangeException(nameof(@base), "Must specify a base between 2 and 36, inclusive.");
+            }
+
+            if (input < @base && input >= 0)
+            {
+                return digits[input].ToString();
+            }
+            else
+            {
+                return IntToBase(input / @base, @base) + digits[input % @base].ToString();
+            }
         }
 
         private static string[] ParseArguments(string commandLine)

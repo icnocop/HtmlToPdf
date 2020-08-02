@@ -4,6 +4,7 @@
 
 namespace HtmlToPdf
 {
+    using System.Collections.Generic;
     using HtmlAgilityPack;
 
     /// <summary>
@@ -23,21 +24,45 @@ namespace HtmlToPdf
         }
 
         /// <summary>
-        /// Gets the title.
+        /// Gets the title and headings.
         /// </summary>
-        /// <returns>The title.</returns>
-        internal string GetTitle()
+        /// <returns>The headings.</returns>
+        internal List<HtmlHeading> GetTitleAndHeadings()
         {
+            List<HtmlHeading> headings = new List<HtmlHeading>();
+
             HtmlDocument doc = new HtmlDocument();
             doc.Load(this.htmlFilePath);
 
+            // get title
             HtmlNode titleNode = doc.DocumentNode.SelectSingleNode("//head/title");
-            if (titleNode == null)
+            headings.Add(new HtmlHeading
             {
-                return null;
+                Text = titleNode?.InnerText ?? string.Empty,
+                Level = 0,
+                Page = 0
+            });
+
+            string xpathQuery = "//*[starts-with(name(),'h') and string-length(name()) = 2 and number(substring(name(), 2)) <= 6]";
+            var nodes = doc.DocumentNode.SelectNodes(xpathQuery);
+
+            if (nodes == null)
+            {
+                return headings;
             }
 
-            return titleNode.InnerText;
+            foreach (var node in nodes)
+            {
+                int level = int.Parse(node.Name.Substring(1));
+
+                headings.Add(new HtmlHeading
+                {
+                    Text = node.InnerHtml,
+                    Level = level
+                });
+            }
+
+            return headings;
         }
     }
 }

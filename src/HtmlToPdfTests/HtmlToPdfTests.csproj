@@ -103,6 +103,7 @@
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
     <Reference Include="Tesseract, Version=3.0.2.0, Culture=neutral, PublicKeyToken=ebeb3d86bef60cbe, processorArchitecture=MSIL">
       <HintPath>..\packages\Tesseract.3.0.2.0\lib\net451\Tesseract.dll</HintPath>
     </Reference>
@@ -127,11 +128,18 @@
     <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
       <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
     </Reference>
+    <Reference Include="XmlDiffPatch, Version=1.0.8.28, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\XMLDiffPatch.1.0.8.28\lib\net\XmlDiffPatch.dll</HintPath>
+    </Reference>
+    <Reference Include="XmlDiffPatch.View, Version=1.0.1493.40755, Culture=neutral">
+      <HintPath>..\packages\XMLDiffPatch.1.0.8.28\lib\net\XmlDiffPatch.View.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackgroundTests.cs" />
     <Compile Include="DateAssert.cs" />
     <Compile Include="DisableLocalFileAccessTests.cs" />
+    <Compile Include="DumpOutlineTests.cs" />
     <Compile Include="EnableLocalFileAccessTests.cs" />
     <Compile Include="FooterHtmlTests.cs" />
     <Compile Include="FooterFontNameTests.cs" />
@@ -168,6 +176,7 @@
     <Compile Include="TempHtmlFile.cs" />
     <Compile Include="TempPdfFile.cs" />
     <Compile Include="ReadArgumentsFromStandardInputTests.cs" />
+    <Compile Include="XmlAssert.cs" />
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\stylecop.json">
@@ -220,6 +229,28 @@
     </None>
     <None Include="..\packages\Tesseract.3.0.2.0\content\x86\libtesseract304.dll">
       <Link>x86\libtesseract304.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestData\DumpOutline\OnePageNoTitle\HTMLPage1.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="TestData\DumpOutline\OnePageNoTitle\Outline.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\XmlDiffHeader.html" />
+    <EmbeddedResource Include="Resources\XmlReportStyles.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestData\DumpOutline\OnePageWithTitleAndHeaders\HTMLPage1.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestData\DumpOutline\OnePageWithTitleAndHeaders\Outline.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

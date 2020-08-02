@@ -30,7 +30,7 @@ namespace HtmlToPdfTests
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
-            string commandLine = $"--dump-default-toc-xsl";
+            string commandLine = "--dump-default-toc-xsl";
             HtmlToPdfRunResult result = runner.Run(commandLine);
             Assert.AreEqual(0, result.ExitCode, result.Output);
 

@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.802.1__ (2020-08-01)
+
+ - Added support for `--dump-outline` command line option
+
 __v0.0.714.0__ (2020-07-14)
 
  - Added support for `--enable-local-file-access` and `--disable-local-file-access` command line options

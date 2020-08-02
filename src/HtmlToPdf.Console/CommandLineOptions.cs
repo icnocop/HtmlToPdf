@@ -187,6 +187,12 @@ namespace HtmlToPdf.Console
         public bool DumpDefaultTocXsl { get; set; }
 
         /// <summary>
+        /// Gets or sets the file to dump the outline.
+        /// </summary>
+        [Option("dump-outline", HelpText = "Dump the outline to a file.")]
+        public string DumpOutline { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether to enable local file access.
         /// </summary>
         [Option("enable-local-file-access", HelpText = "Allowed conversion of a local file to read in other local files.")]
