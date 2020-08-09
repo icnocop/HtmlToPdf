@@ -57,6 +57,7 @@
     </Compile>
     <Compile Include="Outline.custom.cs" />
     <Compile Include="ParserResultExtensions.cs" />
+    <Compile Include="PdfOutlineBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -89,6 +90,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="CommandLinePostOptions.txt" />
+    <EmbeddedResource Include="CommandLinePreOptions.txt" />
     <Content Include="Outline.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

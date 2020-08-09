@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackgroundTests.cs" />
+    <Compile Include="TableOfContentsTests.cs" />
     <Compile Include="DateAssert.cs" />
     <Compile Include="DisableLocalFileAccessTests.cs" />
     <Compile Include="DumpOutlineTests.cs" />

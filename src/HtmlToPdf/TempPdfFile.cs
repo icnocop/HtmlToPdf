@@ -4,8 +4,6 @@
 
 namespace HtmlToPdf
 {
-    using System.IO;
-
     /// <summary>
     /// Temporary PDF file
     /// </summary>
@@ -17,20 +15,11 @@ namespace HtmlToPdf
         /// <returns>The file path.</returns>
         internal static string Create()
         {
-            string tempFilePath = Path.GetTempFileName();
-            string newFilePath = tempFilePath.Replace(".tmp", ".pdf");
-
-            // make sure file is unique
-            while (File.Exists(newFilePath))
+            TempFile tempFile = new TempFile(".pdf")
             {
-                // create a new file
-                File.Delete(tempFilePath);
-                tempFilePath = Path.GetTempFileName();
-                newFilePath = tempFilePath.Replace(".tmp", ".pdf");
-            }
-
-            File.Move(tempFilePath, newFilePath);
-            return newFilePath;
+                DeleteFileOnDispose = false
+            };
+            return tempFile.FilePath;
         }
     }
 }

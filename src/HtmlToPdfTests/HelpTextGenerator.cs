@@ -51,8 +51,7 @@ namespace HtmlToPdfTests
 
             string output = $@"{GetVersionInformation()}
 Copyright © 2020
-{(errorMessage == null ? string.Empty : $"{Environment.NewLine}ERROR(S):{Environment.NewLine}  {errorMessage}{Environment.NewLine}")}
-{usage}{(detailedErrorMessage == null ? string.Empty : $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{detailedErrorMessage}")}";
+{(errorMessage == null ? null : $"{Environment.NewLine}ERROR(S):{Environment.NewLine}  {errorMessage}{Environment.NewLine}{Environment.NewLine}")}{usage}{(detailedErrorMessage == null ? string.Empty : $"{detailedErrorMessage}")}";
 
             return output;
         }

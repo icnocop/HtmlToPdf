@@ -20,11 +20,10 @@ namespace HtmlToPdf.Console
         /// Gets the AutoBuild help text from the result.
         /// </summary>
         /// <typeparam name="T">The type of options</typeparam>
-        /// <param name="result">The result.</param>
         /// <returns>
         /// The AutoBuild help text in its string representation, or an empty string.
         /// </returns>
-        public static string GetAutoBuildHelpText<T>(this ParserResult<T> result)
+        internal static string GetAutoBuildHelpText<T>()
         {
             var typeInfo = GetTypeInfoInstance<T>();
             if (typeInfo != null)
@@ -33,18 +32,29 @@ namespace HtmlToPdf.Console
                 var notParsed = GetNotParsedInstanceAs<T>(typeInfo, new[] { missingRequiredOptionError });
                 if (notParsed != null)
                 {
-                    return HelpText.AutoBuild(
-                        notParsed,
-                        h =>
-                        {
-                            h.AutoHelp = false;
-                            h.AutoVersion = false;
-                            return h;
-                        }).ToString();
+                    return notParsed.GetHelpText().ToString();
                 }
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Gets the help text.
+        /// </summary>
+        /// <typeparam name="T">The parser result type.</typeparam>
+        /// <param name="parserResult">The parser result.</param>
+        /// <returns>The help text.</returns>
+        internal static HelpText GetHelpText<T>(this ParserResult<T> parserResult)
+        {
+            return HelpText.AutoBuild(parserResult, h =>
+            {
+                h.AutoHelp = false;
+                h.AutoVersion = false;
+                return h;
+            })
+            .AddPreOptionsLines(EmbeddedResource.GetCommandLinePreOptions())
+            .AddPostOptionsLines(EmbeddedResource.GetCommandLinePostOptions());
         }
 
         private static MissingRequiredOptionError GetMissingRequiredOptionError()

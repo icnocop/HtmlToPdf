@@ -38,14 +38,16 @@ namespace HtmlToPdf
         /// <param name="input">The input.</param>
         /// <param name="options">The options.</param>
         /// <param name="variables">The variables.</param>
+        /// <param name="createLinksForHeadings">if set to <c>true</c> creates links for headings.</param>
         /// <returns>
         /// A task with the PDF file path as a result.
         /// </returns>
-        /// <exception cref="FileNotFoundException">File not found: {fullPath}</exception>
+        /// <exception cref="System.IO.FileNotFoundException">File not found: {fullPath}</exception>
         internal async Task<string> PrintAsPdfAsync(
             string input,
             HtmlToPdfOptions options,
-            Dictionary<string, string> variables)
+            Dictionary<string, string> variables,
+            bool createLinksForHeadings = true)
         {
             string fullPath = Path.GetFullPath(input);
             if (!File.Exists(fullPath))
@@ -93,7 +95,10 @@ namespace HtmlToPdf
                 this.PrependEmptyPages(tempHtmlFile.FilePath, options.PageOffset + options.PageNumberOffset);
 
                 // TODO: do not create links for headings if not generating an outline
-                this.CreateLinksForHeadings(tempHtmlFile.FilePath);
+                if (createLinksForHeadings)
+                {
+                    this.CreateLinksForHeadings(tempHtmlFile.FilePath);
+                }
 
                 string pageRanges = string.Empty;
                 if ((options.PageOffset + options.PageNumberOffset) > 0)

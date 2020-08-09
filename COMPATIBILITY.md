@@ -3,7 +3,7 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | Command Line Option            | Supported           | Notes                                                                                                   |
 | ------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------- |
 | cover                          | :heavy_check_mark:  |                                                                                                         |
-| toc                            | :x:                 |                                                                                                         |
+| toc                            | :heavy_check_mark:  |                                                                                                         |
 | --collate                      | :x:                 |                                                                                                         |
 | --no-collate                   | :x:                 |                                                                                                         |
 | --cookie-jar                   | :x:                 |                                                                                                         |

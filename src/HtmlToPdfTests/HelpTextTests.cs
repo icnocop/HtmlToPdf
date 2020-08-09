@@ -27,7 +27,8 @@ namespace HtmlToPdfTests
             HtmlToPdfRunResult result = runner.Run("--log-level Error");
             Assert.AreEqual(1, result.ExitCode, result.Output);
             Assert.IsTrue(string.IsNullOrEmpty(result.StandardOutput), result.StandardOutput);
-            Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput.Trim()), result.StandardError);
+            int length = expectedOutput.Trim().Length;
+            StringAssertWithDiff.AreEqual(expectedOutput.Trim(), result.StandardError.Trim().Substring(0, length));
         }
 
         /// <summary>
@@ -46,7 +47,7 @@ namespace HtmlToPdfTests
             HtmlToPdfRunResult result = runner.Run(commandLine);
             Assert.AreEqual(1, result.ExitCode, result.Output);
             Assert.IsTrue(string.IsNullOrEmpty(result.StandardOutput), result.StandardOutput);
-            Assert.IsTrue(result.StandardError.Trim().StartsWith(expectedOutput.Trim()), result.StandardError);
+            StringAssertWithDiff.AreEqual(expectedOutput.Trim(), result.StandardError.Trim());
         }
     }
 }

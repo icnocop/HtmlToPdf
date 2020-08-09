@@ -26,8 +26,9 @@ namespace HtmlToPdf
         /// <summary>
         /// Gets the title and headings.
         /// </summary>
+        /// <param name="tableOfContentsIncluded">if set to <c>true</c> indicates a table of contents is included in the PDF.</param>
         /// <returns>The headings.</returns>
-        internal List<HtmlHeading> GetTitleAndHeadings()
+        internal List<HtmlHeading> GetTitleAndHeadings(bool tableOfContentsIncluded)
         {
             List<HtmlHeading> headings = new List<HtmlHeading>();
 
@@ -40,7 +41,7 @@ namespace HtmlToPdf
             {
                 Text = titleNode?.InnerText ?? string.Empty,
                 Level = 0,
-                Page = 0
+                Page = tableOfContentsIncluded ? 1 : 0
             });
 
             string xpathQuery = "//*[starts-with(name(),'h') and string-length(name()) = 2 and number(substring(name(), 2)) <= 6]";

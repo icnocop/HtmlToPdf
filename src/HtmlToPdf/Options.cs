@@ -6,6 +6,7 @@ namespace HtmlToPdf
 {
     using System;
     using System.Collections.Generic;
+    using System.Xml;
     using PuppeteerSharp.Media;
 
     /// <summary>
@@ -137,6 +138,16 @@ namespace HtmlToPdf
         /// Gets or sets a value indicating whether to dump the default TOC XSL style sheet to the standard output (STDOUT) stream.
         /// </summary>
         public bool DumpDefaultTocXsl { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to add a table of contents.
+        /// </summary>
+        public bool AddTableOfContents { get; set; }
+
+        /// <summary>
+        /// Gets or sets the outline builder.
+        /// </summary>
+        public Action<XmlWriter, IReadOnlyCollection<HtmlToPdfFile>, bool> OutlineBuilder { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether to print in landscape orientation.

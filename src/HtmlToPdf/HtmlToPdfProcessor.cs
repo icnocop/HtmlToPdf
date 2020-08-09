@@ -188,14 +188,38 @@ namespace HtmlToPdf
 
                     variables.Add("topage", htmlToPdfFiles.Sum(x => x.NumberOfPages).ToString());
 
-                    // update models and optionally re-print HTML files to include footers with page numbers
+                    // update models with title and headings
+                    List<Task> updateTitleAndHeadingsTasks = new List<Task>();
+
+                    foreach (HtmlToPdfFile htmlToPdfFile in htmlToPdfFiles)
+                    {
+                        updateTitleAndHeadingsTasks.Add(Task.Run(() =>
+                        {
+                            // set the title and headings
+                            HtmlFileParser htmlFileParser = new HtmlFileParser(htmlToPdfFile.Input);
+                            htmlToPdfFile.TitleAndHeadings = htmlFileParser.GetTitleAndHeadings(options.AddTableOfContents);
+                            htmlToPdfFile.Title = htmlToPdfFile.TitleAndHeadings.First().Text;
+                        }));
+                    }
+
+                    await Task.WhenAll(updateTitleAndHeadingsTasks);
+
+                    // create table of contents
+                    if (options.AddTableOfContents)
+                    {
+                        await PdfOutlineBuilder.BuildOutlineAsync(
+                            coverAdded,
+                            options.AddTableOfContents,
+                            htmlToPdfFiles,
+                            options.OutlineBuilder,
+                            pdfPrinter,
+                            htmlToPdfOptions,
+                            variables);
+                    }
+
+                    // update models and re-print HTML files to include footers with page numbers
                     tasks = htmlToPdfFiles.Select(async htmlToPdfFile =>
                     {
-                        // get the title
-                        HtmlFileParser htmlFileParser = new HtmlFileParser(htmlToPdfFile.Input);
-                        htmlToPdfFile.TitleAndHeadings = htmlFileParser.GetTitleAndHeadings();
-                        htmlToPdfFile.Title = htmlToPdfFile.TitleAndHeadings.First().Text;
-
                         if (string.IsNullOrEmpty(title)
                             && (htmlToPdfFile.Index == 0))
                         {

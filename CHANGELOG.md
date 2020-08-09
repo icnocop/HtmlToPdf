@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.810.9__ (2020-08-10)
+
+ - Added support for `toc` command line option
+
 __v0.0.802.1__ (2020-08-01)
 
  - Added support for `--dump-outline` command line option

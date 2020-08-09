@@ -12,7 +12,7 @@ namespace HtmlToPdfTests
     /// Temporary file
     /// </summary>
     /// <seealso cref="System.IDisposable" />
-    public class TempFile : IDisposable
+    public class TempFile : HtmlToPdf.TempFile, IDisposable
     {
         private readonly TestContext testContext;
 
@@ -22,44 +22,15 @@ namespace HtmlToPdfTests
         /// <param name="fileExtension">The file extension.</param>
         /// <param name="testContext">The test context.</param>
         internal TempFile(string fileExtension, TestContext testContext = null)
+            : base(fileExtension)
         {
             this.testContext = testContext;
-
-            string tempFilePath = Path.GetTempFileName();
-            string newFilePath = tempFilePath.Replace(".tmp", fileExtension);
-
-            // make sure file is unique
-            while (File.Exists(newFilePath))
-            {
-                File.Delete(tempFilePath);
-                tempFilePath = Path.GetTempFileName();
-                newFilePath = tempFilePath.Replace(".tmp", fileExtension);
-            }
-
-            File.Move(tempFilePath, newFilePath);
-            this.FilePath = newFilePath;
         }
-
-        /// <summary>
-        /// Gets the file path.
-        /// </summary>
-        /// <value>
-        /// The file path.
-        /// </value>
-        public string FilePath { get; private set; }
-
-        /// <summary>
-        /// Gets the name of the file.
-        /// </summary>
-        /// <value>
-        /// The name of the file.
-        /// </value>
-        internal string FileName => Path.GetFileName(this.FilePath);
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
-        public virtual void Dispose()
+        public new virtual void Dispose()
         {
             if (this.testContext != null)
             {
@@ -68,22 +39,7 @@ namespace HtmlToPdfTests
                 this.testContext.AddResultFile(pdfFilePath);
             }
 
-            if (File.Exists(this.FilePath))
-            {
-                File.Delete(this.FilePath);
-            }
-        }
-
-        /// <summary>
-        /// Moves the file to the specified path.
-        /// </summary>
-        /// <param name="path">The path.</param>
-        public void MoveToDirectory(string path)
-        {
-            string newFilePath = Path.Combine(path, this.FileName);
-
-            File.Move(this.FilePath, newFilePath);
-            this.FilePath = newFilePath;
+            base.Dispose();
         }
     }
 }

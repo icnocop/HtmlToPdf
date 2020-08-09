@@ -1,0 +1,41 @@
+﻿
+Usage:
+  HtmlToPdf [GLOBAL OPTION]... [OBJECT]... <output file>
+  
+Document objects:
+  HtmlToPdf is able to put several objects into the output file, an object is
+  either a single webpage, a cover webpage or a table of contents.  The objects
+  are put into the output document in the order they are specified on the
+  command line, options can be specified on a per object basis or in the global
+  options area. Options from the Global Options section can only be placed in
+  the global options area.
+
+  A page objects puts the content of a single webpage into the output document.
+
+  (page)? <input url/file name> [PAGE OPTION]...
+  Options for the page object can be placed in the global options and the page
+  options areas. The applicable options can be found in the Page Options and 
+  Headers And Footer Options sections.
+
+  A cover objects puts the content of a single webpage into the output document,
+  the page does not appear in the table of contents, and does not have headers
+  and footers.
+
+  cover <input url/file name> [PAGE OPTION]...
+  All options that can be specified for a page object can also be specified for
+  a cover.
+
+  A table of contents object inserts a table of contents into the output
+  document.
+
+  toc [TOC OPTION]...
+  All options that can be specified for a page object can also be specified for
+  a toc, further more the options from the TOC Options section can also be
+  applied. The table of contents is generated via XSLT which means that it can
+  be styled to look however you want it to look. To get an idea of how to do
+  this you can dump the default xslt document by supplying the
+  --dump-default-toc-xsl, and the outline it works on by supplying
+  --dump-outline, see the Outline Options section.
+
+Description:
+  Converts one or more HTML pages into a PDF document, using headless Chrome.

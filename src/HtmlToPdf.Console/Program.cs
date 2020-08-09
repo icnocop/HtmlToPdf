@@ -12,10 +12,8 @@ namespace HtmlToPdf.Console
     using System.Text;
     using System.Threading.Tasks;
     using System.Xml;
-    using System.Xml.Serialization;
     using CommandLine;
     using CommandLine.Text;
-    using HtmlToPdf.Console.Outline.Xml;
 
     /// <summary>
     /// The main program
@@ -102,7 +100,7 @@ namespace HtmlToPdf.Console
                             errorMessages.Add(innerException.ToString());
                         }
 
-                        logger.LogError(parserResult.GetAutoBuildHelpText());
+                        logger.LogError(ParserResultExtensions.GetAutoBuildHelpText<CommandLineOptions>());
                         logger.LogError(string.Join(Environment.NewLine, errorMessages));
                         return Error();
                     }
@@ -133,25 +131,13 @@ namespace HtmlToPdf.Console
                 config.HelpWriter = null;
             });
             var parserResult = parser.ParseArguments<CommandLineOptions>(new[] { commandLine });
-            var helpText = HelpText.AutoBuild(parserResult, h =>
-            {
-                h.AutoHelp = false;
-                h.AutoVersion = false;
-                return h;
-            });
+            var helpText = parserResult.GetHelpText();
             logger.LogError(helpText.ToString());
         }
 
         private static void DisplayHelpText<T>(ParserResult<T> parserResult, Logger logger)
         {
-            HelpText helpText = HelpText.AutoBuild(
-                parserResult,
-                h =>
-                {
-                    h.AutoHelp = false;
-                    h.AutoVersion = false;
-                    return h;
-                });
+            HelpText helpText = parserResult.GetHelpText();
             helpText.AddOptions(parserResult);
             logger.LogError(helpText);
         }
@@ -193,6 +179,16 @@ namespace HtmlToPdf.Console
                 int index = inputs.IndexOf("cover");
                 cover = inputs[index + 1];
                 inputs.RemoveAt(index); // remove "cover"
+            }
+
+            bool addTableOfContents = false;
+            if (inputs.Contains("toc"))
+            {
+                addTableOfContents = true;
+
+                // remove "toc"
+                int index = inputs.IndexOf("toc");
+                inputs.RemoveAt(index);
             }
 
             bool stdout = false;
@@ -245,7 +241,9 @@ namespace HtmlToPdf.Console
                     Title = commandLineOptions.Title,
                     TopMargin = commandLineOptions.TopMargin,
                     UserStyleSheet = commandLineOptions.UserStyleSheet,
-                    DumpDefaultTocXsl = commandLineOptions.DumpDefaultTocXsl
+                    DumpDefaultTocXsl = commandLineOptions.DumpDefaultTocXsl,
+                    AddTableOfContents = addTableOfContents,
+                    OutlineBuilder = new Action<XmlWriter, IReadOnlyCollection<HtmlToPdfFile>, bool>(PdfOutlineBuilder.BuildOutline)
                 },
                 logger);
 
@@ -263,90 +261,11 @@ namespace HtmlToPdf.Console
                 {
                     xmlWriter.Formatting = Formatting.Indented;
 
-                    outline outline = new outline
-                    {
-                        Items = BuildOutline(htmlToPdfFiles.SelectMany(x => x.TitleAndHeadings))
-                    };
-
-                    var serializer = new XmlSerializer(typeof(outline));
-
-                    XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
-                    namespaces.Add(string.Empty, "http://wkhtmltopdf.org/outline");
-
-                    serializer.Serialize(xmlWriter, outline, namespaces);
+                    PdfOutlineBuilder.BuildOutline(xmlWriter, htmlToPdfFiles, addTableOfContents);
                 }
             }
 
             return 0;
-        }
-
-        private static List<item> BuildOutline(IEnumerable<HtmlHeading> headings)
-        {
-            int counter = 0;
-
-            var items = new List<item>();
-            var allItems = new List<item>();
-            item parentNode = null;
-            item currentItem = null;
-
-            foreach (var heading in headings)
-            {
-                // if there is no previous item, add it to the current list
-                // if previously added item is the same level, add it to current list
-                // if previously added item is a smaller level, add it to the previous item's children
-                // if previously added item is a larger level, add it to the previously added item's parent
-                currentItem = new item
-                {
-                    title = heading.Text,
-                    level = heading.Level,
-                    link = $"__WKANCHOR_{IntToBase(counter++, 36)}",
-                    backLink = $"__WKANCHOR_{IntToBase(counter++, 36)}",
-                    page = heading.Page.ToString(),
-                    children = new List<item>()
-                };
-
-                allItems.Add(currentItem);
-
-                if (!allItems.Any(n => n.level < currentItem.level))
-                {
-                    items.Add(currentItem);
-                    parentNode = null;
-                }
-
-                if (parentNode != null)
-                {
-                    if (parentNode.level >= currentItem.level)
-                    {
-                        parentNode = allItems.Last(n => n.level < currentItem.level);
-                    }
-
-                    // add item as child of parent
-                    parentNode.children.Add(currentItem);
-                }
-
-                parentNode = currentItem;
-            }
-
-            return items;
-        }
-
-        private static string IntToBase(int input, int @base)
-        {
-            var digits = "0123456789abcdefghijklmnopqrstuvwxyz";
-
-            if (@base < 2 || @base > 36)
-            {
-                throw new ArgumentOutOfRangeException(nameof(@base), "Must specify a base between 2 and 36, inclusive.");
-            }
-
-            if (input < @base && input >= 0)
-            {
-                return digits[input].ToString();
-            }
-            else
-            {
-                return IntToBase(input / @base, @base) + digits[input % @base].ToString();
-            }
         }
 
         private static string[] ParseArguments(string commandLine)
