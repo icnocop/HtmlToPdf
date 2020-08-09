@@ -33,7 +33,7 @@ namespace HtmlToPdf.Console
 
             try
             {
-                System.Diagnostics.Debugger.Launch();
+                // System.Diagnostics.Debugger.Launch();
                 Console.OutputEncoding = Encoding.Default;
 
                 var parser = new Parser(config =>
