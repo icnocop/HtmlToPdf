@@ -108,25 +108,25 @@
       <HintPath>..\packages\Tesseract.3.0.2.0\lib\net451\Tesseract.dll</HintPath>
     </Reference>
     <Reference Include="UglyToad.PdfPig, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.dll</HintPath>
+      <HintPath>..\packages\PdfPig.0.1.2\lib\net47\UglyToad.PdfPig.dll</HintPath>
     </Reference>
     <Reference Include="UglyToad.PdfPig.Core, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.Core.dll</HintPath>
+      <HintPath>..\packages\PdfPig.0.1.2\lib\net47\UglyToad.PdfPig.Core.dll</HintPath>
     </Reference>
     <Reference Include="UglyToad.PdfPig.DocumentLayoutAnalysis, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.DocumentLayoutAnalysis.dll</HintPath>
+      <HintPath>..\packages\PdfPig.0.1.2\lib\net47\UglyToad.PdfPig.DocumentLayoutAnalysis.dll</HintPath>
     </Reference>
     <Reference Include="UglyToad.PdfPig.Fonts, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.Fonts.dll</HintPath>
+      <HintPath>..\packages\PdfPig.0.1.2\lib\net47\UglyToad.PdfPig.Fonts.dll</HintPath>
     </Reference>
     <Reference Include="UglyToad.PdfPig.Package, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.Package.dll</HintPath>
+      <HintPath>..\packages\PdfPig.0.1.2\lib\net47\UglyToad.PdfPig.Package.dll</HintPath>
     </Reference>
     <Reference Include="UglyToad.PdfPig.Tokenization, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.Tokenization.dll</HintPath>
+      <HintPath>..\packages\PdfPig.0.1.2\lib\net47\UglyToad.PdfPig.Tokenization.dll</HintPath>
     </Reference>
     <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
-      <HintPath>..\packages\PdfPig.0.1.2-alpha001\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
+      <HintPath>..\packages\PdfPig.0.1.2\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
     </Reference>
     <Reference Include="XmlDiffPatch, Version=1.0.8.28, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\XMLDiffPatch.1.0.8.28\lib\net\XmlDiffPatch.dll</HintPath>
