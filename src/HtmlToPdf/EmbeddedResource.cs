@@ -15,16 +15,6 @@ namespace HtmlToPdf
     public static class EmbeddedResource
     {
         /// <summary>
-        /// Gets the default table of contents XSL.
-        /// </summary>
-        /// <returns>The contents of the default table of contents XSL.</returns>
-        public static string GetDefaultTableOfContentsXsl()
-        {
-            // TODO: extract wkhtmltopdf specific details
-            return ReadAsString("DefaultTableOfContents.xsl");
-        }
-
-        /// <summary>
         /// Gets the command line pre options.
         /// </summary>
         /// <returns>The command line pre options</returns>
@@ -61,35 +51,6 @@ namespace HtmlToPdf
                     using (var streamReader = new StreamReader(memoryStream))
                     {
                         return streamReader.ReadToEnd().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Reads an embedded resource as a string.
-        /// </summary>
-        /// <param name="resourceName">Name of the resource.</param>
-        /// <returns>The embedded resource contents.</returns>
-        private static string ReadAsString(string resourceName)
-        {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            string @namespace = assembly.GetName().Name;
-            using (Stream stream = assembly.GetManifestResourceStream($"{@namespace}.{resourceName}"))
-            {
-                if (stream == null)
-                {
-                    return null;
-                }
-
-                byte[] buffer = new byte[stream.Length];
-                stream.Read(buffer, 0, buffer.Length);
-
-                using (var memoryStream = new MemoryStream(buffer))
-                {
-                    using (var streamReader = new StreamReader(memoryStream))
-                    {
-                        return streamReader.ReadToEnd();
                     }
                 }
             }

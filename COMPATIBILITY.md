@@ -120,7 +120,7 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | --header-right                 | :x:                 |                                                                                                         |
 | --header-spacing               | :x:                 |                                                                                                         |
 | --replace                      | :x:                 |                                                                                                         |
-| --disable-dotted-lines         | :x:                 |                                                                                                         |
+| --disable-dotted-lines         | :heavy_check_mark:  |                                                                                                         |
 | --toc-header-text              | :x:                 |                                                                                                         |
 | --toc-level-indentation        | :x:                 |                                                                                                         |
 | --disable-toc-links            | :x:                 |                                                                                                         |

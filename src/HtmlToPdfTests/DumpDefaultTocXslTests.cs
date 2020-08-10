@@ -4,7 +4,7 @@
 
 namespace HtmlToPdfTests
 {
-    using HtmlToPdf;
+    using HtmlToPdf.Console;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
@@ -44,7 +44,7 @@ namespace HtmlToPdfTests
                     .Replace("\r\r", "\r\n");
             }
 
-            string expected = EmbeddedResource.GetDefaultTableOfContentsXsl();
+            string expected = TableOfContentsStyleSheetBuilder.Build(true);
             StringAssertWithDiff.AreEqual(expected.Trim(), output.Trim());
         }
     }

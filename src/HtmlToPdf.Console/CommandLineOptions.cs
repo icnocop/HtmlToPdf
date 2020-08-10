@@ -205,6 +205,12 @@ namespace HtmlToPdf.Console
         public bool DisableLocalFileAccess { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether disable dotted lines in the table of contents.
+        /// </summary>
+        [Option("disable-dotted-lines", HelpText = "Do not use dotted lines in the toc")]
+        public bool DisableDottedLines { get; set; }
+
+        /// <summary>
         /// Gets the logger level.
         /// </summary>
         internal LogLevel LoggerLevel

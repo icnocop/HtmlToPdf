@@ -11,6 +11,10 @@ namespace HtmlToPdfTests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using UglyToad.PdfPig.Annotations;
     using UglyToad.PdfPig.Content;
+    using UglyToad.PdfPig.Graphics.Operations;
+    using UglyToad.PdfPig.Graphics.Operations.ClippingPaths;
+    using UglyToad.PdfPig.Graphics.Operations.PathConstruction;
+    using UglyToad.PdfPig.Graphics.Operations.PathPainting;
     using UglyToad.PdfPig.Tokens;
 
     /// <summary>
@@ -29,10 +33,13 @@ namespace HtmlToPdfTests
         /// </summary>
         /// <param name="exeFileName">Name of the executable file.</param>
         /// <param name="wkhtmltopdf">if set to <c>true</c> indicates the test is with wkhtmltopdf.</param>
+        /// <param name="disableDottedLines">if set to <c>true</c> disables dotted lines.</param>
         [TestMethod]
-        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, false, DisplayName = "HtmlToPdf.exe")]
-        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, true, DisplayName = "wkhtmltopdf.exe")]
-        public void TableOfContents_InsertsTableOfContentsAsFirstPage(string exeFileName, bool wkhtmltopdf)
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, false, false, DisplayName = "HtmlToPdf.exe with dotted lines")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, false, true, DisplayName = "HtmlToPdf.exe without dotted lines")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, true, false, DisplayName = "wkhtmltopdf.exe with dotted lines")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, true, true, DisplayName = "wkhtmltopdf.exe without dotted lines")]
+        public void TableOfContents_InsertsTableOfContentsAsFirstPage(string exeFileName, bool wkhtmltopdf, bool disableDottedLines)
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
@@ -51,7 +58,15 @@ namespace HtmlToPdfTests
                 {
                     using (TempFile tempOutlineFile = new TempFile(".xml", this.TestContext))
                     {
-                        string commandLine = $"--dump-outline \"{tempOutlineFile.FilePath}\" toc \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                        string commandLine = $"--dump-outline \"{tempOutlineFile.FilePath}\" toc ";
+
+                        if (disableDottedLines)
+                        {
+                            commandLine += "--disable-dotted-lines ";
+                        }
+
+                        commandLine += $"\"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+
                         HtmlToPdfRunResult result = runner.Run(commandLine);
                         Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -120,6 +135,26 @@ namespace HtmlToPdfTests
                                 Assert.AreEqual(16, pToken.Data.ObjectNumber);
                             }
 
+                            // assert graphic operations
+                            IReadOnlyList<IGraphicsStateOperation> graphicsStateOperations = tocPage.Operations;
+
+                            errorMessage = "Graphics State Operations:" + Environment.NewLine + string.Join(
+                                Environment.NewLine,
+                                graphicsStateOperations.Select(x => $"{x.Operator} {x.GetType()} {x}"));
+
+                            if (wkhtmltopdf)
+                            {
+                                Assert.AreEqual(!disableDottedLines, graphicsStateOperations.Any(x => x is ModifyClippingByNonZeroWindingIntersect), errorMessage);
+                                Assert.AreEqual(!disableDottedLines, graphicsStateOperations.Any(x => x is AppendRectangle), errorMessage);
+                                Assert.AreEqual(!disableDottedLines, graphicsStateOperations.Any(x => x is FillPathNonZeroWinding), errorMessage);
+                            }
+                            else
+                            {
+                                Assert.AreEqual(!disableDottedLines, graphicsStateOperations.Any(x => x is AppendStraightLineSegment), errorMessage);
+                                Assert.AreEqual(!disableDottedLines, graphicsStateOperations.Any(x => x is BeginNewSubpath), errorMessage);
+                            }
+
+                            // assert page 2
                             Page page2 = pdfDocument.GetPage(2);
                             Assert.AreEqual("Page 2", page2.Text);
                         }

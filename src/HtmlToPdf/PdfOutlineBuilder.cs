@@ -23,8 +23,10 @@ namespace HtmlToPdf
         /// </summary>
         /// <param name="coverIncluded">if set to <c>true</c> indicates a cover is included in the PDF.</param>
         /// <param name="tableOfContentsIncluded">if set to <c>true</c> indicates a table of contents is included in the PDF.</param>
+        /// <param name="outputDottedLinesInTableOfContents">if set to <c>true</c> outputs dotted lines in the table of contents.</param>
         /// <param name="htmlToPdfFiles">The HTML to PDF files.</param>
         /// <param name="outlineBuilder">The outline builder.</param>
+        /// <param name="defaultTableOfContentsStyleSheetBuilder">The default table of contents style sheet builder.</param>
         /// <param name="pdfPrinter">The PDF printer.</param>
         /// <param name="htmlToPdfOptions">The HTML to PDF options.</param>
         /// <param name="variables">The variables.</param>
@@ -32,8 +34,10 @@ namespace HtmlToPdf
         internal static async Task BuildOutlineAsync(
             bool coverIncluded,
             bool tableOfContentsIncluded,
+            bool outputDottedLinesInTableOfContents,
             ConcurrentBag<HtmlToPdfFile> htmlToPdfFiles,
             Action<XmlWriter, IReadOnlyCollection<HtmlToPdfFile>, bool> outlineBuilder,
+            Func<bool, string> defaultTableOfContentsStyleSheetBuilder,
             PdfPrinter pdfPrinter,
             HtmlToPdfOptions htmlToPdfOptions,
             Dictionary<string, string> variables)
@@ -76,7 +80,7 @@ namespace HtmlToPdf
 
             using (TempHtmlFile tempHtmlFile = new TempHtmlFile())
             {
-                string defaultTocXsl = EmbeddedResource.GetDefaultTableOfContentsXsl();
+                string defaultTocXsl = defaultTableOfContentsStyleSheetBuilder(outputDottedLinesInTableOfContents);
                 using (StringReader stringReader = new StringReader(defaultTocXsl))
                 {
                     using (XmlReader tocXslXmlReader = XmlReader.Create(stringReader))

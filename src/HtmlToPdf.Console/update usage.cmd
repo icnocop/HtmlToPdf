@@ -20,7 +20,7 @@ set "len=!len:*: =!"
   for /l %%l in (1 1 !len!) do (
     set "line="
     set /p "line="
-    echo(!line!  
+    if %%l gtr 2 echo(!line!  
   )
 ) > %outputFile%
 

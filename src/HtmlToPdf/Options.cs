@@ -150,6 +150,16 @@ namespace HtmlToPdf
         public Action<XmlWriter, IReadOnlyCollection<HtmlToPdfFile>, bool> OutlineBuilder { get; set; }
 
         /// <summary>
+        /// Gets or sets the default table of contents style sheet builder.
+        /// </summary>
+        public Func<bool, string> DefaultTableOfContentsStyleSheetBuilder { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to output dotted lines in the table of contents.
+        /// </summary>
+        public bool OutputDottedLinesInTableOfContents { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether to print in landscape orientation.
         /// </summary>
         internal bool Landscape

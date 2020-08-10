@@ -52,7 +52,7 @@ namespace HtmlToPdf
 
             if (options.DumpDefaultTocXsl)
             {
-                string defaultTocXsl = EmbeddedResource.GetDefaultTableOfContentsXsl();
+                string defaultTocXsl = options.DefaultTableOfContentsStyleSheetBuilder(options.OutputDottedLinesInTableOfContents);
                 logger.LogOutput(defaultTocXsl);
             }
 
@@ -210,8 +210,10 @@ namespace HtmlToPdf
                         await PdfOutlineBuilder.BuildOutlineAsync(
                             coverAdded,
                             options.AddTableOfContents,
+                            options.OutputDottedLinesInTableOfContents,
                             htmlToPdfFiles,
                             options.OutlineBuilder,
+                            options.DefaultTableOfContentsStyleSheetBuilder,
                             pdfPrinter,
                             htmlToPdfOptions,
                             variables);

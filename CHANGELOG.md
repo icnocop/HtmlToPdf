@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.810.12__ (2020-08-10)
+
+ - Added support for `--disable-dotted-lines` command line option
+
 __v0.0.810.9__ (2020-08-10)
 
  - Added support for `toc` command line option

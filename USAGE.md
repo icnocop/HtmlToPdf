@@ -121,6 +121,9 @@ Description:
                                                    explicitly allowed with  
                                                    --allow (default)  
   
+  --disable-dotted-lines                           Do not use dotted lines in  
+                                                   the toc  
+  
   
 Page sizes:  
   The default page size of the rendered document is A4, but by using the  

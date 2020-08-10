@@ -243,7 +243,9 @@ namespace HtmlToPdf.Console
                     UserStyleSheet = commandLineOptions.UserStyleSheet,
                     DumpDefaultTocXsl = commandLineOptions.DumpDefaultTocXsl,
                     AddTableOfContents = addTableOfContents,
-                    OutlineBuilder = new Action<XmlWriter, IReadOnlyCollection<HtmlToPdfFile>, bool>(PdfOutlineBuilder.BuildOutline)
+                    OutlineBuilder = new Action<XmlWriter, IReadOnlyCollection<HtmlToPdfFile>, bool>(PdfOutlineBuilder.BuildOutline),
+                    DefaultTableOfContentsStyleSheetBuilder = TableOfContentsStyleSheetBuilder.Build,
+                    OutputDottedLinesInTableOfContents = !commandLineOptions.DisableDottedLines
                 },
                 logger);
 
