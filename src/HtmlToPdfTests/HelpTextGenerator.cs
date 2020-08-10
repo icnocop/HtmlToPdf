@@ -7,6 +7,7 @@ namespace HtmlToPdfTests
     using System;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
 
     /// <summary>
@@ -47,11 +48,11 @@ namespace HtmlToPdfTests
         /// </returns>
         public static string GenerateParserError(string errorMessage = null, string detailedErrorMessage = null)
         {
-            string usage = File.ReadAllText(@"..\..\..\..\USAGE.md");
+            string usage = string.Join(Environment.NewLine, File.ReadLines(@"..\..\..\..\USAGE.md").Select(x => x.TrimEnd()));
 
             string output = $@"{GetVersionInformation()}
 Copyright © 2020
-{(errorMessage == null ? null : $"{Environment.NewLine}ERROR(S):{Environment.NewLine}  {errorMessage}{Environment.NewLine}{Environment.NewLine}")}{usage}{(detailedErrorMessage == null ? string.Empty : $"{detailedErrorMessage}")}";
+{(errorMessage == null ? null : $"{Environment.NewLine}ERROR(S):{Environment.NewLine}  {errorMessage}{Environment.NewLine}{Environment.NewLine}")}{usage}{(detailedErrorMessage == null ? string.Empty : $"{Environment.NewLine}{detailedErrorMessage}")}";
 
             return output;
         }

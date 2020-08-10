@@ -3,5 +3,25 @@
 REM set errorlevel to 0
 ver > nul
 
-"%~dp0HtmlToPdf.Console.exe" --help >"%~dp0..\..\..\..\USAGE.md" 2>&1
+set tempOutputFile=%~dp0..\..\..\..\USAGE_temp.md
+
+if exist "%tempOutputFile%" del "%tempOutputFile%"
+
+set outputFile="%~dp0..\..\..\..\USAGE.md"
+"%~dp0HtmlToPdf.Console.exe" --help >"%tempOutputFile%" 2>&1
 if %errorlevel% neq 1 echo Failed to write usage to USAGE.md && exit /b %errorlevel%
+
+setlocal EnableDelayedExpansion
+
+for /f "delims=" %%n in ('find /c /v "" %tempOutputFile%') do set "len=%%n"
+set "len=!len:*: =!"
+
+<%tempOutputFile% (
+  for /l %%l in (1 1 !len!) do (
+    set "line="
+    set /p "line="
+    echo(!line!  
+  )
+) > %outputFile%
+
+del "%tempOutputFile%"
