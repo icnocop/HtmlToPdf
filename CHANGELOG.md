@@ -1,6 +1,6 @@
 # Change Log
 
-__v0.0.812.1__ (2020-08-12)
+__v0.0.812.0__ (2020-08-12)
 
  - Fixed issue when using multiple input files
 
