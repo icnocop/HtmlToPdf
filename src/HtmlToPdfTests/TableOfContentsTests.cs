@@ -85,7 +85,7 @@ namespace HtmlToPdfTests
                             };
 
                             File.WriteAllLines(expectedOutlineFile.FilePath, contents);
-                            XmlAssert.AreEqual(expectedOutlineFile.FilePath, tempOutlineFile.FilePath, this.TestContext, "blah");
+                            XmlAssert.AreEqual(expectedOutlineFile.FilePath, tempOutlineFile.FilePath, this.TestContext, $"Expected: {expectedOutlineFile.FileName} Actual: {tempOutlineFile.FileName}");
                         }
 
                         // assert PDF

@@ -4,10 +4,12 @@
 
 namespace HtmlToPdf
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Threading.Tasks;
     using HtmlAgilityPack;
+    using HtmlToPdf.Exceptions;
     using PuppeteerSharp;
     using PuppeteerSharp.Media;
 
@@ -148,7 +150,14 @@ namespace HtmlToPdf
 
                     await page.WaitForTimeoutAsync(options.JavascriptDelayInMilliseconds);
 
-                    await page.PdfAsync(tempPdfFilePath, pdfOptions);
+                    try
+                    {
+                        await page.PdfAsync(tempPdfFilePath, pdfOptions);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new PrintToPdfException(fullPath, ex);
+                    }
 
                     await page.CloseAsync();
                 }
@@ -184,7 +193,8 @@ namespace HtmlToPdf
 
                 // trying to use the style 'visibility:hidden;' generates the PDF without a hyperlink
                 // trying to use the style 'font-size:0;' generates the PDF without a hyperlink
-                hiddenAnchor.Attributes.Add("style", "line-height:0;color:transparent;");
+                // trying to use the style 'line-height:0;' doesn't seem to do anything
+                hiddenAnchor.Attributes.Add("style", "font-size:0;color:transparent;");
                 hiddenAnchor.InnerHtml = node.InnerHtml;
                 node.AppendChild(hiddenAnchor);
             }
@@ -206,12 +216,13 @@ namespace HtmlToPdf
             html.Load(htmlFilePath);
 
             string style = @"<style type=""text/css"" media=""print"">
-  .page-break
-  {
-    page-break-after: always;
-    visibility: hidden;
-  }
-</style>";
+                .page-break
+                {
+                    page-break-after: always !important;
+                    font-size: 0 !important;
+                    visibility: hidden !important;
+                }
+            </style>";
             string emptyPage = "<div class=\"page-break\">Hidden Page {0}<br></div>";
 
             // Get head node
@@ -226,14 +237,23 @@ namespace HtmlToPdf
             // Get body node
             HtmlNode body = html.DocumentNode.SelectSingleNode("//body");
 
-            for (int i = pages; i > 0; i--)
+            // create container
+            HtmlNode containerNode = HtmlNode.CreateNode("<div style=\"position: relative !important;\"></div>");
+
+            for (int i = 1; i <= pages; i++)
             {
                 // Create new node
                 HtmlNode newNode = HtmlNode.CreateNode(string.Format(emptyPage, i));
 
-                // Add new node as first child of body
-                body.PrependChild(newNode);
+                // Add new node as child of container
+                containerNode.ChildNodes.Add(newNode);
             }
+
+            // create an empty node
+            containerNode.ChildNodes.Add(HtmlNode.CreateNode("<div></div>"));
+
+            // Add container as first child of body
+            body.PrependChild(containerNode);
 
             html.Save(htmlFilePath);
         }

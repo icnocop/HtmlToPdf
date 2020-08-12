@@ -22,7 +22,7 @@ namespace HtmlToPdfTests
         /// <param name="actualXmlFilePath">The actual XML file path.</param>
         /// <param name="testContext">The test context.</param>
         /// <param name="message">The message.</param>
-        public static void AreEqual(string expectedXmlFilePath, string actualXmlFilePath, TestContext testContext, string message)
+        public static void AreEqual(string expectedXmlFilePath, string actualXmlFilePath, TestContext testContext, string message = "")
         {
             using (TempFile diffGramFile = new TempFile(".xml"))
             {

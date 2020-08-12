@@ -59,7 +59,8 @@ namespace HtmlToPdf
                 headings.Add(new HtmlHeading
                 {
                     Text = node.InnerHtml,
-                    Level = level
+                    Level = level,
+                    Page = 1
                 });
             }
 

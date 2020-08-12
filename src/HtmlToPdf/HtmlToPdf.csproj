@@ -188,6 +188,7 @@
   <ItemGroup>
     <Compile Include="BrowserDownloader.cs" />
     <Compile Include="EmbeddedResource.cs" />
+    <Compile Include="Exceptions\PrintToPdfException.cs" />
     <Compile Include="HtmlHeading.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />

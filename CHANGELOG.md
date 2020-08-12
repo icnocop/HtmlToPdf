@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.812.1__ (2020-08-12)
+
+ - Fixed issue when using multiple input files
+
 __v0.0.810.12__ (2020-08-10)
 
  - Added support for `--disable-dotted-lines` command line option
