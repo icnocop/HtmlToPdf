@@ -100,7 +100,6 @@ namespace HtmlToPdf.Console
                             errorMessages.Add(innerException.ToString());
                         }
 
-                        logger.LogError(ParserResultExtensions.GetAutoBuildHelpText<CommandLineOptions>());
                         logger.LogError(string.Join(Environment.NewLine, errorMessages));
                         return Error();
                     }

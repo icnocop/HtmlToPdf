@@ -1,5 +1,11 @@
 # Change Log
 
+__v0.0.920.3__ (2020-09-20)
+
+ - Retry launching chrome if an exception occurs  
+ - Added more application specific exceptions  
+ - Added more debugging  
+
 __v0.0.812.0__ (2020-08-12)
 
  - Fixed issue when using multiple input files

@@ -10,7 +10,9 @@ namespace HtmlToPdf
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Threading;
     using System.Threading.Tasks;
+    using HtmlToPdf.Exceptions;
     using HtmlToPdf.Extensions;
     using PuppeteerSharp;
     using PuppeteerSharp.Media;
@@ -20,8 +22,6 @@ namespace HtmlToPdf
     /// </summary>
     public class HtmlToPdfProcessor
     {
-        private static bool coverAdded = false;
-
         /// <summary>
         /// Converts the HTML files to a PDF.
         /// </summary>
@@ -71,7 +71,7 @@ namespace HtmlToPdf
 
             BrowserDownloader.DownloadBrowser(logger);
 
-            using (Browser browser = await Puppeteer.LaunchAsync(new LaunchOptions
+            var launchOptions = new LaunchOptions
             {
                 SlowMo = 0,
                 Headless = true,
@@ -79,199 +79,251 @@ namespace HtmlToPdf
                 LogProcess = false,
                 EnqueueTransportMessages = true,
                 Devtools = false
-            }))
-            {
-                MarginOptions marginOptions = new MarginOptions
-                {
-                    Bottom = options.BottomMargin,
-                    Left = options.LeftMargin,
-                    Right = options.RightMargin,
-                    Top = options.TopMargin
-                };
+            };
 
+            MarginOptions marginOptions = new MarginOptions
+            {
+                Bottom = options.BottomMargin,
+                Left = options.LeftMargin,
+                Right = options.RightMargin,
+                Top = options.TopMargin
+            };
+
+            int retryCount = 1;
+            int maximumRetryCount = 2;
+            while (retryCount <= maximumRetryCount)
+            {
                 try
                 {
-                    PdfPrinter pdfPrinter = new PdfPrinter(browser, logger);
+                    bool coverAdded = false;
 
-                    // cover options
-                    HtmlToPdfOptions htmlToPdfOptions = new HtmlToPdfOptions
+                    using (Browser browser = await Puppeteer.LaunchAsync(launchOptions))
                     {
-                        StyleSheet = options.UserStyleSheet,
-                        JavascriptDelayInMilliseconds = options.JavascriptDelayInMilliseconds,
-                        Landscape = options.Landscape,
-                        PaperFormat = options.PaperFormat,
-                        Height = options.PageHeight,
-                        Width = options.PageWidth,
-                        PrintBackground = options.PrintBackground
-                    };
-
-                    if (!string.IsNullOrEmpty(options.Cover) && (!coverAdded))
-                    {
-                        // print cover
-                        string pdfFile = await pdfPrinter.PrintAsPdfAsync(
-                            options.Cover,
-                            htmlToPdfOptions,
-                            null);
-
-                        int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
-
-                        logger.LogDebug($"Cover file \"{options.Cover}\" contains number of PDF pages: {numberOfPages}.");
-
-                        HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
+                        try
                         {
-                            Input = options.Cover,
-                            Index = 0,
-                            PdfFilePath = pdfFile,
-                            PrintFooter = false,
-                            NumberOfPages = numberOfPages
-                        };
+                            PdfPrinter pdfPrinter = new PdfPrinter(browser, logger);
 
-                        htmlToPdfFiles.Add(htmlToPdfFile);
-
-                        coverAdded = true;
-                    }
-
-                    // page options
-                    htmlToPdfOptions.MarginOptions = marginOptions;
-                    htmlToPdfOptions.FooterTemplateBuilder.FooterLeft = options.FooterLeft;
-                    htmlToPdfOptions.FooterTemplateBuilder.FooterCenter = options.FooterCenter;
-                    htmlToPdfOptions.FooterTemplateBuilder.FooterRight = options.FooterRight;
-
-                    string footerFontSize = options.FooterFontSize.AppendUnits("px");
-
-                    htmlToPdfOptions.FooterTemplateBuilder.FooterFontSize = footerFontSize;
-                    htmlToPdfOptions.FooterTemplateBuilder.FooterFontName = options.FooterFontName;
-                    htmlToPdfOptions.FooterTemplateBuilder.FooterHtml = options.FooterHtml;
-
-                    // global header/footer variables
-                    // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
-                    Dictionary<string, string> variables = new Dictionary<string, string>
-                    {
-                        { "page", "<span class=\"pageNumber\"></span>" },
-                        { "date", "<span class=\"date\"></span>" }, // M/dd/yyyy
-                        { "title", "<span class=\"title\"></span>" },
-                        { "frompage",  (options.PageOffset + 1).ToString() },
-                        { "isodate", dtNow.ToString("yyyy-MM-dd") }, // ISO 8601 extended format
-                        { "time", dtNow.ToString("h:mm:ss tt") }, // ex. 3:58:45 PM
-                        { "doctitle", title }
-                    };
-
-                    // count the number of PDF pages each HTML file will be printed as
-                    var tasks = options.Inputs
-                        .Where(x => htmlToPdfFiles.All(y => y.Input != x))
-                        .Select(async input =>
-                        {
-                            // print as pdf
-                            string pdfFile = await pdfPrinter.PrintAsPdfAsync(
-                                input,
-                                htmlToPdfOptions,
-                                variables);
-
-                            // count the number of pages
-                            int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
-
-                            logger.LogDebug($"\"{input}\" contains number of PDF pages: {numberOfPages}.");
-
-                            HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
+                            // cover options
+                            HtmlToPdfOptions htmlToPdfOptions = new HtmlToPdfOptions
                             {
-                                Input = input,
-                                Index = options.Inputs.IndexOf(input),
-                                PdfFilePath = pdfFile,
-                                PrintFooter = true,
-                                NumberOfPages = numberOfPages
+                                StyleSheet = options.UserStyleSheet,
+                                JavascriptDelayInMilliseconds = options.JavascriptDelayInMilliseconds,
+                                Landscape = options.Landscape,
+                                PaperFormat = options.PaperFormat,
+                                Height = options.PageHeight,
+                                Width = options.PageWidth,
+                                PrintBackground = options.PrintBackground
                             };
 
-                            htmlToPdfFiles.Add(htmlToPdfFile);
-                        });
+                            if (!string.IsNullOrEmpty(options.Cover) && (!coverAdded))
+                            {
+                                // print cover
+                                string pdfFile = await pdfPrinter.PrintAsPdfAsync(
+                                    options.Cover,
+                                    htmlToPdfOptions,
+                                    null);
 
-                    await Task.WhenAll(tasks);
+                                int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
 
-                    variables.Add("topage", htmlToPdfFiles.Sum(x => x.NumberOfPages).ToString());
+                                logger.LogDebug($"Cover file \"{options.Cover}\" contains number of PDF pages: {numberOfPages}.");
 
-                    // update models with title and headings
-                    List<Task> updateTitleAndHeadingsTasks = new List<Task>();
+                                HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
+                                {
+                                    Input = options.Cover,
+                                    Index = 0,
+                                    PdfFilePath = pdfFile,
+                                    PrintFooter = false,
+                                    NumberOfPages = numberOfPages
+                                };
 
-                    foreach (HtmlToPdfFile htmlToPdfFile in htmlToPdfFiles)
-                    {
-                        updateTitleAndHeadingsTasks.Add(Task.Run(() =>
+                                htmlToPdfFiles.Add(htmlToPdfFile);
+
+                                coverAdded = true;
+                            }
+
+                            // page options
+                            htmlToPdfOptions.MarginOptions = marginOptions;
+                            htmlToPdfOptions.FooterTemplateBuilder.FooterLeft = options.FooterLeft;
+                            htmlToPdfOptions.FooterTemplateBuilder.FooterCenter = options.FooterCenter;
+                            htmlToPdfOptions.FooterTemplateBuilder.FooterRight = options.FooterRight;
+
+                            string footerFontSize = options.FooterFontSize.AppendUnits("px");
+
+                            htmlToPdfOptions.FooterTemplateBuilder.FooterFontSize = footerFontSize;
+                            htmlToPdfOptions.FooterTemplateBuilder.FooterFontName = options.FooterFontName;
+                            htmlToPdfOptions.FooterTemplateBuilder.FooterHtml = options.FooterHtml;
+
+                            // global header/footer variables
+                            // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
+                            Dictionary<string, string> variables = new Dictionary<string, string>
+                            {
+                                { "page", "<span class=\"pageNumber\"></span>" },
+                                { "date", "<span class=\"date\"></span>" }, // M/dd/yyyy
+                                { "title", "<span class=\"title\"></span>" },
+                                { "frompage",  (options.PageOffset + 1).ToString() },
+                                { "isodate", dtNow.ToString("yyyy-MM-dd") }, // ISO 8601 extended format
+                                { "time", dtNow.ToString("h:mm:ss tt") }, // ex. 3:58:45 PM
+                                { "doctitle", title }
+                            };
+
+                            // count the number of PDF pages each HTML file will be printed as
+                            var tasks = options.Inputs
+                                .Where(x => htmlToPdfFiles.All(y => y.Input != x))
+                                .Select(async input =>
+                                {
+                                    // print as pdf
+                                    string pdfFile = await pdfPrinter.PrintAsPdfAsync(
+                                            input,
+                                            htmlToPdfOptions,
+                                            variables);
+
+                                    // count the number of pages
+                                    int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
+
+                                    logger.LogDebug($"\"{input}\" contains number of PDF pages: {numberOfPages}.");
+
+                                    HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile
+                                    {
+                                        Input = input,
+                                        Index = options.Inputs.IndexOf(input),
+                                        PdfFilePath = pdfFile,
+                                        PrintFooter = true,
+                                        NumberOfPages = numberOfPages
+                                    };
+
+                                    htmlToPdfFiles.Add(htmlToPdfFile);
+                                });
+
+                            await Task.WhenAll(tasks);
+
+                            variables.Add("topage", htmlToPdfFiles.Sum(x => x.NumberOfPages).ToString());
+
+                            // update models with title and headings
+                            List<Task> updateTitleAndHeadingsTasks = new List<Task>();
+
+                            foreach (HtmlToPdfFile htmlToPdfFile in htmlToPdfFiles)
+                            {
+                                updateTitleAndHeadingsTasks.Add(Task.Run(() =>
+                                {
+                                // set the title and headings
+                                HtmlFileParser htmlFileParser = new HtmlFileParser(htmlToPdfFile.Input);
+                                    htmlToPdfFile.TitleAndHeadings = htmlFileParser.GetTitleAndHeadings(options.AddTableOfContents);
+                                    htmlToPdfFile.Title = htmlToPdfFile.TitleAndHeadings.First().Text;
+                                }));
+                            }
+
+                            await Task.WhenAll(updateTitleAndHeadingsTasks);
+
+                            // create table of contents
+                            if (options.AddTableOfContents)
+                            {
+                                await PdfOutlineBuilder.BuildOutlineAsync(
+                                    coverAdded,
+                                    options.AddTableOfContents,
+                                    options.OutputDottedLinesInTableOfContents,
+                                    htmlToPdfFiles,
+                                    options.OutlineBuilder,
+                                    options.DefaultTableOfContentsStyleSheetBuilder,
+                                    pdfPrinter,
+                                    htmlToPdfOptions,
+                                    variables);
+                            }
+
+                            // update models and re-print HTML files to include footers with page numbers
+                            tasks = htmlToPdfFiles.Select(async htmlToPdfFile =>
+                            {
+                                if (string.IsNullOrEmpty(title)
+                                    && (htmlToPdfFile.Index == 0))
+                                {
+                                    // set the PDF title
+                                    title = htmlToPdfFile.Title;
+                                    variables["doctitle"] = title;
+                                }
+
+                                // sum the number of pages in previous documents to get the current page number offset
+                                int currentPageNumber = htmlToPdfFiles
+                                    .Where(x => x.Index < htmlToPdfFile.Index)
+                                    .Sum(x => x.NumberOfPages) + 1;
+
+                                if ((currentPageNumber + htmlToPdfFile.NumberOfPages) <= (options.PageOffset + 1))
+                                {
+                                    logger.LogDebug($"Skipping printing {htmlToPdfFile.Input}");
+                                    htmlToPdfFile.Skip = true;
+                                    return;
+                                }
+
+                                // print as pdf with page number offset
+                                htmlToPdfFile.OutputPdfFilePageNumber = currentPageNumber;
+
+                                logger.LogDebug($"'{htmlToPdfFile.Input}' mapped to output PDF file page number {currentPageNumber}.");
+
+                                htmlToPdfOptions.PageOffset = currentPageNumber - 1;
+                                htmlToPdfOptions.PageNumberOffset = options.PageOffset;
+                                htmlToPdfOptions.NumberOfPages = htmlToPdfFile.NumberOfPages;
+
+                                // TODO: only print as PDF again if topage variable is actually used in the header/footer
+                                if (htmlToPdfFile.PrintFooter)
+                                {
+                                    // delete previously created PDF file
+                                    File.Delete(htmlToPdfFile.PdfFilePath);
+
+                                    // print as pdf
+                                    string pdfFile = await pdfPrinter.PrintAsPdfAsync(
+                                        htmlToPdfFile.Input,
+                                        htmlToPdfOptions,
+                                        variables);
+
+                                    htmlToPdfFile.PdfFilePath = pdfFile;
+                                }
+
+                                // parse PDF to get heading page numbers
+                                PdfDocument.SetHeadingPageNumbers(htmlToPdfFile);
+                            });
+
+                            await Task.WhenAll(tasks);
+                        }
+                        finally
                         {
-                            // set the title and headings
-                            HtmlFileParser htmlFileParser = new HtmlFileParser(htmlToPdfFile.Input);
-                            htmlToPdfFile.TitleAndHeadings = htmlFileParser.GetTitleAndHeadings(options.AddTableOfContents);
-                            htmlToPdfFile.Title = htmlToPdfFile.TitleAndHeadings.First().Text;
-                        }));
+                            await browser.CloseAsync();
+                        }
                     }
 
-                    await Task.WhenAll(updateTitleAndHeadingsTasks);
-
-                    // create table of contents
-                    if (options.AddTableOfContents)
-                    {
-                        await PdfOutlineBuilder.BuildOutlineAsync(
-                            coverAdded,
-                            options.AddTableOfContents,
-                            options.OutputDottedLinesInTableOfContents,
-                            htmlToPdfFiles,
-                            options.OutlineBuilder,
-                            options.DefaultTableOfContentsStyleSheetBuilder,
-                            pdfPrinter,
-                            htmlToPdfOptions,
-                            variables);
-                    }
-
-                    // update models and re-print HTML files to include footers with page numbers
-                    tasks = htmlToPdfFiles.Select(async htmlToPdfFile =>
-                    {
-                        if (string.IsNullOrEmpty(title)
-                            && (htmlToPdfFile.Index == 0))
-                        {
-                            // set the PDF title
-                            title = htmlToPdfFile.Title;
-                            variables["doctitle"] = title;
-                        }
-
-                        // sum the number of pages in previous documents to get the current page number offset
-                        int currentPageNumber = htmlToPdfFiles
-                            .Where(x => x.Index < htmlToPdfFile.Index)
-                            .Sum(x => x.NumberOfPages) + 1;
-
-                        if ((currentPageNumber + htmlToPdfFile.NumberOfPages) <= (options.PageOffset + 1))
-                        {
-                            logger.LogDebug($"Skipping printing {htmlToPdfFile.Input}");
-                            htmlToPdfFile.Skip = true;
-                            return;
-                        }
-
-                        // print as pdf with page number offset
-                        htmlToPdfFile.OutputPdfFilePageNumber = currentPageNumber;
-                        htmlToPdfOptions.PageOffset = currentPageNumber - 1;
-                        htmlToPdfOptions.PageNumberOffset = options.PageOffset;
-                        htmlToPdfOptions.NumberOfPages = htmlToPdfFile.NumberOfPages;
-
-                        // TODO: only print as PDF again if topage variable is actually used in the header/footer
-                        if (htmlToPdfFile.PrintFooter)
-                        {
-                            // delete previously created PDF file
-                            File.Delete(htmlToPdfFile.PdfFilePath);
-
-                            // print as pdf
-                            string pdfFile = await pdfPrinter.PrintAsPdfAsync(
-                                htmlToPdfFile.Input,
-                                htmlToPdfOptions,
-                                variables);
-
-                            htmlToPdfFile.PdfFilePath = pdfFile;
-                        }
-
-                        // parse PDF to get heading page numbers
-                        PdfDocument.SetHeadingPageNumbers(htmlToPdfFile);
-                    });
-
-                    await Task.WhenAll(tasks);
+                    break;
                 }
-                finally
+                catch (ChromiumProcessException ex)
                 {
-                    await browser.CloseAsync();
+                    // https://github.com/hardkoded/puppeteer-sharp/issues/1509
+                    // ex. PuppeteerSharp.ChromiumProcessException: Failed to launch Chromium! [0909/142354.872:FATAL:feature_list.cc(282)] Check failed: !g_initialized_from_accessor.
+                    // Error: Backtrace:
+                    // Error:   ovly_debug_event [0x00007FFE262A1252+16183762]
+                    // Error:   ovly_debug_event [0x00007FFE262A0832+16181170]
+                    // Error:   ovly_debug_event [0x00007FFE262B3383+16257795]
+                    // Error:   ovly_debug_event [0x00007FFE262A3386+16192262]
+                    // Error:   ovly_debug_event [0x00007FFE25DF4B2E+11283118]
+                    // Error:   ovly_debug_event [0x00007FFE2621DB58+15645400]
+                    // Error:   ovly_debug_event [0x00007FFE2621DACD+15645261]
+                    // Error:   ovly_debug_event [0x00007FFE26248F28+15822504]
+                    // Error:   ovly_debug_event [0x00007FFE2621D35E+15643358]
+                    // Error:   ovly_debug_event [0x00007FFE262483E3+15819619]
+                    // Error:   ovly_debug_event [0x00007FFE262482BB+15819323]
+                    // Error:   ovly_debug_event [0x00007FFE262480F2+15818866]
+                    // Error:   ChromeMain [0x00007FFE253311B6+286]
+                    // Error:   Ordinal0 [0x00007FF65A33275F+10079]
+                    // Error:   Ordinal0 [0x00007FF65A33182D+6189]
+                    // Error:   GetHandleVerifier [0x00007FF65A43B7C2+697538]
+                    // Error:   BaseThreadInitThunk [0x00007FFE5B2D84D4+20]
+                    // Error:   RtlUserThreadStart [0x00007FFE5B95E871+33]
+                    logger.LogWarning(ex.ToString());
+                    retryCount++;
+
+                    if (retryCount <= maximumRetryCount)
+                    {
+                        Thread.Sleep(1000);
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
 
@@ -288,8 +340,15 @@ namespace HtmlToPdf
 
                 File.WriteAllBytes(outputFilePath, mergedBytes);
 
-                // update external file links to internal document links
-                PdfDocument.UpdateLinks(outputFilePath, htmlToPdfFiles, logger);
+                try
+                {
+                    // update external file links to internal document links
+                    PdfDocument.UpdateLinks(outputFilePath, htmlToPdfFiles, logger);
+                }
+                catch (Exception ex)
+                {
+                    throw new UpdatePdfLinksException(outputFilePath, htmlToPdfFiles, ex);
+                }
 
                 PdfDocument.SetTitle(outputFilePath, title);
             }

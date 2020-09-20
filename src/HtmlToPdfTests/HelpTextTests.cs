@@ -18,9 +18,7 @@ namespace HtmlToPdfTests
         [TestMethod]
         public void NoArguments_DisplaysErrorAndHelpText()
         {
-            string expectedOutput = HelpTextGenerator.GenerateParserError(
-                "A required value not bound to option name is missing.",
-                "System.ApplicationException: At least one input must be specified.");
+            string expectedOutput = "System.ApplicationException: At least one input must be specified.";
 
             HtmlToPdfRunner runner = new HtmlToPdfRunner(HtmlToPdfRunner.HtmlToPdfExe);
 

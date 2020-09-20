@@ -10,6 +10,7 @@ namespace HtmlToPdf
     using System.IO;
     using System.Linq;
     using System.Web;
+    using HtmlToPdf.Exceptions;
     using iText.Kernel.Pdf;
     using iText.Kernel.Pdf.Action;
     using iText.Kernel.Pdf.Annot;
@@ -27,12 +28,9 @@ namespace HtmlToPdf
         /// <returns>The number of pages.</returns>
         internal static int CountNumberOfPages(string pdfFilePath)
         {
-            using (PdfReader pdfReader = new PdfReader(pdfFilePath))
+            using (UglyToad.PdfPig.PdfDocument document = UglyToad.PdfPig.PdfDocument.Open(pdfFilePath))
             {
-                using (iText.Kernel.Pdf.PdfDocument pdfDocument = new iText.Kernel.Pdf.PdfDocument(pdfReader))
-                {
-                    return pdfDocument.GetNumberOfPages();
-                }
+                return document.NumberOfPages;
             }
         }
 
@@ -130,8 +128,17 @@ namespace HtmlToPdf
                                 HtmlToPdfFile linkedHtmlToPdfFile = htmlToPdfFiles.Single(x => x.Input == htmlFilePath);
                                 int linkedPageNumber = linkedHtmlToPdfFile.OutputPdfFilePageNumber;
 
-                                // http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html
-                                PdfPage linkedPage = pdfDocument.GetPage(linkedPageNumber);
+                                PdfPage linkedPage;
+                                try
+                                {
+                                    // http://api.itextpdf.com/itext/com/itextpdf/text/pdf/PdfDestination.html
+                                    linkedPage = pdfDocument.GetPage(linkedPageNumber);
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new PdfPageNotFoundException(linkedPageNumber, linkedHtmlToPdfFile.Input, ex);
+                                }
+
                                 float top = linkedPage.GetPageSize().GetTop();
                                 PdfExplicitDestination destination = PdfExplicitDestination.CreateFitH(linkedPage, top);
                                 PdfAction newAction = PdfAction.CreateGoTo(destination);

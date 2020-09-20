@@ -96,7 +96,7 @@ namespace HtmlToPdfTests
                     Page page = pdfDocument.GetPage(1);
 
                     int milliseconds = int.Parse(page.Text);
-                    Assert.IsTrue(milliseconds > expectedMinJavascriptDelayInMilliseconds, page.Text);
+                    Assert.IsTrue(milliseconds >= expectedMinJavascriptDelayInMilliseconds, page.Text);
                 }
             }
         }

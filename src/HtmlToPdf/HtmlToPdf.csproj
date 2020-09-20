@@ -163,6 +163,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TextSerializer, Version=2.1.0.13, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\TheCodingMonkey.Serialization.2.1.0.13\lib\net47\TextSerializer.dll</HintPath>
+    </Reference>
     <Reference Include="UglyToad.PdfPig, Version=0.1.2.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
       <HintPath>..\packages\PdfPig.0.1.2\lib\net47\UglyToad.PdfPig.dll</HintPath>
     </Reference>
@@ -188,7 +191,9 @@
   <ItemGroup>
     <Compile Include="BrowserDownloader.cs" />
     <Compile Include="EmbeddedResource.cs" />
+    <Compile Include="Exceptions\PdfPageNotFoundException.cs" />
     <Compile Include="Exceptions\PrintToPdfException.cs" />
+    <Compile Include="Exceptions\UpdatePdfLinksException.cs" />
     <Compile Include="HtmlHeading.cs" />
     <Compile Include="Options.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
