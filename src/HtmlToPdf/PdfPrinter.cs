@@ -105,7 +105,14 @@ namespace HtmlToPdf
                 string pageRanges = string.Empty;
                 if ((options.PageOffset + options.PageNumberOffset) > 0)
                 {
-                    pageRanges = $"{options.PageOffset + options.PageNumberOffset + 1} - {options.PageOffset + options.PageNumberOffset + options.NumberOfPages}";
+                    int fromPage = options.PageOffset + options.PageNumberOffset + 1;
+                    int toPage = options.PageOffset + options.PageNumberOffset + options.NumberOfPages;
+
+                    pageRanges = $"{fromPage}-";
+                    if (options.NumberOfPages != 0)
+                    {
+                        pageRanges += $"{toPage}";
+                    }
 
                     this.logger.LogDebug($"Printing pages {pageRanges} of page '{fullPath}'.");
                 }

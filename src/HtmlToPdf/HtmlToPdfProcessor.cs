@@ -172,14 +172,19 @@ namespace HtmlToPdf
                                 .Select(async input =>
                                 {
                                     // print as pdf
+                                    // insert an empty page to avoid unexpected margins on the first page, which would affect the page count
+                                    // https://stackoverflow.com/a/55480268/90287
+                                    // https://github.com/puppeteer/puppeteer/issues/2592
+                                    HtmlToPdfOptions tempHtmlToPdfOptions = (HtmlToPdfOptions)htmlToPdfOptions.Copy();
+                                    tempHtmlToPdfOptions.PageOffset = 1;
+
                                     string pdfFile = await pdfPrinter.PrintAsPdfAsync(
-                                            input,
-                                            htmlToPdfOptions,
-                                            variables);
+                                        input,
+                                        tempHtmlToPdfOptions,
+                                        variables);
 
                                     // count the number of pages
                                     int numberOfPages = PdfDocument.CountNumberOfPages(pdfFile);
-
                                     logger.LogDebug($"\"{input}\" contains number of PDF pages: {numberOfPages}.");
 
                                     HtmlToPdfFile htmlToPdfFile = new HtmlToPdfFile

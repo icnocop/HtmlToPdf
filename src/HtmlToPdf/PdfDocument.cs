@@ -121,6 +121,7 @@ namespace HtmlToPdf
 
                                 if (!htmlToPdfFiles.Any(x => string.Compare(x.Input, htmlFilePath, StringComparison.OrdinalIgnoreCase) == 0))
                                 {
+                                    // ex. when printing PDF from TOC.html by itself
                                     logger.LogDebug($"Could not find '{htmlFilePath}'. Referenced in '{pdfFilePath}' on page {i}.");
                                     continue;
                                 }

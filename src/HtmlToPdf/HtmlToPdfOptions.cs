@@ -79,5 +79,14 @@ namespace HtmlToPdf
         /// Gets or sets the number of pages.
         /// </summary>
         public int NumberOfPages { get; set; }
+
+        /// <summary>
+        /// Copies this instance.
+        /// </summary>
+        /// <returns>A copy of this instance.</returns>
+        public HtmlToPdfOptions Copy()
+        {
+            return (HtmlToPdfOptions)this.MemberwiseClone();
+        }
     }
 }
