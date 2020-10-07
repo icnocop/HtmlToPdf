@@ -148,6 +148,11 @@ namespace HtmlToPdf
 
                 using (Page page = await this.browser.NewPageAsync())
                 {
+                    // disable navigation timeout
+                    // otherwise, the following exception occurs:
+                    // PuppeteerSharp.NavigationException: Timeout of 30000 ms exceeded ---> System.TimeoutException: Timeout of 30000 ms exceeded
+                    page.DefaultNavigationTimeout = 0;
+
                     await page.GoToAsync(tempHtmlFile.FilePath, navigationOptions);
 
                     if (addTagOptions != null)

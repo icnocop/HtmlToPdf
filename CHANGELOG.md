@@ -1,5 +1,13 @@
 # Change Log
 
+__v0.0.1007.7__ (2020-10-07)
+
+ - Work-around for issue where puppeteer/chromium may timeout waiting for navigation after 30 seconds  
+
+__v0.0.921.0__ (2020-09-21)
+
+ - Work-around for issue where puppeteer/chromium inserts margins in the header of the first page, affecting PDF page counts  
+
 __v0.0.920.3__ (2020-09-20)
 
  - Retry launching chrome if an exception occurs  

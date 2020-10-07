@@ -68,7 +68,7 @@ namespace HtmlToPdfTests
         [DataRow(HtmlToPdfRunner.HtmlToPdfExe, null, 100, DisplayName = "HtmlToPdf.exe Default")]
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, null, 19, DisplayName = "wkhtmltopdf.exe Default")]
         [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "3000", 500, DisplayName = "HtmlToPdf.exe 3000")]
-        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "3000", 280, DisplayName = "wkhtmltopdf.exe 3000")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "3000", 256, DisplayName = "wkhtmltopdf.exe 3000")]
         public void JavascriptDelayTest(
             string exeFileName,
             string javascriptDelayInMilliseconds,
