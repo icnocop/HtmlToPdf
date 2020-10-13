@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.0.1013.1__ (2020-10-13)
+
+ - Added WebSocket factory implementation to support Windows 7 and Windows Server 2008  
+
 __v0.0.1007.7__ (2020-10-07)
 
  - Work-around for issue where puppeteer/chromium may timeout waiting for navigation after 30 seconds  

@@ -9,6 +9,7 @@ namespace HtmlToPdf
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Net.WebSockets;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace HtmlToPdf
     using HtmlToPdf.Extensions;
     using PuppeteerSharp;
     using PuppeteerSharp.Media;
+    using PuppeteerSharp.Transport;
 
     /// <summary>
     /// The HTML to PDF processor
@@ -78,7 +80,8 @@ namespace HtmlToPdf
                 Timeout = 0,
                 LogProcess = false,
                 EnqueueTransportMessages = true,
-                Devtools = false
+                Devtools = false,
+                WebSocketFactory = HtmlToPdfProcessor.WebSocketFactory
             };
 
             MarginOptions marginOptions = new MarginOptions
@@ -375,6 +378,34 @@ namespace HtmlToPdf
             await Task.WhenAll(deleteTempFileTasks);
 
             return htmlToPdfFiles;
+        }
+
+        /// <summary>
+        /// WebSocket factory to support Windows 7 and Windows Server 2008.
+        /// https://github.com/hardkoded/puppeteer-sharp/issues/1368#issuecomment-580946444
+        /// The minimum Windows versions supporting the WebSocket library are Windows 8 and Windows Server 2012.
+        /// https://github.com/hardkoded/puppeteer-sharp#prerequisites
+        /// </summary>
+        /// <param name="uri">The URI.</param>
+        /// <param name="socketOptions">The socket options.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>The WebSocket factory.</returns>
+        private static async Task<WebSocket> WebSocketFactory(Uri uri, IConnectionOptions socketOptions, CancellationToken cancellationToken)
+        {
+            var client = SystemClientWebSocket.CreateClientWebSocket();
+            if (client is System.Net.WebSockets.Managed.ClientWebSocket managed)
+            {
+                managed.Options.KeepAliveInterval = TimeSpan.FromSeconds(0);
+                await managed.ConnectAsync(uri, cancellationToken);
+            }
+            else
+            {
+                var coreSocket = client as ClientWebSocket;
+                coreSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(0);
+                await coreSocket.ConnectAsync(uri, cancellationToken);
+            }
+
+            return client;
         }
     }
 }
