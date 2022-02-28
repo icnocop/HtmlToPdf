@@ -7,7 +7,7 @@ namespace HtmlToPdf.Exceptions
     using System;
 
     /// <summary>
-    /// Print To PDF Exception
+    /// Print To PDF Exception.
     /// </summary>
     /// <seealso cref="System.Exception" />
     public class PrintToPdfException : Exception

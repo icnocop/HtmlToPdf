@@ -8,7 +8,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Quiet tests
+    /// Quiet tests.
     /// </summary>
     [TestClass]
     public class QuietTests

@@ -14,7 +14,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Footer Tests
+    /// Footer Tests.
     /// </summary>
     [TestClass]
     public class FooterTests
@@ -70,7 +70,7 @@ namespace HtmlToPdfTests
             {
                 Dictionary<string, object> dictionary = new Dictionary<string, object>
                 {
-                    { "url", htmlFile.FilePath }
+                    { "url", htmlFile.FilePath },
                 };
                 Hash hash = Hash.FromDictionary(dictionary);
                 Template.RegisterFilter(typeof(NaturalDateFilter));
@@ -216,7 +216,7 @@ namespace HtmlToPdfTests
                             Assert.AreEqual(2, pdfDocument.NumberOfPages);
                             Page page1 = pdfDocument.GetPage(1);
                             IEnumerable<Word> words = page1.GetWords();
-                            Assert.AreEqual(2, words.Count());
+                            Assert.AreEqual(2, words.Count(), string.Join(" ", words));
                             Assert.AreEqual("Page 1", $"{words.ElementAt(0)} {words.ElementAt(1)}");
 
                             Page page2 = pdfDocument.GetPage(2);
@@ -270,7 +270,7 @@ namespace HtmlToPdfTests
 
                         Page page2 = pdfDocument.GetPage(2);
                         words = page2.GetWords();
-                        Assert.AreEqual(3, words.Count());
+                        Assert.AreEqual(3, words.Count(), string.Join(" ", words.Select(x => x.Text)));
                         Assert.AreEqual("Page 2", $"{words.ElementAt(0)} {words.ElementAt(1)}");
                         Assert.AreEqual("2", words.Last().Text, "Page number");
                     }

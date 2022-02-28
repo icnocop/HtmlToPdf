@@ -10,14 +10,14 @@ namespace HtmlToPdf
     using System.Reflection;
 
     /// <summary>
-    /// Embedded Resource
+    /// Embedded Resource.
     /// </summary>
     public static class EmbeddedResource
     {
         /// <summary>
         /// Gets the command line pre options.
         /// </summary>
-        /// <returns>The command line pre options</returns>
+        /// <returns>The command line pre options.</returns>
         public static IEnumerable<string> GetCommandLinePreOptions()
         {
             return ReadLines("CommandLinePreOptions.txt");
@@ -26,7 +26,7 @@ namespace HtmlToPdf
         /// <summary>
         /// Gets the command line post options.
         /// </summary>
-        /// <returns>The command line post options</returns>
+        /// <returns>The command line post options.</returns>
         public static IEnumerable<string> GetCommandLinePostOptions()
         {
             return ReadLines("CommandLinePostOptions.txt");

@@ -7,7 +7,7 @@ namespace HtmlToPdf.Console
     using System;
 
     /// <summary>
-    /// Logger
+    /// Logger.
     /// </summary>
     internal class Logger : ILogger
     {

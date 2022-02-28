@@ -5,7 +5,7 @@
 namespace HtmlToPdf
 {
     /// <summary>
-    /// Temporary PDF file
+    /// Temporary PDF file.
     /// </summary>
     internal class TempPdfFile
     {
@@ -17,7 +17,7 @@ namespace HtmlToPdf
         {
             TempFile tempFile = new TempFile(".pdf")
             {
-                DeleteFileOnDispose = false
+                DeleteFileOnDispose = false,
             };
             return tempFile.FilePath;
         }

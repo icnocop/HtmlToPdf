@@ -5,7 +5,7 @@
 namespace HtmlToPdf.Console
 {
     /// <summary>
-    /// Log Level
+    /// Log Level.
     /// </summary>
     public enum LogLevel
     {
@@ -32,6 +32,6 @@ namespace HtmlToPdf.Console
         /// <summary>
         /// None
         /// </summary>
-        None
+        None,
     }
 }

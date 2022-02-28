@@ -18,7 +18,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Tokens;
 
     /// <summary>
-    /// Table Of Contents Tests
+    /// Table Of Contents Tests.
     /// </summary>
     [TestClass]
     public class TableOfContentsTests
@@ -81,7 +81,7 @@ namespace HtmlToPdfTests
                                 @"    <item title=""Table of Contents"" page=""1"" link=""__WKANCHOR_2"" backLink=""__WKANCHOR_2""/>",
                                 @"  </item>",
                                 @"  <item title="""" page=""1"" link="""" backLink=""""/>",
-                                @"</outline>"
+                                @"</outline>",
                             };
 
                             File.WriteAllLines(expectedOutlineFile.FilePath, contents);

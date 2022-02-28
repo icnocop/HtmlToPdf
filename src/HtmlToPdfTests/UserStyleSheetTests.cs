@@ -10,7 +10,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Graphics.Colors;
 
     /// <summary>
-    /// User Style Sheet Tests
+    /// User Style Sheet Tests.
     /// </summary>
     [TestClass]
     public class UserStyleSheetTests

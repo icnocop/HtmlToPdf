@@ -8,7 +8,7 @@ namespace HtmlToPdf.Console
     using CommandLine;
 
     /// <summary>
-    /// Command Line Options
+    /// Command Line Options.
     /// </summary>
     public class CommandLineOptions
     {
@@ -99,7 +99,7 @@ namespace HtmlToPdf.Console
         /// <summary>
         /// Gets or sets the bottom margin.
         /// </summary>
-        [Option('B', "margin-bottom", MetaValue = "<unitreal>", HelpText = "Set the page bottom margin")]
+        [Option('B', "margin-bottom", /*Default = "0mm",*/ MetaValue = "<unitreal>", HelpText = "Set the page bottom margin")]
         public string BottomMargin { get; set; }
 
         /// <summary>
@@ -117,7 +117,7 @@ namespace HtmlToPdf.Console
         /// <summary>
         /// Gets or sets the top margin.
         /// </summary>
-        [Option('T', "margin-top", MetaValue = "<unitreal>", HelpText = "Set the page top margin")]
+        [Option('T', "margin-top", /*Default = "0mm",*/ MetaValue = "<unitreal>", HelpText = "Set the page top margin")]
         public string TopMargin { get; set; }
 
         /// <summary>

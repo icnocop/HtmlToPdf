@@ -8,7 +8,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Read arguments from standard input tests
+    /// Read arguments from standard input tests.
     /// </summary>
     [TestClass]
     public class ReadArgumentsFromStandardInputTests

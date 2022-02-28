@@ -15,7 +15,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Footer HTTML Tests
+    /// Footer HTTML Tests.
     /// </summary>
     [TestClass]
     public class FooterHtmlTests

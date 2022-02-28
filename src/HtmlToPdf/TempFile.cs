@@ -8,7 +8,7 @@ namespace HtmlToPdf
     using System.IO;
 
     /// <summary>
-    /// Temporary file
+    /// Temporary file.
     /// </summary>
     public class TempFile : IDisposable
     {

@@ -10,7 +10,7 @@ namespace HtmlToPdf
     using System.Net;
 
     /// <summary>
-    /// Footer Template Builder
+    /// Footer Template Builder.
     /// </summary>
     public class FooterTemplateBuilder
     {

@@ -8,7 +8,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Page Height and Width Tests
+    /// Page Height and Width Tests.
     /// </summary>
     [TestClass]
     public class PageHeightAndWidthTests

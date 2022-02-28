@@ -8,7 +8,7 @@ namespace HtmlToPdfTests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Date Assert
+    /// Date Assert.
     /// </summary>
     public static class DateAssert
     {

@@ -10,7 +10,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Cover Tests
+    /// Cover Tests.
     /// </summary>
     [TestClass]
     public class CoverTests

@@ -8,7 +8,7 @@ namespace HtmlToPdf
     using System.IO;
 
     /// <summary>
-    /// Temporary Copy HTML File
+    /// Temporary Copy HTML File.
     /// </summary>
     /// <seealso cref="System.IDisposable" />
     internal class TempCopyHtmlFile : IDisposable

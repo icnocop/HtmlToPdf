@@ -5,7 +5,7 @@
 namespace HtmlToPdf
 {
     /// <summary>
-    /// Temporary HTML file
+    /// Temporary HTML file.
     /// </summary>
     internal class TempHtmlFile : TempFile
     {

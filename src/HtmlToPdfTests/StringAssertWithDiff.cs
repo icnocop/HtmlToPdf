@@ -10,7 +10,7 @@ namespace HtmlToPdfTests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Difference style
+    /// Difference style.
     /// </summary>
     public enum DiffStyle
     {
@@ -22,11 +22,11 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Minimal
         /// </summary>
-        Minimal
+        Minimal,
     }
 
     /// <summary>
-    /// String Assert with Differences
+    /// String Assert with Differences.
     /// </summary>
     public static class StringAssertWithDiff
     {

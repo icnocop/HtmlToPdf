@@ -8,7 +8,7 @@ namespace HtmlToPdf.Console
     using CommandLine.Text;
 
     /// <summary>
-    /// Parser Result Extension Methods
+    /// Parser Result Extension Methods.
     /// </summary>
     internal static class ParserResultExtensions
     {

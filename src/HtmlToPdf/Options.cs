@@ -10,7 +10,7 @@ namespace HtmlToPdf
     using PuppeteerSharp.Media;
 
     /// <summary>
-    /// Options
+    /// Options.
     /// </summary>
     public class Options
     {

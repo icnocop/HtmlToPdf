@@ -14,15 +14,15 @@ namespace HtmlToPdf
     using PuppeteerSharp;
 
     /// <summary>
-    /// Browser Downloader
+    /// Browser Downloader.
     /// </summary>
     internal static class BrowserDownloader
     {
         /// <summary>
-        /// Downloads the browser
+        /// Downloads the browser.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        /// <exception cref="TimeoutException">Timeout waiting for exclusive access</exception>
+        /// <exception cref="TimeoutException">Timeout waiting for exclusive access.</exception>
         internal static void DownloadBrowser(ILogger logger)
         {
             string mutexId = $@"Global\{Directory.GetCurrentDirectory().Replace('\\', '_')}";

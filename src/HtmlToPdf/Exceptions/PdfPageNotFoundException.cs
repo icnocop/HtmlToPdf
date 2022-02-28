@@ -7,7 +7,7 @@ namespace HtmlToPdf.Exceptions
     using System;
 
     /// <summary>
-    /// PDF page not found exception
+    /// PDF page not found exception.
     /// </summary>
     /// <seealso cref="System.Exception" />
     public class PdfPageNotFoundException : Exception

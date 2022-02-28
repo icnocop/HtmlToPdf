@@ -5,7 +5,7 @@
 namespace HtmlToPdf
 {
     /// <summary>
-    /// HTML Heading
+    /// HTML Heading.
     /// </summary>
     public class HtmlHeading
     {

@@ -10,7 +10,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Page Offset Tests
+    /// Page Offset Tests.
     /// </summary>
     [TestClass]
     public class PageOffsetTests

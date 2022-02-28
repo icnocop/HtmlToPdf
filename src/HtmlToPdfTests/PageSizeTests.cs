@@ -9,7 +9,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Page Size Tests
+    /// Page Size Tests.
     /// </summary>
     [TestClass]
     public class PageSizeTests
@@ -45,7 +45,7 @@ namespace HtmlToPdfTests
                         "--log-level Error",
                         "--page-size invalid",
                         $"\"{htmlFile.FilePath}\"",
-                        $"\"{pdfFile.FilePath}\""
+                        $"\"{pdfFile.FilePath}\"",
                     };
 
                     HtmlToPdfRunResult result = runner.Run(string.Join(" ", commandLine));
@@ -54,7 +54,7 @@ namespace HtmlToPdfTests
                     string[] expectedErrorMessage = new[]
                     {
                         "System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values.",
-                        "Parameter name: invalid"
+                        "Parameter name: invalid",
                     };
 
                     string expectedOutput = string.Join(Environment.NewLine, expectedErrorMessage);

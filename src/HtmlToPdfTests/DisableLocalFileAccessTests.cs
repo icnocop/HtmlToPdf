@@ -8,7 +8,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Disable Local File Access Tests
+    /// Disable Local File Access Tests.
     /// </summary>
     [TestClass]
     public class DisableLocalFileAccessTests

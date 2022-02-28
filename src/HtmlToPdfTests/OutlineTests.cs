@@ -9,7 +9,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Outline;
 
     /// <summary>
-    /// Outline tests
+    /// Outline tests.
     /// </summary>
     [TestClass]
     public class OutlineTests

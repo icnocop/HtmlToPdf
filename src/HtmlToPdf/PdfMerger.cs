@@ -10,7 +10,7 @@ namespace HtmlToPdf
     using System.Linq;
 
     /// <summary>
-    /// PDF Merge
+    /// PDF Merge.
     /// </summary>
     internal static class PdfMerger
     {

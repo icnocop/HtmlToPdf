@@ -8,7 +8,7 @@ namespace HtmlToPdf.Console.Outline.Xml
 
 #pragma warning disable SA1300 // Element must begin with upper-case letter
     /// <summary>
-    /// The item
+    /// The item.
     /// </summary>
     public partial class item
     {

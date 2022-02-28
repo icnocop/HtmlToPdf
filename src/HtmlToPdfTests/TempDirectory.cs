@@ -8,7 +8,7 @@ namespace HtmlToPdfTests
     using System.IO;
 
     /// <summary>
-    /// Temporary Directory
+    /// Temporary Directory.
     /// </summary>
     /// <seealso cref="System.IDisposable" />
     internal class TempDirectory : IDisposable
