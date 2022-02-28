@@ -11,7 +11,7 @@ namespace HtmlToPdfTests
     using System.Reflection;
 
     /// <summary>
-    /// Help Text Generator
+    /// Help Text Generator.
     /// </summary>
     internal class HelpTextGenerator
     {

@@ -8,7 +8,7 @@ namespace HtmlToPdfTests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Temporary HTML file
+    /// Temporary HTML file.
     /// </summary>
     /// <seealso cref="HtmlToPdfTests.TempFile" />
     public class TempHtmlFile : TempFile

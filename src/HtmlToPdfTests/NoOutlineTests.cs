@@ -8,7 +8,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// No Outline tests
+    /// No Outline tests.
     /// </summary>
     [TestClass]
     public class NoOutlineTests

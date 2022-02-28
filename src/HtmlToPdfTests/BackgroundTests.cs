@@ -16,7 +16,7 @@ namespace HtmlToPdfTests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Background Tests
+    /// Background Tests.
     /// </summary>
     [TestClass]
     public class BackgroundTests
@@ -91,7 +91,7 @@ namespace HtmlToPdfTests
         }
 
         /// <summary>
-        /// Rectangle Finder
+        /// Rectangle Finder.
         /// </summary>
         /// <seealso cref="iText.Kernel.Pdf.Canvas.Parser.Listener.IEventListener" />
         public class RectangleFinder : IEventListener

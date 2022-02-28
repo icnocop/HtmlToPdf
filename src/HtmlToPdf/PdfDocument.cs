@@ -17,7 +17,7 @@ namespace HtmlToPdf
     using iText.Kernel.Pdf.Navigation;
 
     /// <summary>
-    /// PDF Document
+    /// PDF Document.
     /// </summary>
     internal static class PdfDocument
     {

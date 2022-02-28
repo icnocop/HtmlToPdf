@@ -11,7 +11,7 @@ namespace HtmlToPdfTests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Dump Outline tests
+    /// Dump Outline tests.
     /// </summary>
     [TestClass]
     public class DumpOutlineTests
@@ -45,7 +45,7 @@ namespace HtmlToPdfTests
                     {
                         List<string> commandLineArguments = new List<string>
                         {
-                            $"--dump-outline \"{tempOutlineFile.FilePath}\""
+                            $"--dump-outline \"{tempOutlineFile.FilePath}\"",
                         };
 
                         commandLineArguments.AddRange(htmlFiles.Select(x => $"\"{x}\""));

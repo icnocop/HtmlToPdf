@@ -8,7 +8,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Orientation Tests
+    /// Orientation Tests.
     /// </summary>
     [TestClass]
     public class OrientationTests

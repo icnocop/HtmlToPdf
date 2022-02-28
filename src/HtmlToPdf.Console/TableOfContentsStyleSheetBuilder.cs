@@ -9,7 +9,7 @@ namespace HtmlToPdf.Console
     using System.Linq;
 
     /// <summary>
-    /// Table of Contents Style Sheet Builder
+    /// Table of Contents Style Sheet Builder.
     /// </summary>
     public static class TableOfContentsStyleSheetBuilder
     {
@@ -18,7 +18,7 @@ namespace HtmlToPdf.Console
         /// </summary>
         /// <param name="outputDottedLines">if set to <c>true</c> outputs dotted lines.</param>
         /// <returns>
-        /// The Table of Contents Style Sheet
+        /// The Table of Contents Style Sheet.
         /// </returns>
         public static string Build(bool outputDottedLines)
         {
@@ -84,7 +84,7 @@ namespace HtmlToPdf.Console
                 "      </ul>",
                 "    </li>",
                 "  </xsl:template>",
-                "</xsl:stylesheet>"
+                "</xsl:stylesheet>",
             }.Where(x => !string.IsNullOrEmpty(x));
 
             return string.Join(Environment.NewLine, contents);

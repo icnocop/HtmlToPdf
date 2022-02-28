@@ -8,7 +8,7 @@ namespace HtmlToPdf
     using HtmlAgilityPack;
 
     /// <summary>
-    /// HTML File Parser
+    /// HTML File Parser.
     /// </summary>
     internal class HtmlFileParser
     {
@@ -41,7 +41,7 @@ namespace HtmlToPdf
             {
                 Text = titleNode?.InnerText ?? string.Empty,
                 Level = 0,
-                Page = tableOfContentsIncluded ? 1 : 0
+                Page = tableOfContentsIncluded ? 1 : 0,
             });
 
             string xpathQuery = "//*[starts-with(name(),'h') and string-length(name()) = 2 and number(substring(name(), 2)) <= 6]";
@@ -60,7 +60,7 @@ namespace HtmlToPdf
                 {
                     Text = node.InnerHtml,
                     Level = level,
-                    Page = 1
+                    Page = 1,
                 });
             }
 

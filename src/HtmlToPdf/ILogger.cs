@@ -7,7 +7,7 @@ namespace HtmlToPdf
     using System;
 
     /// <summary>
-    /// Logger
+    /// Logger.
     /// </summary>
     public interface ILogger
     {

@@ -8,7 +8,7 @@ namespace HtmlToPdfTests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Dump Default TOC XSL tests
+    /// Dump Default TOC XSL tests.
     /// </summary>
     [TestClass]
     public class DumpDefaultTocXslTests

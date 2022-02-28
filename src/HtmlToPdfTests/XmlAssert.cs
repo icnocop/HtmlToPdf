@@ -11,7 +11,7 @@ namespace HtmlToPdfTests
     using Microsoft.XmlDiffPatch;
 
     /// <summary>
-    /// XML Assert
+    /// XML Assert.
     /// </summary>
     internal static class XmlAssert
     {
@@ -67,9 +67,9 @@ namespace HtmlToPdfTests
         /// <summary>
         /// Writes the HTML header for XML DiffGram.
         /// </summary>
-        /// <param name="sourceXmlFile">name of baseline XML data</param>
-        /// <param name="changedXmlFile">name of file being compared</param>
-        /// <param name="resultHtml">Output file</param>
+        /// <param name="sourceXmlFile">name of baseline XML data.</param>
+        /// <param name="changedXmlFile">name of file being compared.</param>
+        /// <param name="resultHtml">Output file.</param>
         private static void WriteHeaderForXmlDiffGram(
             string sourceXmlFile,
             string changedXmlFile,

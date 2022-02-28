@@ -7,7 +7,7 @@ namespace HtmlToPdf.Console
     using System.Text;
 
     /// <summary>
-    /// Custom UTF8 Encoding
+    /// Custom UTF8 Encoding.
     /// </summary>
     /// <seealso cref="System.Text.UTF8Encoding" />
     internal class CustomUTF8Encoding : UTF8Encoding

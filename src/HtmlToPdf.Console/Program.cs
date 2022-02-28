@@ -16,7 +16,7 @@ namespace HtmlToPdf.Console
     using CommandLine.Text;
 
     /// <summary>
-    /// The main program
+    /// The main program.
     /// </summary>
     public class Program
     {
@@ -244,7 +244,7 @@ namespace HtmlToPdf.Console
                     AddTableOfContents = addTableOfContents,
                     OutlineBuilder = new Action<XmlWriter, IReadOnlyCollection<HtmlToPdfFile>, bool>(PdfOutlineBuilder.BuildOutline),
                     DefaultTableOfContentsStyleSheetBuilder = TableOfContentsStyleSheetBuilder.Build,
-                    OutputDottedLinesInTableOfContents = !commandLineOptions.DisableDottedLines
+                    OutputDottedLinesInTableOfContents = !commandLineOptions.DisableDottedLines,
                 },
                 logger);
 

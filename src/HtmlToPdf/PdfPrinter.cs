@@ -14,7 +14,7 @@ namespace HtmlToPdf
     using PuppeteerSharp.Media;
 
     /// <summary>
-    /// PDF Printer
+    /// PDF Printer.
     /// </summary>
     internal class PdfPrinter
     {
@@ -44,7 +44,7 @@ namespace HtmlToPdf
         /// <returns>
         /// A task with the PDF file path as a result.
         /// </returns>
-        /// <exception cref="System.IO.FileNotFoundException">File not found: {fullPath}</exception>
+        /// <exception cref="System.IO.FileNotFoundException">File not found: {fullPath}.</exception>
         internal async Task<string> PrintAsPdfAsync(
             string input,
             HtmlToPdfOptions options,
@@ -61,7 +61,7 @@ namespace HtmlToPdf
 
             NavigationOptions navigationOptions = new NavigationOptions
             {
-                WaitUntil = new[] { WaitUntilNavigation.Networkidle0 }
+                WaitUntil = new[] { WaitUntilNavigation.Networkidle0 },
             };
 
             AddTagOptions addTagOptions = null;
@@ -72,7 +72,7 @@ namespace HtmlToPdf
                     addTagOptions = new AddTagOptions
                     {
                         Type = "text/css",
-                        Path = options.StyleSheet
+                        Path = options.StyleSheet,
                     };
                 }
                 else
@@ -124,7 +124,7 @@ namespace HtmlToPdf
                     // page variables
                     Dictionary<string, string> pageVariables = new Dictionary<string, string>(variables)
                     {
-                        { "webpage", fullPath }
+                        { "webpage", fullPath },
                     };
 
                     footerTemplate = options.FooterTemplateBuilder.Build(pageVariables);
@@ -143,7 +143,7 @@ namespace HtmlToPdf
                     PageRanges = pageRanges,
                     PrintBackground = options.PrintBackground,
                     Scale = 1,
-                    Width = width
+                    Width = width,
                 };
 
                 using (Page page = await this.browser.NewPageAsync())

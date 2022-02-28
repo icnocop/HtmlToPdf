@@ -14,7 +14,7 @@ namespace HtmlToPdf
     using System.Xml.Xsl;
 
     /// <summary>
-    /// PDF Outline Builder
+    /// PDF Outline Builder.
     /// </summary>
     internal class PdfOutlineBuilder
     {
@@ -65,15 +65,15 @@ namespace HtmlToPdf
                     {
                         Level = 0,
                         Page = 0,
-                        Text = "Table of Contents"
+                        Text = "Table of Contents",
                     },
                     new HtmlHeading
                     {
                         Level = 1,
                         Page = tocPageNumber,
-                        Text = "Table of Contents"
-                    }
-                }
+                        Text = "Table of Contents",
+                    },
+                },
             };
 
             htmlToPdfFiles.Add(tocHtmlToPdfFile);

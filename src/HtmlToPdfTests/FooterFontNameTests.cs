@@ -10,7 +10,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Footer Font Name Tests
+    /// Footer Font Name Tests.
     /// </summary>
     [TestClass]
     public class FooterFontNameTests

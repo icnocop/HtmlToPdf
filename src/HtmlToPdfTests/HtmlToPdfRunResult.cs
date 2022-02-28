@@ -7,7 +7,7 @@ namespace HtmlToPdfTests
     using System;
 
     /// <summary>
-    /// HTML to PDF run result
+    /// HTML to PDF run result.
     /// </summary>
     public class HtmlToPdfRunResult
     {
@@ -38,7 +38,7 @@ namespace HtmlToPdfTests
                     "Output:",
                     this.StandardOutput,
                     "Error:",
-                    this.StandardError
+                    this.StandardError,
                 };
 
                 return string.Join(Environment.NewLine, output);

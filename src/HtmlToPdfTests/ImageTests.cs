@@ -18,7 +18,7 @@ namespace HtmlToPdfTests
     using Tesseract;
 
     /// <summary>
-    /// Image Tests
+    /// Image Tests.
     /// </summary>
     [TestClass]
     public class ImageTests
@@ -141,7 +141,7 @@ namespace HtmlToPdfTests
                     {
                         ImageType = imageType,
                         FileExtension = fileExtension,
-                        Bytes = imageBytes
+                        Bytes = imageBytes,
                     });
                 }
             }

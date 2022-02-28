@@ -12,7 +12,7 @@ namespace HtmlToPdf.Console
     using HtmlToPdf.Console.Outline.Xml;
 
     /// <summary>
-    /// PDF Outline Builder
+    /// PDF Outline Builder.
     /// </summary>
     internal static class PdfOutlineBuilder
     {
@@ -26,7 +26,7 @@ namespace HtmlToPdf.Console
         {
             outline outline = new outline
             {
-                Items = BuildOutline(htmlToPdfFiles.SelectMany(x => x.TitleAndHeadings), tableOfContentsIncluded)
+                Items = BuildOutline(htmlToPdfFiles.SelectMany(x => x.TitleAndHeadings), tableOfContentsIncluded),
             };
 
             var serializer = new XmlSerializer(typeof(outline));
@@ -80,7 +80,7 @@ namespace HtmlToPdf.Console
                     link = link,
                     backLink = backLink,
                     page = heading.Page.ToString(),
-                    children = new List<item>()
+                    children = new List<item>(),
                 };
 
                 allItems.Add(currentItem);

@@ -17,10 +17,9 @@ namespace HtmlToPdf
     using HtmlToPdf.Extensions;
     using PuppeteerSharp;
     using PuppeteerSharp.Media;
-    using PuppeteerSharp.Transport;
 
     /// <summary>
-    /// The HTML to PDF processor
+    /// The HTML to PDF processor.
     /// </summary>
     public class HtmlToPdfProcessor
     {
@@ -81,7 +80,7 @@ namespace HtmlToPdf
                 LogProcess = false,
                 EnqueueTransportMessages = true,
                 Devtools = false,
-                WebSocketFactory = HtmlToPdfProcessor.WebSocketFactory
+                WebSocketFactory = WebSocketFactory,
             };
 
             MarginOptions marginOptions = new MarginOptions
@@ -89,7 +88,7 @@ namespace HtmlToPdf
                 Bottom = options.BottomMargin,
                 Left = options.LeftMargin,
                 Right = options.RightMargin,
-                Top = options.TopMargin
+                Top = options.TopMargin,
             };
 
             int retryCount = 1;
@@ -115,7 +114,7 @@ namespace HtmlToPdf
                                 PaperFormat = options.PaperFormat,
                                 Height = options.PageHeight,
                                 Width = options.PageWidth,
-                                PrintBackground = options.PrintBackground
+                                PrintBackground = options.PrintBackground,
                             };
 
                             if (!string.IsNullOrEmpty(options.Cover) && (!coverAdded))
@@ -136,7 +135,7 @@ namespace HtmlToPdf
                                     Index = 0,
                                     PdfFilePath = pdfFile,
                                     PrintFooter = false,
-                                    NumberOfPages = numberOfPages
+                                    NumberOfPages = numberOfPages,
                                 };
 
                                 htmlToPdfFiles.Add(htmlToPdfFile);
@@ -166,7 +165,7 @@ namespace HtmlToPdf
                                 { "frompage",  (options.PageOffset + 1).ToString() },
                                 { "isodate", dtNow.ToString("yyyy-MM-dd") }, // ISO 8601 extended format
                                 { "time", dtNow.ToString("h:mm:ss tt") }, // ex. 3:58:45 PM
-                                { "doctitle", title }
+                                { "doctitle", title },
                             };
 
                             // count the number of PDF pages each HTML file will be printed as
@@ -196,7 +195,7 @@ namespace HtmlToPdf
                                         Index = options.Inputs.IndexOf(input),
                                         PdfFilePath = pdfFile,
                                         PrintFooter = true,
-                                        NumberOfPages = numberOfPages
+                                        NumberOfPages = numberOfPages,
                                     };
 
                                     htmlToPdfFiles.Add(htmlToPdfFile);
@@ -213,8 +212,8 @@ namespace HtmlToPdf
                             {
                                 updateTitleAndHeadingsTasks.Add(Task.Run(() =>
                                 {
-                                // set the title and headings
-                                HtmlFileParser htmlFileParser = new HtmlFileParser(htmlToPdfFile.Input);
+                                    // set the title and headings
+                                    HtmlFileParser htmlFileParser = new HtmlFileParser(htmlToPdfFile.Input);
                                     htmlToPdfFile.TitleAndHeadings = htmlFileParser.GetTitleAndHeadings(options.AddTableOfContents);
                                     htmlToPdfFile.Title = htmlToPdfFile.TitleAndHeadings.First().Text;
                                 }));
@@ -384,7 +383,7 @@ namespace HtmlToPdf
         /// WebSocket factory to support Windows 7 and Windows Server 2008.
         /// https://github.com/hardkoded/puppeteer-sharp/issues/1368#issuecomment-580946444
         /// The minimum Windows versions supporting the WebSocket library are Windows 8 and Windows Server 2012.
-        /// https://github.com/hardkoded/puppeteer-sharp#prerequisites
+        /// <see href="https://github.com/hardkoded/puppeteer-sharp#prerequisites"/>.
         /// </summary>
         /// <param name="uri">The URI.</param>
         /// <param name="socketOptions">The socket options.</param>

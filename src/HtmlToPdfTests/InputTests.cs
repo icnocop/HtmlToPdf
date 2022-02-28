@@ -11,7 +11,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Input Tests
+    /// Input Tests.
     /// </summary>
     [TestClass]
     public class InputTests

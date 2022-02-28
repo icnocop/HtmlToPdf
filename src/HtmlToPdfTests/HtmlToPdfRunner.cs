@@ -10,17 +10,17 @@ namespace HtmlToPdfTests
     using System.Threading;
 
     /// <summary>
-    /// HTML to PDF runner
+    /// HTML to PDF runner.
     /// </summary>
     public class HtmlToPdfRunner
     {
         /// <summary>
-        /// The wkhtmltopdf executable
+        /// The wkhtmltopdf executable.
         /// </summary>
         public const string WkhtmltopdfExe = "wkhtmltopdf.exe";
 
         /// <summary>
-        /// The HTML to PDF executable
+        /// The HTML to PDF executable.
         /// </summary>
         public const string HtmlToPdfExe = "HtmlToPdf.Console.exe";
 
@@ -57,8 +57,8 @@ namespace HtmlToPdfTests
                     StandardErrorEncoding = Encoding.Default,
                     WindowStyle = ProcessWindowStyle.Hidden,
                     FileName = this.exeFileName,
-                    Arguments = commandLine
-                }
+                    Arguments = commandLine,
+                },
             })
             {
                 StringBuilder output = new StringBuilder();

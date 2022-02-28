@@ -12,7 +12,7 @@ namespace HtmlToPdf.Exceptions
     using TheCodingMonkey.Serialization;
 
     /// <summary>
-    /// Update PDF links exception
+    /// Update PDF links exception.
     /// </summary>
     /// <seealso cref="System.Exception" />
     public class UpdatePdfLinksException : Exception

@@ -7,7 +7,7 @@ namespace HtmlToPdf.Extensions
     using System.Linq;
 
     /// <summary>
-    /// String Extensions
+    /// String Extensions.
     /// </summary>
     public static class StringExtensions
     {

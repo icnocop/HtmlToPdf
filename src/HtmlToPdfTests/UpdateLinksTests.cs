@@ -12,7 +12,7 @@ namespace HtmlToPdfTests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     /// <summary>
-    /// Update Links Tests
+    /// Update Links Tests.
     /// </summary>
     [TestClass]
     public class UpdateLinksTests

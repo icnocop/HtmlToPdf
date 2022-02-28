@@ -7,7 +7,7 @@ namespace HtmlToPdf
     using System.Collections.Generic;
 
     /// <summary>
-    /// HTML to PDF file
+    /// HTML to PDF file.
     /// </summary>
     public class HtmlToPdfFile
     {

@@ -7,7 +7,7 @@ namespace HtmlToPdf
     using PuppeteerSharp.Media;
 
     /// <summary>
-    /// HTML to PDF options
+    /// HTML to PDF options.
     /// </summary>
     public class HtmlToPdfOptions
     {

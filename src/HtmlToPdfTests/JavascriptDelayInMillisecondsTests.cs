@@ -8,7 +8,7 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// JavaScript delay in milliseconds tests
+    /// JavaScript delay in milliseconds tests.
     /// </summary>
     [TestClass]
     public class JavascriptDelayInMillisecondsTests
@@ -44,7 +44,7 @@ namespace HtmlToPdfTests
                         "--log-level Error",
                         "--javascript-delay",
                         $"\"{htmlFile.FilePath}\"",
-                        $"\"{pdfFile.FilePath}\""
+                        $"\"{pdfFile.FilePath}\"",
                     };
 
                     HtmlToPdfRunResult result = runner.Run(string.Join(" ", commandLine));
