@@ -23,6 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{B1A9E8E3
 	ProjectSection(SolutionItems) = preProject
 		..\build\ApplyVersionToAssemblies.ps1 = ..\build\ApplyVersionToAssemblies.ps1
 		..\azure-pipelines.yml = ..\azure-pipelines.yml
+		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
 		..\build\SetBuildNumber.ps1 = ..\build\SetBuildNumber.ps1
 	EndProjectSection
 EndProject
