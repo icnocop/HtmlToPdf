@@ -1,0 +1,93 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    branches: [ main ]
+    inputs:
+      prerelease:
+        description: 'Create release in GitHub?'
+        required: true
+        default: 'false'
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        Configuration: [Debug, Release]
+
+    steps:
+
+    - name: Set version number
+      run: |
+        $majorVersion = 0
+        $minorVersion = 1
+        $firstBuildYear = 2022
+
+        $currentDate = Get-Date
+        $currentDate = $currentDate.ToUniversalTime()
+        $currentYear = $currentDate.ToString("yyyy")
+        $buildYear = [Convert]::ToInt32($currentYear)
+        $currentMonthDay = $currentDate.ToString("MMdd")
+        $buildVersion = (($buildYear - $firstBuildYear) * 1200) + ([Convert]::ToInt32($currentMonthDay))
+
+        echo "VERSION=$majorVersion.$minorVersion.$buildVersion.${{ github.RUN_NUMBER }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
+
+    - name: Read environmental variables
+      run: echo VERSION=${{ env.VERSION }}
+
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Update AssemblyInfo.cs files
+      run: |
+        $files = Get-ChildItem $env:BUILD_SOURCESDIRECTORY -recurse -include "*Properties*" | 
+            ?{ $_.PSIsContainer } | 
+            foreach { Get-ChildItem -Path $_.FullName -Recurse -include AssemblyInfo.* }
+        if (-not $files)
+        {
+            Write-Host "Didn't find any files to update."
+            exit 1
+        }
+        else
+        {
+            foreach ($file in $files) {
+                $filecontent = Get-Content($file)
+                attrib $file -r
+                $filecontent -replace "\d+\.\d+\.\d+\.\d+", ${{ env.VERSION }} | Out-File $file
+                Write-Verbose "Version applied to `$file.FullName`"
+            }
+        }
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Restore dependencies
+      run: msbuild ".\src\HtmlToPdf.sln" /Targets:Restore
+      
+    - name: Build
+      run: msbuild ".\src\HtmlToPdf.sln" /Targets:Build /p:Configuration=${{ matrix.Configuration }}
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2.3.1
+      with:
+        name: HtmlToPdf-${{ env.VERSION }} ${{ matrix.Configuration }}
+        path: src/HtmlToPdf.Console/bin/${{ matrix.Configuration }}
+        if-no-files-found: error
+
+    - name: Publish GitHub Release
+      if: ${{ matrix.Configuration == 'Release' && github.event.inputs.release == 'true' }}
+      uses: softprops/action-gh-release@v1
+      with:
+        name: v${{ env.VERSION }}
+        draft: true
+        prerelease: false
+        fail_on_unmatched_files: true
+        files: |
+          src/HtmlToPdf.Console/bin/${{ matrix.Configuration }}
