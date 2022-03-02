@@ -117,6 +117,10 @@ jobs:
         file: /coverage-reports/coverage.opencover.xml
         verbose: true
 
+    - name: Create Release zip
+      if: ${{ matrix.Configuration == 'Release' && github.event.inputs.release == 'true' }}
+      run: 7z a "${{ github.workspace }}\HtmlToPdf-v${{ env.VERSION }}.zip" "${{ github.workspace }}\src\HtmlToPdf.Console\bin\${{ matrix.Configuration }}\net472\*"
+
     - name: Publish GitHub Release
       if: ${{ matrix.Configuration == 'Release' && github.event.inputs.release == 'true' }}
       uses: softprops/action-gh-release@v1
@@ -127,5 +131,5 @@ jobs:
         draft: true
         prerelease: false
         fail_on_unmatched_files: true
-        files: |
-          src/HtmlToPdf.Console/bin/${{ matrix.Configuration }}/net472
+        files: ${{ github.workspace }}\HtmlToPdf-v${{ env.VERSION }}.zip
+          
