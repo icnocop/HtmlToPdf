@@ -128,4 +128,4 @@ jobs:
         prerelease: false
         fail_on_unmatched_files: true
         files: |
-          src/HtmlToPdf.Console/bin/${{ matrix.Configuration }}
+          src/HtmlToPdf.Console/bin/${{ matrix.Configuration }}/net472
