@@ -48,7 +48,7 @@ namespace HtmlToPdfTests
         /// </returns>
         public static string GenerateParserError(string errorMessage = null, string detailedErrorMessage = null)
         {
-            string usage = string.Join(Environment.NewLine, File.ReadLines(@"..\..\..\..\USAGE.md").Select(x => x.TrimEnd()));
+            string usage = string.Join(Environment.NewLine, File.ReadLines(@"..\..\..\..\..\USAGE.md").Select(x => x.TrimEnd()));
 
             string output = $@"{GetVersionInformation()}
 Copyright © 2020

@@ -2,13 +2,13 @@ name: Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
   workflow_dispatch:
-    branches: [ main ]
+    branches: [ master ]
     inputs:
-      prerelease:
+      release:
         description: 'Create release in GitHub?'
         required: true
         default: 'false'
@@ -40,14 +40,16 @@ jobs:
         echo "VERSION=$majorVersion.$minorVersion.$buildVersion.${{ github.RUN_NUMBER }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf-8 -Append
 
     - name: Read environmental variables
-      run: echo VERSION=${{ env.VERSION }}
+      run: |
+        echo VERSION=${{ env.VERSION }}
+        echo GITHUB_WORKSPACE=${{ github.WORKSPACE }}
 
     - name: Checkout
       uses: actions/checkout@v2
     
     - name: Update AssemblyInfo.cs files
       run: |
-        $files = Get-ChildItem $env:BUILD_SOURCESDIRECTORY -recurse -include "*Properties*" | 
+        $files = Get-ChildItem "${{ github.WORKSPACE }}" -recurse -include "*Properties*" | 
             ?{ $_.PSIsContainer } | 
             foreach { Get-ChildItem -Path $_.FullName -Recurse -include AssemblyInfo.* }
         if (-not $files)
@@ -60,19 +62,19 @@ jobs:
             foreach ($file in $files) {
                 $filecontent = Get-Content($file)
                 attrib $file -r
-                $filecontent -replace "\d+\.\d+\.\d+\.\d+", ${{ env.VERSION }} | Out-File $file
-                Write-Verbose "Version applied to `$file.FullName`"
+                $filecontent -replace "\d+\.\d+\.\d+\.\d+", "${{ env.VERSION }}" | Out-File $file
+                Write-Host "Version applied to '$file'"
             }
         }
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.1
 
-    - name: Restore dependencies
-      run: msbuild ".\src\HtmlToPdf.sln" /Targets:Restore
-      
+    - name: Setup VSTest
+      uses: darenm/Setup-VSTest@v1
+
     - name: Build
-      run: msbuild ".\src\HtmlToPdf.sln" /Targets:Build /p:Configuration=${{ matrix.Configuration }}
+      run: msbuild ".\src\HtmlToPdf.sln" /restore /p:RestorePackagesConfig=true /p:Configuration=${{ matrix.Configuration }}
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v2.3.1
@@ -81,11 +83,47 @@ jobs:
         path: src/HtmlToPdf.Console/bin/${{ matrix.Configuration }}
         if-no-files-found: error
 
+    - name: Install Coverlet
+      run: dotnet tool install --global coverlet.console
+
+    - name: Run tests with code coverage
+      run: coverlet .\src\HtmlToPdfTests\bin\${{ matrix.Configuration }}\net472\HtmlToPdfTests.dll --target "vstest.console.exe" --targetargs ".\src\HtmlToPdfTests\bin\${{ matrix.Configuration }}\net472\HtmlToPdfTests.dll /Settings:.\src\RunSettings.runsettings /Logger:trx;LogFileName=${{ github.workspace }}\src\TestResults\TestResults.trx" --format "opencover" --output .\coverage-reports\
+
+    - name: Upload test results and code coverage as build artifact
+      uses: actions/upload-artifact@v2.3.1
+      if: always()
+      with:
+        name: Test results and code coverage ${{ matrix.Configuration }}
+        if-no-files-found: error
+        path: |
+          **/*.trx
+          **/*.coverage
+          **/coverage-reports/**/*
+
+    - name: Publish Test Report
+      uses: dorny/test-reporter@v1.5.0
+      if: always()
+      with:
+        name: Tests
+        path: src/TestResults/TestResults.trx
+        reporter: dotnet-trx
+        list-suites: 'failed'
+        list-tests: 'failed'
+        max-annotations: 50
+
+    - name: Generate Code Coverage Report
+      uses: codecov/codecov-action@v2.1.0
+      with:
+        file: /coverage-reports/coverage.opencover.xml
+        verbose: true
+
     - name: Publish GitHub Release
       if: ${{ matrix.Configuration == 'Release' && github.event.inputs.release == 'true' }}
       uses: softprops/action-gh-release@v1
       with:
         name: v${{ env.VERSION }}
+        tag_name: v${{ env.VERSION }}
+        generate_release_notes: true
         draft: true
         prerelease: false
         fail_on_unmatched_files: true
