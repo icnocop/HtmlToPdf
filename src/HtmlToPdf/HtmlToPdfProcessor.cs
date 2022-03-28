@@ -177,7 +177,7 @@ namespace HtmlToPdf
                                     // insert an empty page to avoid unexpected margins on the first page, which would affect the page count
                                     // https://stackoverflow.com/a/55480268/90287
                                     // https://github.com/puppeteer/puppeteer/issues/2592
-                                    HtmlToPdfOptions tempHtmlToPdfOptions = (HtmlToPdfOptions)htmlToPdfOptions.Copy();
+                                    HtmlToPdfOptions tempHtmlToPdfOptions = htmlToPdfOptions.Copy();
                                     tempHtmlToPdfOptions.PageOffset = 1;
 
                                     string pdfFile = await pdfPrinter.PrintAsPdfAsync(

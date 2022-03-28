@@ -1,5 +1,13 @@
 # Change Log
 
+__v0.1.328__ (2022-03-28)
+
+ - Added retry logic if a PuppeteerSharp exception occurs as a result of an iTextSharp InvalidPdfException: PDF header signature not found.  
+
+__v0.1.302.37__ (2022-03-02)
+
+ - Updated third party dependencies  
+
 __v0.0.1013.1__ (2020-10-13)
 
  - Added WebSocket factory implementation to support Windows 7 and Windows Server 2008  

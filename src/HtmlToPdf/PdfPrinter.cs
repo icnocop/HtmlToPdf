@@ -7,6 +7,7 @@ namespace HtmlToPdf
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading;
     using System.Threading.Tasks;
     using HtmlAgilityPack;
     using HtmlToPdf.Exceptions;
@@ -146,32 +147,104 @@ namespace HtmlToPdf
                     Width = width,
                 };
 
-                using (Page page = await this.browser.NewPageAsync())
+                int retryCount = 1;
+                int maximumRetryCount = 2;
+                while (retryCount <= maximumRetryCount)
                 {
-                    // disable navigation timeout
-                    // otherwise, the following exception occurs:
-                    // PuppeteerSharp.NavigationException: Timeout of 30000 ms exceeded ---> System.TimeoutException: Timeout of 30000 ms exceeded
-                    page.DefaultNavigationTimeout = 0;
-
-                    await page.GoToAsync(tempHtmlFile.FilePath, navigationOptions);
-
-                    if (addTagOptions != null)
-                    {
-                        await page.AddStyleTagAsync(addTagOptions);
-                    }
-
-                    await page.WaitForTimeoutAsync(options.JavascriptDelayInMilliseconds);
-
                     try
                     {
-                        await page.PdfAsync(tempPdfFilePath, pdfOptions);
+                        using (Page page = await this.browser.NewPageAsync())
+                        {
+                            // disable navigation timeout
+                            // otherwise, the following exception occurs:
+                            // PuppeteerSharp.NavigationException: Timeout of 30000 ms exceeded ---> System.TimeoutException: Timeout of 30000 ms exceeded
+                            page.DefaultNavigationTimeout = 0;
+
+                            await page.GoToAsync(tempHtmlFile.FilePath, navigationOptions);
+
+                            if (addTagOptions != null)
+                            {
+                                await page.AddStyleTagAsync(addTagOptions);
+                            }
+
+                            await page.WaitForTimeoutAsync(options.JavascriptDelayInMilliseconds);
+
+                            try
+                            {
+                                await page.PdfAsync(tempPdfFilePath, pdfOptions);
+
+                                break;
+                            }
+                            finally
+                            {
+                                await page.CloseAsync();
+                            }
+                        }
+                    }
+                    catch (TargetClosedException ex)
+                    {
+                        // ex. PuppeteerSharp.TargetClosedException: Protocol error(IO.read): Target closed. (Page failed to process Inspector.targetCrashed. Exception of type 'PuppeteerSharp.TargetCrashedException' was thrown..    at PuppeteerSharp.Page.OnTargetCrashed()
+                        //     at PuppeteerSharp.Page.<Client_MessageReceived>d__230.MoveNext())
+                        //     at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+                        //     at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+                        //     at PuppeteerSharp.CDPSession.<SendAsync>d__30.MoveNext()
+                        //     --- End of stack trace from previous location where exception was thrown ---
+                        //     at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+                        //     at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+                        //     at PuppeteerSharp.CDPSession.<SendAsync>d__29`1.MoveNext()
+                        //     --- End of stack trace from previous location where exception was thrown ---
+                        //     at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+                        //     at PuppeteerSharp.Helpers.ProtocolStreamReader.<ReadProtocolStreamByteAsync>d__1.MoveNext()
+                        //     --- End of stack trace from previous location where exception was thrown ---
+                        //     at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+                        //     at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+                        //     at PuppeteerSharp.Page.<PdfInternalAsync>d__171.MoveNext()
+                        //     --- End of stack trace from previous location where exception was thrown ---
+                        //     at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+                        //     at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+                        //     at PuppeteerSharp.Page.<PdfAsync>d__166.MoveNext()
+                        //      --- End of stack trace from previous location where exception was thrown ---
+                        //     at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+                        //     at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+                        //     at HtmlToPdf.PdfPrinter.<PrintAsPdfAsync>d__3.MoveNext() in D:\a\HtmlToPdf\HtmlToPdf\src\HtmlToPdf\PdfPrinter.cs:line 167
+                        //     --- End of inner exception stack trace ---
+                        //     at HtmlToPdf.PdfPrinter.<PrintAsPdfAsync>d__3.MoveNext() in D:\a\HtmlToPdf\HtmlToPdf\src\HtmlToPdf\PdfPrinter.cs:line 171
+                        //     --- End of stack trace from previous location where exception was thrown ---
+                        //     at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+                        //     at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+                        //     at HtmlToPdf.HtmlToPdfProcessor.<>c__DisplayClass0_1.<<ProcessAsync>b__6>d.MoveNext() in D:\a\HtmlToPdf\HtmlToPdf\src\HtmlToPdf\HtmlToPdfProcessor.cs:line 183
+                        //     --- End of stack trace from previous location where exception was thrown ---
+                        //     at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+                        //     at HtmlToPdf.HtmlToPdfProcessor.<ProcessAsync>d__0.MoveNext() in D:\a\HtmlToPdf\HtmlToPdf\src\HtmlToPdf\HtmlToPdfProcessor.cs:line 206
+                        //     --- End of stack trace from previous location where exception was thrown ---
+                        //     Verbose:[PdfCommand.PDF.wkhtmltopdf]got ... HtmlToPdf.Console.exe output 0Bytes
+                        //     at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+                        //     at HtmlToPdf.HtmlToPdfProcessor.<ProcessAsync>d__0.MoveNext() in D:\a\HtmlToPdf\HtmlToPdf\src\HtmlToPdf\HtmlToPdfProcessor.cs:line 294
+                        //     --- End of stack trace from previous location where exception was thrown ---
+                        //     at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+                        //     at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+                        //     at HtmlToPdf.Console.Program.<RunAsync>d__7.MoveNext() in D:\a\HtmlToPdf\HtmlToPdf\src\HtmlToPdf.Console\Program.cs:line 216
+                        //     Error:[PdfCommand.PDF]Error happen when converting articles/toc.json to Pdf. Details: iTextSharp.text.exceptions.InvalidPdfException: PDF header signature not found.
+                        //     at iTextSharp.text.pdf.PdfReader..ctor(ReaderProperties properties, IRandomAccessSource byteSource)
+                        //     at Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.SaveCore(Stream stream)
+                        //     at Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.Save(String outputFileName)
+                        //     at Microsoft.DocAsCode.HtmlToPdf.ConvertWrapper.<>c__DisplayClass7_0.<ConvertCore>b__1(ManifestItem tocFile)
+                        this.logger.LogWarning(ex.ToString());
+                        retryCount++;
+
+                        if (retryCount <= maximumRetryCount)
+                        {
+                            Thread.Sleep(1000);
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                     catch (Exception ex)
                     {
                         throw new PrintToPdfException(fullPath, ex);
                     }
-
-                    await page.CloseAsync();
                 }
             }
 
