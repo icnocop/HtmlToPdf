@@ -6,6 +6,7 @@ namespace HtmlToPdf
 {
     using System;
     using System.IO;
+    using Polly;
 
     /// <summary>
     /// Temporary Copy HTML File.
@@ -57,7 +58,13 @@ namespace HtmlToPdf
         {
             if (File.Exists(this.FilePath))
             {
-                File.Delete(this.FilePath);
+                // ex. System.IO.IOException: The process cannot access the file '.\_pdf\_raw\_pdf\articles\tmpAB12.html' because it is being used by another process.
+                //    at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+                //    at System.IO.File.InternalDelete(String path, Boolean checkHost)
+                Policy
+                    .Handle<IOException>()
+                    .Retry(3)
+                    .Execute(() => File.Delete(this.FilePath));
             }
         }
     }
