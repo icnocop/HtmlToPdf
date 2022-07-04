@@ -61,10 +61,11 @@ namespace HtmlToPdf
                 // ex. System.IO.IOException: The process cannot access the file '.\_pdf\_raw\_pdf\articles\tmpAB12.html' because it is being used by another process.
                 //    at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
                 //    at System.IO.File.InternalDelete(String path, Boolean checkHost)
+                // ignore exception if it still occurs after 3 tries
                 Policy
                     .Handle<IOException>()
                     .Retry(3)
-                    .Execute(() => File.Delete(this.FilePath));
+                    .ExecuteAndCapture(() => File.Delete(this.FilePath));
             }
         }
     }

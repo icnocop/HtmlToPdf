@@ -71,9 +71,16 @@ namespace HtmlToPdf
                 return;
             }
 
-            if (File.Exists(this.FilePath))
+            try
             {
-                File.Delete(this.FilePath);
+                if (File.Exists(this.FilePath))
+                {
+                    File.Delete(this.FilePath);
+                }
+            }
+            catch
+            {
+                // ignore
             }
         }
 

@@ -3,6 +3,7 @@
 __v0.1.704__ (2022-07-04)
 
  - Added retry logic if an IOException occurs as a result of trying to delete a file.  
+ - Specifying temporary directory for `UserDataDir` to improve performance
 
 __v0.1.328__ (2022-03-28)
 

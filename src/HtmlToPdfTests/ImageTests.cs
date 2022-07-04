@@ -8,6 +8,7 @@ namespace HtmlToPdfTests
     using System.Drawing;
     using System.IO;
     using System.Linq;
+    using HtmlToPdf;
     using iText.IO.Image;
     using iText.Kernel.Pdf;
     using iText.Kernel.Pdf.Canvas.Parser;

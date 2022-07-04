@@ -10,6 +10,7 @@ namespace HtmlToPdfTests
     using System.Linq;
     using System.Net;
     using System.Net.Sockets;
+    using HtmlToPdf;
     using Huygens;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using UglyToad.PdfPig.Content;

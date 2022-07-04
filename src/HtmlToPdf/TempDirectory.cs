@@ -2,7 +2,7 @@
 // Copyright (c) HtmlToPdf. All rights reserved.
 // </copyright>
 
-namespace HtmlToPdfTests
+namespace HtmlToPdf
 {
     using System;
     using System.IO;
@@ -11,7 +11,7 @@ namespace HtmlToPdfTests
     /// Temporary Directory.
     /// </summary>
     /// <seealso cref="System.IDisposable" />
-    internal class TempDirectory : IDisposable
+    public class TempDirectory : IDisposable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TempDirectory"/> class.
@@ -31,7 +31,7 @@ namespace HtmlToPdfTests
         }
 
         /// <summary>
-        /// Gets or sets the directory path.
+        /// Gets the directory path.
         /// </summary>
         /// <value>
         /// The directory path.
