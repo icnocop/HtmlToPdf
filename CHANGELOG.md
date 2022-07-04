@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.1.704__ (2022-07-04)
+
+ - Added retry logic if an IOException occurs as a result of trying to delete a file.  
+
 __v0.1.328__ (2022-03-28)
 
  - Added retry logic if a PuppeteerSharp exception occurs as a result of an iTextSharp InvalidPdfException: PDF header signature not found.  
