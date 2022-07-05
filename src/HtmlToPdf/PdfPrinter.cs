@@ -11,6 +11,7 @@ namespace HtmlToPdf
     using System.Threading.Tasks;
     using HtmlAgilityPack;
     using HtmlToPdf.Exceptions;
+    using Polly;
     using PuppeteerSharp;
     using PuppeteerSharp.Media;
 
@@ -147,42 +148,12 @@ namespace HtmlToPdf
                     Width = width,
                 };
 
-                int retryCount = 1;
-                int maximumRetryCount = 2;
-                while (retryCount <= maximumRetryCount)
-                {
-                    try
+                PolicyResult<Task> policyResult = Policy
+                    .Handle<TargetClosedException>()
+                    .Or<Exception>()
+                    .Retry(2, onRetry: (ex, retryCount, context) =>
                     {
-                        using (Page page = await this.browser.NewPageAsync())
-                        {
-                            // disable navigation timeout
-                            // otherwise, the following exception occurs:
-                            // PuppeteerSharp.NavigationException: Timeout of 30000 ms exceeded ---> System.TimeoutException: Timeout of 30000 ms exceeded
-                            page.DefaultNavigationTimeout = 0;
-
-                            await page.GoToAsync(tempHtmlFile.FilePath, navigationOptions);
-
-                            if (addTagOptions != null)
-                            {
-                                await page.AddStyleTagAsync(addTagOptions);
-                            }
-
-                            await page.WaitForTimeoutAsync(options.JavascriptDelayInMilliseconds);
-
-                            try
-                            {
-                                await page.PdfAsync(tempPdfFilePath, pdfOptions);
-
-                                break;
-                            }
-                            finally
-                            {
-                                await page.CloseAsync();
-                            }
-                        }
-                    }
-                    catch (TargetClosedException ex)
-                    {
+                        // executed before each retry
                         // ex. PuppeteerSharp.TargetClosedException: Protocol error(IO.read): Target closed. (Page failed to process Inspector.targetCrashed. Exception of type 'PuppeteerSharp.TargetCrashedException' was thrown..    at PuppeteerSharp.Page.OnTargetCrashed()
                         //     at PuppeteerSharp.Page.<Client_MessageReceived>d__230.MoveNext())
                         //     at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
@@ -230,20 +201,48 @@ namespace HtmlToPdf
                         //     at Microsoft.DocAsCode.HtmlToPdf.HtmlToPdfConverter.Save(String outputFileName)
                         //     at Microsoft.DocAsCode.HtmlToPdf.ConvertWrapper.<>c__DisplayClass7_0.<ConvertCore>b__1(ManifestItem tocFile)
                         this.logger.LogWarning(ex.ToString());
-                        retryCount++;
-
-                        if (retryCount <= maximumRetryCount)
-                        {
-                            Thread.Sleep(1000);
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
-                    catch (Exception ex)
+                        Thread.Sleep(1000);
+                    })
+                    .ExecuteAndCapture(async () =>
                     {
-                        throw new PrintToPdfException(fullPath, ex);
+                        using (Page page = await this.browser.NewPageAsync())
+                        {
+                            // disable navigation timeout
+                            // otherwise, the following exception occurs:
+                            // PuppeteerSharp.NavigationException: Timeout of 30000 ms exceeded ---> System.TimeoutException: Timeout of 30000 ms exceeded
+                            page.DefaultNavigationTimeout = 0;
+
+                            await page.GoToAsync(tempHtmlFile.FilePath, navigationOptions);
+
+                            if (addTagOptions != null)
+                            {
+                                await page.AddStyleTagAsync(addTagOptions);
+                            }
+
+                            await page.WaitForTimeoutAsync(options.JavascriptDelayInMilliseconds);
+
+                            try
+                            {
+                                await page.PdfAsync(tempPdfFilePath, pdfOptions);
+                            }
+                            finally
+                            {
+                                await page.CloseAsync();
+                            }
+                        }
+                    });
+
+                policyResult.Result.Wait();
+
+                if (policyResult.Outcome == OutcomeType.Failure)
+                {
+                    if (policyResult.FinalException is TargetClosedException)
+                    {
+                        throw policyResult.FinalException;
+                    }
+                    else
+                    {
+                        throw new PrintToPdfException(fullPath, policyResult.FinalException);
                     }
                 }
             }

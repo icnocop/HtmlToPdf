@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.1.705__ (2022-07-05)
+
+ - Updated third party dependencies
+
 __v0.1.704__ (2022-07-04)
 
  - Added retry logic if an IOException occurs as a result of trying to delete a file.  

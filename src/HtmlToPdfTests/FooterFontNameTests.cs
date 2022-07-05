@@ -26,7 +26,7 @@ namespace HtmlToPdfTests
         /// <param name="exeFileName">Name of the executable file.</param>
         /// <param name="expectedFontName">Expected name of the font.</param>
         [TestMethod]
-        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "ArialMT", DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "AAAAAA+ArialMT", DisplayName = "HtmlToPdf.exe")]
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "ArialRegular", DisplayName = "wkhtmltopdf.exe")]
         public void FooterFontName_DefaultValue_IsArial(string exeFileName, string expectedFontName)
         {
@@ -69,7 +69,7 @@ namespace HtmlToPdfTests
         /// <param name="exeFileName">Name of the executable file.</param>
         /// <param name="expectedFontName">Expected name of the font.</param>
         [TestMethod]
-        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "TimesNewRomanPSMT", DisplayName = "HtmlToPdf.exe")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "AAAAAA+TimesNewRomanPSMT", DisplayName = "HtmlToPdf.exe")]
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "TimesNewRomanRegular", DisplayName = "wkhtmltopdf.exe")]
         public void FooterFontName_WithTimesNewRoman_SetsTheFooterFontFamilyToTimesNewRoman(string exeFileName, string expectedFontName)
         {

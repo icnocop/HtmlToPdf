@@ -96,12 +96,12 @@ namespace HtmlToPdf
                 };
 
                 await Policy
-                    .Handle<ChromiumProcessException>()
+                    .Handle<ProcessException>()
                     .Retry(2, onRetry: (ex, retryCount) =>
                     {
                         // executed before each retry
                         // https://github.com/hardkoded/puppeteer-sharp/issues/1509
-                        // ex. PuppeteerSharp.ChromiumProcessException: Failed to launch Chromium! [0909/142354.872:FATAL:feature_list.cc(282)] Check failed: !g_initialized_from_accessor.
+                        // ex. PuppeteerSharp.ProcessException: Failed to launch Chromium! [0909/142354.872:FATAL:feature_list.cc(282)] Check failed: !g_initialized_from_accessor.
                         // Error: Backtrace:
                         // Error:   ovly_debug_event [0x00007FFE262A1252+16183762]
                         // Error:   ovly_debug_event [0x00007FFE262A0832+16181170]
@@ -189,7 +189,7 @@ namespace HtmlToPdf
                                 Dictionary<string, string> variables = new Dictionary<string, string>
                                 {
                                     { "page", "<span class=\"pageNumber\"></span>" },
-                                    { "date", "<span class=\"date\"></span>" }, // M/dd/yyyy
+                                    { "date", dtNow.ToString("d") }, // M/dd/yyyy
                                     { "title", "<span class=\"title\"></span>" },
                                     { "frompage",  (options.PageOffset + 1).ToString() },
                                     { "isodate", dtNow.ToString("yyyy-MM-dd") }, // ISO 8601 extended format

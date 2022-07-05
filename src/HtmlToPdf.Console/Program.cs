@@ -193,24 +193,19 @@ namespace HtmlToPdf.Console
             bool stdout = false;
             string outputFilePath = null;
 
-            if ((args.Length > 0) && (args.Last() == "-"))
-            {
-                stdout = true;
-                outputFilePath = Path.GetTempFileName();
-            }
-            else if (inputs.Count > 0)
+            if (inputs.Count > 0)
             {
                 if (inputs.Last() == "-")
                 {
                     stdout = true;
-                    inputs.RemoveAt(inputs.Count - 1);
                     outputFilePath = Path.GetTempFileName();
                 }
                 else
                 {
                     outputFilePath = inputs.Last();
-                    inputs.RemoveAt(inputs.Count - 1);
                 }
+
+                inputs.RemoveAt(inputs.Count - 1);
             }
 
             ConcurrentBag<HtmlToPdfFile> htmlToPdfFiles = await HtmlToPdfProcessor.ProcessAsync(

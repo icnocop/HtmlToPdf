@@ -35,7 +35,7 @@
     <Content Include="Outline.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />

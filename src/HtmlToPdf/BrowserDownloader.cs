@@ -46,14 +46,14 @@ namespace HtmlToPdf
                 try
                 {
                     BrowserFetcher browserFetcher = new BrowserFetcher();
-                    if (browserFetcher.LocalRevisions().Any())
+                    if (browserFetcher.LocalRevisions().Any(x => x == BrowserFetcher.DefaultChromiumRevision))
                     {
                         // local revision already exists
                         return;
                     }
 
                     logger.LogDebug("Downloading browser...");
-                    Task<RevisionInfo> task = browserFetcher.DownloadAsync(BrowserFetcher.DefaultRevision);
+                    Task<RevisionInfo> task = browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
                     task.Wait();
 
                     RevisionInfo revisionInfo = task.Result;
