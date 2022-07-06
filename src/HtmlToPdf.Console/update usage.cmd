@@ -3,12 +3,12 @@
 REM set errorlevel to 0
 ver > nul
 
-set tempOutputFile=%~dp0..\..\..\..\USAGE_temp.md
+set tempOutputFile=%~dp0..\..\USAGE_temp.md
 
 if exist "%tempOutputFile%" del "%tempOutputFile%"
 
-set outputFile="%~dp0..\..\..\..\USAGE.md"
-"%~dp0HtmlToPdf.Console.exe" --help >"%tempOutputFile%" 2>&1
+set outputFile="%~dp0..\..\USAGE.md"
+"%~dp0bin\Debug\net472\HtmlToPdf.Console.exe" --help >"%tempOutputFile%" 2>&1
 if %errorlevel% neq 1 echo Failed to write usage to USAGE.md && exit /b %errorlevel%
 
 setlocal EnableDelayedExpansion

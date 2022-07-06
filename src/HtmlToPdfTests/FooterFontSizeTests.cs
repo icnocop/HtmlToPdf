@@ -55,7 +55,7 @@ namespace HtmlToPdfTests
                         Page page1 = pdfDocument.GetPage(1);
                         IEnumerable<Word> words = page1.GetWords();
                         Assert.AreEqual(3, words.Count());
-                        Assert.AreEqual("Page 1", $"{words.ElementAt(0)} {words.ElementAt(1)}");
+                        Assert.AreEqual("Page 1 1", string.Join(" ", words));
 
                         Assert.AreEqual(expectedFontSize, $"{words.ElementAt(2).Letters[0].FontSize}");
                     }
@@ -99,7 +99,7 @@ namespace HtmlToPdfTests
                         Page page1 = pdfDocument.GetPage(1);
                         IEnumerable<Word> words = page1.GetWords();
                         Assert.AreEqual(3, words.Count());
-                        Assert.AreEqual("Page 1", $"{words.ElementAt(0)} {words.ElementAt(1)}");
+                        Assert.AreEqual("Page 1 1", string.Join(" ", words));
 
                         Assert.AreEqual(expectedFontSize, $"{words.ElementAt(2).Letters[0].FontSize}");
                     }

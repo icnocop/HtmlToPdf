@@ -1,4 +1,4 @@
-﻿// <copyright file="FooterFontNameTests.cs" company="HtmlToPdf">
+﻿// <copyright file="HeaderFontNameTests.cs" company="HtmlToPdf">
 // Copyright (c) HtmlToPdf. All rights reserved.
 // </copyright>
 
@@ -10,10 +10,10 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Footer Font Name Tests.
+    /// Header Font Name Tests.
     /// </summary>
     [TestClass]
-    public class FooterFontNameTests
+    public class HeaderFontNameTests
     {
         /// <summary>
         /// Gets or sets the test context.
@@ -21,14 +21,14 @@ namespace HtmlToPdfTests
         public TestContext TestContext { get; set; }
 
         /// <summary>
-        /// Asserts that the default footer-font-name is Arial.
+        /// Asserts that the default header-font-name is Arial.
         /// </summary>
         /// <param name="exeFileName">Name of the executable file.</param>
         /// <param name="expectedFontName">Expected name of the font.</param>
         [TestMethod]
         [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "AAAAAA+ArialMT", DisplayName = "HtmlToPdf.exe")]
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "ArialRegular", DisplayName = "wkhtmltopdf.exe")]
-        public void FooterFontName_DefaultValue_IsArial(string exeFileName, string expectedFontName)
+        public void HeaderFontName_DefaultValue_IsArial(string exeFileName, string expectedFontName)
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
@@ -45,7 +45,7 @@ namespace HtmlToPdfTests
             {
                 using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                 {
-                    string commandLine = $"--footer-right [page] \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                    string commandLine = $"--header-right [page] \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
                     HtmlToPdfRunResult result = runner.Run(commandLine);
                     Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -55,23 +55,23 @@ namespace HtmlToPdfTests
                         Page page1 = pdfDocument.GetPage(1);
                         IEnumerable<Word> words = page1.GetWords();
                         Assert.AreEqual(3, words.Count());
-                        Assert.AreEqual("Page 1 1", string.Join(" ", words));
+                        Assert.AreEqual("1 Page 1", string.Join(" ", words));
 
-                        Assert.AreEqual(expectedFontName, $"{words.ElementAt(2).FontName}");
+                        Assert.AreEqual(expectedFontName, $"{words.ElementAt(0).FontName}");
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Asserts that passing footer-font-name "Times New Roman" sets the footer font family to "Times New Roman".
+        /// Asserts that passing header-font-name "Times New Roman" sets the header font family to "Times New Roman".
         /// </summary>
         /// <param name="exeFileName">Name of the executable file.</param>
         /// <param name="expectedFontName">Expected name of the font.</param>
         [TestMethod]
         [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "AAAAAA+TimesNewRomanPSMT", DisplayName = "HtmlToPdf.exe")]
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "TimesNewRomanRegular", DisplayName = "wkhtmltopdf.exe")]
-        public void FooterFontName_WithTimesNewRoman_SetsTheFooterFontFamilyToTimesNewRoman(string exeFileName, string expectedFontName)
+        public void HeaderFontName_WithTimesNewRoman_SetsTheHeaderFontFamilyToTimesNewRoman(string exeFileName, string expectedFontName)
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
@@ -88,7 +88,7 @@ namespace HtmlToPdfTests
             {
                 using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                 {
-                    string commandLine = $"--footer-font-name \"Times New Roman\" --footer-right [page] \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                    string commandLine = $"--header-font-name \"Times New Roman\" --header-right [page] \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
                     HtmlToPdfRunResult result = runner.Run(commandLine);
                     Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -98,9 +98,9 @@ namespace HtmlToPdfTests
                         Page page1 = pdfDocument.GetPage(1);
                         IEnumerable<Word> words = page1.GetWords();
                         Assert.AreEqual(3, words.Count());
-                        Assert.AreEqual("Page 1 1", string.Join(" ", words));
+                        Assert.AreEqual("1 Page 1", string.Join(" ", words));
 
-                        Assert.AreEqual(expectedFontName, $"{words.ElementAt(2).FontName}");
+                        Assert.AreEqual(expectedFontName, $"{words.ElementAt(0).FontName}");
                     }
                 }
             }

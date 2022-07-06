@@ -73,13 +73,17 @@ namespace HtmlToPdfTests
         }
 
         /// <summary>
-        /// Asserts that passing a footer doesn't apply to the cover page.
+        /// Asserts that passing a footer or header doesn't apply to the cover page.
         /// </summary>
         /// <param name="exeFileName">Name of the executable file.</param>
+        /// <param name="headerOrFooterCommandLineArgument">The header or footer command line argument.</param>
+        /// <param name="expectedText">The expected text.</param>
         [TestMethod]
-        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, DisplayName = "HtmlToPdf.exe")]
-        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, DisplayName = "wkhtmltopdf.exe")]
-        public void Cover_WithFooter_DoesNotApplyToCoverPage(string exeFileName)
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--margin-top 5mm --header-left [page]", "2 Page 2", DisplayName = "HtmlToPdf.exe Header")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--margin-top 5mm --header-left [page]", "2 Page 2", DisplayName = "wkhtmltopdf.exe Header")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--footer-right [page]", "Page 2 2", DisplayName = "HtmlToPdf.exe Footer")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--footer-right [page]", "Page 2 2", DisplayName = "wkhtmltopdf.exe Footer")]
+        public void Cover_WithHeaderOrFooter_DoesNotApplyToCoverPage(string exeFileName, string headerOrFooterCommandLineArgument, string expectedText)
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
@@ -107,7 +111,7 @@ namespace HtmlToPdfTests
                 {
                     using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                     {
-                        string commandLine = $"--footer-right [page] cover \"{coverFile.FilePath}\" \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                        string commandLine = $"{headerOrFooterCommandLineArgument} cover \"{coverFile.FilePath}\" \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
                         HtmlToPdfRunResult result = runner.Run(commandLine);
                         Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -119,8 +123,7 @@ namespace HtmlToPdfTests
                             Page page2 = pdfDocument.GetPage(2);
                             IEnumerable<Word> words = page2.GetWords();
                             Assert.AreEqual(3, words.Count());
-                            Assert.AreEqual("Page 2", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-                            Assert.AreEqual("2", words.Last().Text, "Page number");
+                            Assert.AreEqual(expectedText, string.Join(" ", words));
                         }
                     }
                 }

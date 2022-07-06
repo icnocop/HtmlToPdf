@@ -1,5 +1,10 @@
 # Change Log
 
+__v0.1.706__ (2022-07-06)
+
+ - Added support for `--header-left`, `--header-center`, `--header-right`, `--header-font-size`, `--header-font-name`, and `--header-html` command line options  
+ - Added support for passing additional arguments to the browser instance  
+
 __v0.1.705__ (2022-07-05)
 
  - Updated third party dependencies

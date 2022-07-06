@@ -85,6 +85,7 @@ namespace HtmlToPdf
                     Devtools = false,
                     WebSocketFactory = WebSocketFactory,
                     UserDataDir = tempDirectory.DirectoryPath,
+                    Args = options.AdditionalArguments?.ToArray() ?? new string[] { },
                 };
 
                 MarginOptions marginOptions = new MarginOptions
@@ -163,7 +164,7 @@ namespace HtmlToPdf
                                         Input = options.Cover,
                                         Index = 0,
                                         PdfFilePath = pdfFile,
-                                        PrintFooter = false,
+                                        PrintHeaderAndFooter = false,
                                         NumberOfPages = numberOfPages,
                                     };
 
@@ -174,15 +175,28 @@ namespace HtmlToPdf
 
                                 // page options
                                 htmlToPdfOptions.MarginOptions = marginOptions;
-                                htmlToPdfOptions.FooterTemplateBuilder.FooterLeft = options.FooterLeft;
-                                htmlToPdfOptions.FooterTemplateBuilder.FooterCenter = options.FooterCenter;
-                                htmlToPdfOptions.FooterTemplateBuilder.FooterRight = options.FooterRight;
+
+                                // header
+                                htmlToPdfOptions.HeaderTemplateBuilder.Left = options.HeaderLeft;
+                                htmlToPdfOptions.HeaderTemplateBuilder.Center = options.HeaderCenter;
+                                htmlToPdfOptions.HeaderTemplateBuilder.Right = options.HeaderRight;
+
+                                string headerFontSize = options.HeaderFontSize.AppendUnits("px");
+
+                                htmlToPdfOptions.HeaderTemplateBuilder.FontSize = headerFontSize;
+                                htmlToPdfOptions.HeaderTemplateBuilder.FontName = options.HeaderFontName;
+                                htmlToPdfOptions.HeaderTemplateBuilder.Html = options.HeaderHtml;
+
+                                // footer
+                                htmlToPdfOptions.FooterTemplateBuilder.Left = options.FooterLeft;
+                                htmlToPdfOptions.FooterTemplateBuilder.Center = options.FooterCenter;
+                                htmlToPdfOptions.FooterTemplateBuilder.Right = options.FooterRight;
 
                                 string footerFontSize = options.FooterFontSize.AppendUnits("px");
 
-                                htmlToPdfOptions.FooterTemplateBuilder.FooterFontSize = footerFontSize;
-                                htmlToPdfOptions.FooterTemplateBuilder.FooterFontName = options.FooterFontName;
-                                htmlToPdfOptions.FooterTemplateBuilder.FooterHtml = options.FooterHtml;
+                                htmlToPdfOptions.FooterTemplateBuilder.FontSize = footerFontSize;
+                                htmlToPdfOptions.FooterTemplateBuilder.FontName = options.FooterFontName;
+                                htmlToPdfOptions.FooterTemplateBuilder.Html = options.FooterHtml;
 
                                 // global header/footer variables
                                 // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
@@ -223,7 +237,7 @@ namespace HtmlToPdf
                                             Input = input,
                                             Index = options.Inputs.IndexOf(input),
                                             PdfFilePath = pdfFile,
-                                            PrintFooter = true,
+                                            PrintHeaderAndFooter = true,
                                             NumberOfPages = numberOfPages,
                                         };
 
@@ -265,7 +279,7 @@ namespace HtmlToPdf
                                         variables);
                                 }
 
-                                // update models and re-print HTML files to include footers with page numbers
+                                // update models and re-print HTML files to include headers/footers with page numbers
                                 tasks = htmlToPdfFiles.Select(async htmlToPdfFile =>
                                 {
                                     if (string.IsNullOrEmpty(title)
@@ -298,7 +312,7 @@ namespace HtmlToPdf
                                     htmlToPdfOptions.NumberOfPages = htmlToPdfFile.NumberOfPages;
 
                                     // TODO: only print as PDF again if topage variable is actually used in the header/footer
-                                    if (htmlToPdfFile.PrintFooter)
+                                    if (htmlToPdfFile.PrintHeaderAndFooter)
                                     {
                                         // delete previously created PDF file
                                         File.Delete(htmlToPdfFile.PdfFilePath);

@@ -220,6 +220,12 @@ namespace HtmlToPdf.Console
                     FooterHtml = commandLineOptions.FooterHtml,
                     FooterLeft = commandLineOptions.FooterLeft,
                     FooterRight = commandLineOptions.FooterRight,
+                    HeaderCenter = commandLineOptions.HeaderCenter,
+                    HeaderFontName = commandLineOptions.HeaderFontName,
+                    HeaderFontSize = commandLineOptions.HeaderFontSize,
+                    HeaderHtml = commandLineOptions.HeaderHtml,
+                    HeaderLeft = commandLineOptions.HeaderLeft,
+                    HeaderRight = commandLineOptions.HeaderRight,
                     Inputs = inputs,
                     JavascriptDelayInMilliseconds = commandLineOptions.JavascriptDelayInMilliseconds,
                     LeftMargin = commandLineOptions.LeftMargin,
@@ -240,6 +246,7 @@ namespace HtmlToPdf.Console
                     OutlineBuilder = new Action<XmlWriter, IReadOnlyCollection<HtmlToPdfFile>, bool>(PdfOutlineBuilder.BuildOutline),
                     DefaultTableOfContentsStyleSheetBuilder = TableOfContentsStyleSheetBuilder.Build,
                     OutputDottedLinesInTableOfContents = !commandLineOptions.DisableDottedLines,
+                    AdditionalArguments = commandLineOptions.AdditionalArguments?.Split(' '),
                 },
                 logger);
 

@@ -1,4 +1,4 @@
-﻿// <copyright file="FooterTests.cs" company="HtmlToPdf">
+﻿// <copyright file="HeaderTests.cs" company="HtmlToPdf">
 // Copyright (c) HtmlToPdf. All rights reserved.
 // </copyright>
 
@@ -14,10 +14,10 @@ namespace HtmlToPdfTests
     using UglyToad.PdfPig.Content;
 
     /// <summary>
-    /// Footer Tests.
+    /// Header Tests.
     /// </summary>
     [TestClass]
-    public class FooterTests
+    public class HeaderTests
     {
         /// <summary>
         /// Gets or sets the test context.
@@ -25,11 +25,11 @@ namespace HtmlToPdfTests
         public TestContext TestContext { get; set; }
 
         /// <summary>
-        /// Asserts that passing footer-right with a variable placeholder replaces the variable in the footer.
+        /// Asserts that passing header-right with a variable placeholder replaces the variable in the header.
         /// </summary>
         /// <param name="exeFileName">Name of the executable file.</param>
-        /// <param name="footerCommandLineArgument">The footer command line argument.</param>
-        /// <param name="expectedFooterTextTemplate">The expected footer text template.</param>
+        /// <param name="headerCommandLineArgument">The header command line argument.</param>
+        /// <param name="expectedHeaderTextTemplate">The expected header text template.</param>
         [TestMethod]
         [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[page]", "1", DisplayName = "HtmlToPdf.exe [page]")]
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[page]", "1", DisplayName = "wkhtmltopdf.exe [page]")]
@@ -49,10 +49,10 @@ namespace HtmlToPdfTests
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[time]", "{{ 'now' | as_date | date:'h:mm:ss tt' }}", DisplayName = "wkhtmltopdf.exe [time]")]
         [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "[doctitle]", "The title of the test page", DisplayName = "HtmlToPdf.exe [doctitle]")]
         [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "[doctitle]", "The title of the test page", DisplayName = "wkhtmltopdf.exe [doctitle]")]
-        public void FooterRight_WithVariable_ReplacesVariableInFooter(
+        public void HeaderRight_WithVariable_ReplacesVariableInHeader(
             string exeFileName,
-            string footerCommandLineArgument,
-            string expectedFooterTextTemplate)
+            string headerCommandLineArgument,
+            string expectedHeaderTextTemplate)
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
@@ -74,12 +74,12 @@ namespace HtmlToPdfTests
                 };
                 Hash hash = Hash.FromDictionary(dictionary);
                 Template.RegisterFilter(typeof(NaturalDateFilter));
-                Template template = Template.Parse(expectedFooterTextTemplate);
-                string expectedFooterText = template.Render(hash);
+                Template template = Template.Parse(expectedHeaderTextTemplate);
+                string expectedHeaderText = template.Render(hash);
 
                 using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                 {
-                    string commandLine = $"--margin-bottom 5mm --footer-right {footerCommandLineArgument} \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                    string commandLine = $"--margin-top 5mm --header-right {headerCommandLineArgument} \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
                     HtmlToPdfRunResult result = runner.Run(commandLine);
                     Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -89,19 +89,19 @@ namespace HtmlToPdfTests
                         Page page = pdfDocument.GetPage(1);
                         IEnumerable<Word> words = page.GetWords();
                         Assert.IsTrue(words.Count() >= 3, $"{words.Count()}");
-                        Assert.AreEqual("Test Page", $"{words.ElementAt(0)} {words.ElementAt(1)}");
-                        string footerText = string.Join(" ", words.Skip(2).Select(x => x.Text.ToLower()));
+                        Assert.AreEqual("Test Page", $"{words.ElementAt(words.Count() - 2)} {words.ElementAt(words.Count() - 1)}");
+                        string headerText = string.Join(" ", words.Take(words.Count() - 2).Select(x => x.Text.ToLower()));
 
-                        if (footerCommandLineArgument == "[time]")
+                        if (headerCommandLineArgument == "[time]")
                         {
                             // assert times are within 5 seconds
-                            DateTime expectedDateTime = DateTime.ParseExact(expectedFooterText, "h:mm:ss tt", CultureInfo.InvariantCulture);
-                            DateTime actualDateTime = DateTime.ParseExact(footerText, "h:mm:ss tt", CultureInfo.InvariantCulture);
+                            DateTime expectedDateTime = DateTime.ParseExact(expectedHeaderText, "h:mm:ss tt", CultureInfo.InvariantCulture);
+                            DateTime actualDateTime = DateTime.ParseExact(headerText, "h:mm:ss tt", CultureInfo.InvariantCulture);
                             DateAssert.AreWithinFiveSeconds(expectedDateTime, actualDateTime);
                         }
                         else
                         {
-                            Assert.AreEqual(expectedFooterText.ToLower(), footerText);
+                            Assert.AreEqual(expectedHeaderText.ToLower(), headerText);
                         }
                     }
                 }
@@ -109,18 +109,18 @@ namespace HtmlToPdfTests
         }
 
         /// <summary>
-        /// Asserts that passing footer with a page placeholder inserts a page number in the footer in multiple pages.
+        /// Asserts that passing header with a page placeholder inserts a page number in the header in multiple pages.
         /// </summary>
         /// <param name="exeFileName">Name of the executable file.</param>
-        /// <param name="footerCommandLineArgument">The footer command line argument.</param>
+        /// <param name="headerCommandLineArgument">The header command line argument.</param>
         [TestMethod]
-        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--footer-left", DisplayName = "HtmlToPdf.exe --footer-left")]
-        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--footer-left", DisplayName = "wkhtmltopdf.exe --footer-left")]
-        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--footer-center", DisplayName = "HtmlToPdf.exe --footer-center")]
-        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--footer-center", DisplayName = "wkhtmltopdf.exe --footer-center")]
-        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--footer-right", DisplayName = "HtmlToPdf.exe --footer-right")]
-        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--footer-right", DisplayName = "wkhtmltopdf.exe --footer-right")]
-        public void Footer_WithPage_InsertsPageNumberInFooterInMultiplePages(string exeFileName, string footerCommandLineArgument)
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--header-left", DisplayName = "HtmlToPdf.exe --header-left")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--header-left", DisplayName = "wkhtmltopdf.exe --header-left")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--header-center", DisplayName = "HtmlToPdf.exe --header-center")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--header-center", DisplayName = "wkhtmltopdf.exe --header-center")]
+        [DataRow(HtmlToPdfRunner.HtmlToPdfExe, "--header-right", DisplayName = "HtmlToPdf.exe --header-right")]
+        [DataRow(HtmlToPdfRunner.WkhtmltopdfExe, "--header-right", DisplayName = "wkhtmltopdf.exe --header-right")]
+        public void Header_WithPage_InsertsPageNumberInHeaderInMultiplePages(string exeFileName, string headerCommandLineArgument)
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner(exeFileName);
 
@@ -148,7 +148,7 @@ namespace HtmlToPdfTests
                 {
                     using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                     {
-                        string commandLine = $"--margin-bottom 5mm {footerCommandLineArgument} [page] \"{htmlFile1.FilePath}\" \"{htmlFile2.FilePath}\" \"{pdfFile.FilePath}\"";
+                        string commandLine = $"--margin-top 5mm {headerCommandLineArgument} [page] \"{htmlFile1.FilePath}\" \"{htmlFile2.FilePath}\" \"{pdfFile.FilePath}\"";
                         HtmlToPdfRunResult result = runner.Run(commandLine);
                         Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -157,13 +157,13 @@ namespace HtmlToPdfTests
                             Assert.AreEqual(2, pdfDocument.NumberOfPages);
                             Page page1 = pdfDocument.GetPage(1);
                             IEnumerable<Word> words = page1.GetWords();
-                            Assert.AreEqual(3, words.Count());
-                            Assert.AreEqual("Page 1 1", string.Join(" ", words));
+                            Assert.AreEqual(3, words.Count(), string.Join(" ", words));
+                            Assert.AreEqual("1 Page 1", string.Join(" ", words));
 
                             Page page2 = pdfDocument.GetPage(2);
                             words = page2.GetWords();
                             Assert.AreEqual(3, words.Count());
-                            Assert.AreEqual("Page 2 2", string.Join(" ", words));
+                            Assert.AreEqual("2 Page 2", string.Join(" ", words));
                         }
                     }
                 }
@@ -171,10 +171,10 @@ namespace HtmlToPdfTests
         }
 
         /// <summary>
-        /// Asserts that passing footer-right with CSS to hide the footer on the first page does not show the footer on the first page.
+        /// Asserts that passing header-right with CSS to hide the header on the first page does not show the header on the first page.
         /// </summary>
         [TestMethod]
-        public void FooterRight_WithCssToHideFooterOnFirstPage_DoesNotShowFooterOnFirstPage()
+        public void HeaderRight_WithCssToHideHeaderOnFirstPage_DoesNotShowHeaderOnFirstPage()
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner(HtmlToPdfRunner.HtmlToPdfExe);
 
@@ -205,7 +205,7 @@ namespace HtmlToPdfTests
                 {
                     using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                     {
-                        string commandLine = $"--footer-right [page] \"{htmlFile1.FilePath}\" \"{htmlFile2.FilePath}\" \"{pdfFile.FilePath}\"";
+                        string commandLine = $"--header-right [page] \"{htmlFile1.FilePath}\" \"{htmlFile2.FilePath}\" \"{pdfFile.FilePath}\"";
                         HtmlToPdfRunResult result = runner.Run(commandLine);
                         Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -215,7 +215,7 @@ namespace HtmlToPdfTests
                             Page page1 = pdfDocument.GetPage(1);
                             IEnumerable<Word> words = page1.GetWords();
                             Assert.AreEqual(3, words.Count(), string.Join(" ", words));
-                            Assert.AreEqual("Page 1 1", string.Join(" ", words));
+                            Assert.AreEqual("1 Page 1", string.Join(" ", words));
 
                             Page page2 = pdfDocument.GetPage(2);
                             words = page2.GetWords();
@@ -228,10 +228,10 @@ namespace HtmlToPdfTests
         }
 
         /// <summary>
-        /// Asserts that passing footer-right with CSS to hide the footer on the first page of a mult-page HTML does not show the footer on the first page.
+        /// Asserts that passing header-right with CSS to hide the header on the first page of a mult-page HTML does not show the header on the first page.
         /// </summary>
         [TestMethod]
-        public void FooterRight_WithCssToHideFooterOnFirstPageOfMultiplePages_DoesNotShowFooterOnFirstPage()
+        public void HeaderRight_WithCssToHideHeaderOnFirstPageOfMultiplePages_DoesNotShowHeaderOnFirstPage()
         {
             HtmlToPdfRunner runner = new HtmlToPdfRunner(HtmlToPdfRunner.HtmlToPdfExe);
 
@@ -253,7 +253,7 @@ namespace HtmlToPdfTests
             {
                 using (TempPdfFile pdfFile = new TempPdfFile(this.TestContext))
                 {
-                    string commandLine = $"--footer-right [page] \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
+                    string commandLine = $"--header-right [page] \"{htmlFile.FilePath}\" \"{pdfFile.FilePath}\"";
                     HtmlToPdfRunResult result = runner.Run(commandLine);
                     Assert.AreEqual(0, result.ExitCode, result.Output);
 
@@ -263,12 +263,12 @@ namespace HtmlToPdfTests
                         Page page1 = pdfDocument.GetPage(1);
                         IEnumerable<Word> words = page1.GetWords();
                         Assert.AreEqual(3, words.Count(), string.Join(" ", words.Select(x => x.Text)));
-                        Assert.AreEqual("Page 1 1", string.Join(" ", words));
+                        Assert.AreEqual("1 Page 1", string.Join(" ", words));
 
                         Page page2 = pdfDocument.GetPage(2);
                         words = page2.GetWords();
                         Assert.AreEqual(3, words.Count(), string.Join(" ", words.Select(x => x.Text)));
-                        Assert.AreEqual("Page 2 2", string.Join(" ", words));
+                        Assert.AreEqual("2 Page 2", string.Join(" ", words));
                     }
                 }
             }

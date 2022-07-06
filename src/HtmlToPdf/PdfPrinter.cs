@@ -119,25 +119,38 @@ namespace HtmlToPdf
                     this.logger.LogDebug($"Printing pages {pageRanges} of page '{fullPath}'.");
                 }
 
-                string footerTemplate = string.Empty;
-                bool displayHeaderFooter = options.FooterTemplateBuilder.DisplayHeaderFooter;
-                if (displayHeaderFooter)
+                // page variables
+                Dictionary<string, string> pageVariables = new Dictionary<string, string>();
+                if (variables != null)
                 {
-                    // page variables
-                    Dictionary<string, string> pageVariables = new Dictionary<string, string>(variables)
+                    foreach (KeyValuePair<string, string> keyValuePair in variables)
                     {
-                        { "webpage", fullPath },
-                    };
+                        pageVariables.Add(keyValuePair.Key, keyValuePair.Value);
+                    }
+                }
 
+                pageVariables.Add("webpage", fullPath);
+
+                string footerTemplate = string.Empty;
+                bool displayFooter = options.FooterTemplateBuilder.DisplayTemplate;
+                if (displayFooter)
+                {
                     footerTemplate = options.FooterTemplateBuilder.Build(pageVariables);
+                }
+
+                string headerTemplate = string.Empty;
+                bool displayHeader = options.HeaderTemplateBuilder.DisplayTemplate;
+                if (displayHeader)
+                {
+                    headerTemplate = options.HeaderTemplateBuilder.Build(pageVariables);
                 }
 
                 PdfOptions pdfOptions = new PdfOptions
                 {
-                    DisplayHeaderFooter = displayHeaderFooter,
+                    DisplayHeaderFooter = displayHeader || displayFooter,
                     FooterTemplate = footerTemplate,
                     Format = paperFormat,
-                    HeaderTemplate = string.Empty,
+                    HeaderTemplate = headerTemplate,
                     Height = height,
                     Landscape = options.Landscape,
                     MarginOptions = options.MarginOptions,

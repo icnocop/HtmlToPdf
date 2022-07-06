@@ -91,6 +91,42 @@ namespace HtmlToPdf.Console
         public string FooterHtml { get; set; }
 
         /// <summary>
+        /// Gets or sets the header left.
+        /// </summary>
+        [Option("header-left", MetaValue = "<text>", HelpText = "Left aligned header text")]
+        public string HeaderLeft { get; set; }
+
+        /// <summary>
+        /// Gets or sets the header center.
+        /// </summary>
+        [Option("header-center", MetaValue = "<text>", HelpText = "Centered header text")]
+        public string HeaderCenter { get; set; }
+
+        /// <summary>
+        /// Gets or sets the header right.
+        /// </summary>
+        [Option("header-right", MetaValue = "<text>", HelpText = "Right aligned header text")]
+        public string HeaderRight { get; set; }
+
+        /// <summary>
+        /// Gets or sets the size of the header font.
+        /// </summary>
+        [Option("header-font-size", Default = "12", MetaValue = "<size>", HelpText = "Header font size")]
+        public string HeaderFontSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the header font.
+        /// </summary>
+        [Option("header-font-name", Default = "Arial", MetaValue = "<name>", HelpText = "Header font name")]
+        public string HeaderFontName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the header HTML.
+        /// </summary>
+        [Option("header-html", MetaValue = "<url>", HelpText = "HTML header")]
+        public string HeaderHtml { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether or not to read arguments from standard input.
         /// </summary>
         [Option("read-args-from-stdin", HelpText = "Read command line arguments from stdin")]
@@ -209,6 +245,12 @@ namespace HtmlToPdf.Console
         /// </summary>
         [Option("disable-dotted-lines", HelpText = "Do not use dotted lines in the toc")]
         public bool DisableDottedLines { get; set; }
+
+        /// <summary>
+        /// Gets or sets the additional arguments to pass to the browser instance.
+        /// </summary>
+        [Option("additional-arguments", HelpText = "Additional arguments to pass to the browser instance")]
+        public string AdditionalArguments { get; set; }
 
         /// <summary>
         /// Gets the logger level.

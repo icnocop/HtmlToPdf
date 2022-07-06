@@ -45,6 +45,36 @@ namespace HtmlToPdf
         public string UserStyleSheet { get; set; }
 
         /// <summary>
+        /// Gets or sets the header left.
+        /// </summary>
+        public string HeaderLeft { get; set; }
+
+        /// <summary>
+        /// Gets or sets the header center.
+        /// </summary>
+        public string HeaderCenter { get; set; }
+
+        /// <summary>
+        /// Gets or sets the header right.
+        /// </summary>
+        public string HeaderRight { get; set; }
+
+        /// <summary>
+        /// Gets or sets the size of the header font.
+        /// </summary>
+        public string HeaderFontSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the header font.
+        /// </summary>
+        public string HeaderFontName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the header HTML.
+        /// </summary>
+        public string HeaderHtml { get; set; }
+
+        /// <summary>
         /// Gets or sets the footer left.
         /// </summary>
         public string FooterLeft { get; set; }
@@ -158,6 +188,11 @@ namespace HtmlToPdf
         /// Gets or sets a value indicating whether to output dotted lines in the table of contents.
         /// </summary>
         public bool OutputDottedLinesInTableOfContents { get; set; }
+
+        /// <summary>
+        /// Gets or sets the additional arguments to pass to the browser instance.
+        /// </summary>
+        public IEnumerable<string> AdditionalArguments { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether to print in landscape orientation.

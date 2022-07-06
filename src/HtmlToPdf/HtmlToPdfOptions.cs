@@ -18,6 +18,7 @@ namespace HtmlToPdf
         {
             this.MarginOptions = new MarginOptions();
             this.FooterTemplateBuilder = new FooterTemplateBuilder();
+            this.HeaderTemplateBuilder = new HeaderTemplateBuilder();
         }
 
         /// <summary>
@@ -39,6 +40,11 @@ namespace HtmlToPdf
         /// Gets or sets the footer template builder.
         /// </summary>
         public FooterTemplateBuilder FooterTemplateBuilder { get; set; }
+
+        /// <summary>
+        /// Gets or sets the header template builder.
+        /// </summary>
+        public HeaderTemplateBuilder HeaderTemplateBuilder { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to print in landscape orientation.

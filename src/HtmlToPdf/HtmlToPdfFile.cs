@@ -37,9 +37,9 @@ namespace HtmlToPdf
         public int OutputPdfFilePageNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether to print the footer.
+        /// Gets or sets a value indicating whether to print the header/footer.
         /// </summary>
-        public bool PrintFooter { get; set; }
+        public bool PrintHeaderAndFooter { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to skip printing this file.

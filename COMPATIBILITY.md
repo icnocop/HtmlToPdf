@@ -110,14 +110,14 @@ Supported command line options when compared with https://wkhtmltopdf.org/usage/
 | --no-footer-line               | :x:                 |                                                                                                         |
 | --footer-right                 | :heavy_check_mark:* | The `[section]`, `[subsection]`, `[sitepage]`, and `[sitepages]` variables are not yet supported.|
 | --footer-spacing               | :x:                 |                                                                                                         |
-| --header-center                | :x:                 |                                                                                                         |
-| --header-font-name             | :x:                 |                                                                                                         |
-| --header-font-size             | :x:                 |                                                                                                         |
-| --header-html                  | :x:                 |                                                                                                         |
-| --header-left                  | :x:                 |                                                                                                         |
+| --header-center                | :heavy_check_mark:  |                                                                                                         |
+| --header-font-name             | :heavy_check_mark:  |                                                                                                         |
+| --header-font-size             | :heavy_check_mark:  |                                                                                                         |
+| --header-html                  | :heavy_check_mark:  |                                                                                                         |
+| --header-left                  | :heavy_check_mark:  |                                                                                                         |
 | --header-line                  | :x:                 |                                                                                                         |
 | --no-header-line               | :x:                 |                                                                                                         |
-| --header-right                 | :x:                 |                                                                                                         |
+| --header-right                 | :heavy_check_mark:  |                                                                                                         |
 | --header-spacing               | :x:                 |                                                                                                         |
 | --replace                      | :x:                 |                                                                                                         |
 | --disable-dotted-lines         | :heavy_check_mark:  |                                                                                                         |

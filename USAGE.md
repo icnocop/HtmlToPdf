@@ -64,6 +64,20 @@ Description:
   
   --footer-html=<url>                              HTML footer  
   
+  --header-left=<text>                             Left aligned header text  
+  
+  --header-center=<text>                           Centered header text  
+  
+  --header-right=<text>                            Right aligned header text  
+  
+  --header-font-size=<size>                        (Default: 12) Header font  
+                                                   size  
+  
+  --header-font-name=<name>                        (Default: Arial) Header font  
+                                                   name  
+  
+  --header-html=<url>                              HTML header  
+  
   --read-args-from-stdin                           Read command line arguments  
                                                    from stdin  
   
@@ -123,6 +137,9 @@ Description:
   
   --disable-dotted-lines                           Do not use dotted lines in  
                                                    the toc  
+  
+  --additional-arguments                           Additional arguments to pass  
+                                                   to the browser instance  
   
   
 Page sizes:  
