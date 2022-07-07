@@ -162,10 +162,10 @@ namespace HtmlToPdf
                     Width = width,
                 };
 
-                PolicyResult<Task> policyResult = Policy
+                PolicyResult policyResult = await Policy
                     .Handle<TargetClosedException>()
                     .Or<Exception>()
-                    .Retry(2, onRetry: (ex, retryCount, context) =>
+                    .RetryAsync(2, onRetry: (ex, retryCount, context) =>
                     {
                         // executed before each retry
                         // ex. PuppeteerSharp.TargetClosedException: Protocol error(IO.read): Target closed. (Page failed to process Inspector.targetCrashed. Exception of type 'PuppeteerSharp.TargetCrashedException' was thrown..    at PuppeteerSharp.Page.OnTargetCrashed()
@@ -217,7 +217,7 @@ namespace HtmlToPdf
                         this.logger.LogWarning(ex.ToString());
                         Thread.Sleep(1000);
                     })
-                    .ExecuteAndCapture(async () =>
+                    .ExecuteAndCaptureAsync(async () =>
                     {
                         using (Page page = await this.browser.NewPageAsync())
                         {
@@ -246,8 +246,6 @@ namespace HtmlToPdf
                             }
                         }
                     });
-
-                policyResult.Result.Wait();
 
                 if (policyResult.Outcome == OutcomeType.Failure)
                 {

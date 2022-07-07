@@ -98,7 +98,7 @@ namespace HtmlToPdf
 
                 await Policy
                     .Handle<ProcessException>()
-                    .RetryForever(onRetry: ex =>
+                    .RetryForeverAsync(onRetry: ex =>
                     {
                         // executed before each retry
                         // https://github.com/hardkoded/puppeteer-sharp/issues/1509
@@ -126,7 +126,7 @@ namespace HtmlToPdf
                         logger.LogWarning(ex.ToString());
                         Thread.Sleep(1000);
                     })
-                    .Execute(async () =>
+                    .ExecuteAsync(async () =>
                     {
                         bool coverAdded = false;
 
