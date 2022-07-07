@@ -98,7 +98,7 @@ namespace HtmlToPdf
 
                 await Policy
                     .Handle<ProcessException>()
-                    .Retry(2, onRetry: (ex, retryCount) =>
+                    .RetryForever(onRetry: ex =>
                     {
                         // executed before each retry
                         // https://github.com/hardkoded/puppeteer-sharp/issues/1509
@@ -122,6 +122,7 @@ namespace HtmlToPdf
                         // Error:   GetHandleVerifier [0x00007FF65A43B7C2+697538]
                         // Error:   BaseThreadInitThunk [0x00007FFE5B2D84D4+20]
                         // Error:   RtlUserThreadStart [0x00007FFE5B95E871+33]
+                        // ex. PuppeteerSharp.ProcessException: Failed to create connection ---> System.TimeoutException: Timeout of 30000 ms exceeded
                         logger.LogWarning(ex.ToString());
                         Thread.Sleep(1000);
                     })

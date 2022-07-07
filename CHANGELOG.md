@@ -1,5 +1,10 @@
 # Change Log
 
+__v0.1.707__ (2022-07-07)
+
+ - Disabled navigation and page timeouts  
+ - Always retry launching the browser if a ProcessException occurs  
+
 __v0.1.706__ (2022-07-06)
 
  - Added support for `--header-left`, `--header-center`, `--header-right`, `--header-font-size`, `--header-font-name`, and `--header-html` command line options  

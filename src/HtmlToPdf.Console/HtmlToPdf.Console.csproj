@@ -17,7 +17,7 @@
       <Link>stylecop.json</Link>
     </AdditionalFiles>
     <None Update="Create xsd from Outline.xml.cmd">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
     <None Update="rename.cmd">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>

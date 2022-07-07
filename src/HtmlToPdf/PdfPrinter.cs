@@ -64,6 +64,7 @@ namespace HtmlToPdf
             NavigationOptions navigationOptions = new NavigationOptions
             {
                 WaitUntil = new[] { WaitUntilNavigation.Networkidle0 },
+                Timeout = 0,
             };
 
             AddTagOptions addTagOptions = null;
@@ -224,6 +225,7 @@ namespace HtmlToPdf
                             // otherwise, the following exception occurs:
                             // PuppeteerSharp.NavigationException: Timeout of 30000 ms exceeded ---> System.TimeoutException: Timeout of 30000 ms exceeded
                             page.DefaultNavigationTimeout = 0;
+                            page.DefaultTimeout = 0;
 
                             await page.GoToAsync(tempHtmlFile.FilePath, navigationOptions);
 
