@@ -1,5 +1,9 @@
 # Change Log
 
+__v0.1.814__ (2022-08-14)
+
+ - Updated NuGet packages: itext7 to 7.2.3 and PuppeteerSharp to 7.1.0  
+
 __v0.1.707__ (2022-07-07)
 
  - Disabled navigation and page timeouts  
